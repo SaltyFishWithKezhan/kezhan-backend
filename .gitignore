@@ -10,6 +10,7 @@ gen
 .gitignore
 .idea/inspectionProfiles/
 .idea/vcs.xml
-.idea/*
+.idea/workspace.xml
 src/main/java/cn/clate/kezhan/beans/
 target/generated-sources/
+target
