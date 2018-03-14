@@ -23,7 +23,7 @@ public class RegisterDomain {
         user.setPassword(pwEncrypted);
         user.setPhone(phone);
         dao.insert(user);
-        return null;
+        return Ret.s("success");
 
     }
 }

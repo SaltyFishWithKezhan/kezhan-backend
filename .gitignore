@@ -9,8 +9,11 @@ out
 gen
 .gitignore
 .idea/inspectionProfiles/
-.idea/vcs.xml
-.idea/workspace.xml
+.idea/*
 src/main/java/cn/clate/kezhan/beans/
 target/generated-sources/
 target
+target/classes/cn/clate/kezhan/domains/user/RegisterDomain.class
+target/kezhan.war
+target/kezhan/
+target/maven-archiver/

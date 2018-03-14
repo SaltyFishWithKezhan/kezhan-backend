@@ -39,9 +39,9 @@ public class UserModule {
             return Ret.e(1, validator.getError());
         }
         NutMap ret = RegisterDomain.fire(username,password,phone);
-        if(ret != null){
+        if(ret == null){
             return Ret.e(2, "注册失败");
         }
-        return Ret.s(ret.addv("用户名",username));
+        return ret;
     }
 }
