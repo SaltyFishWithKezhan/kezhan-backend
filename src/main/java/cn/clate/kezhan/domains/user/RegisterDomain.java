@@ -15,7 +15,7 @@ public class RegisterDomain {
         Dao dao = DaoFactory.get();
         User user = dao.fetch(User.class, username);
         if (user != null) {
-            return Ret.e(450,"用户名已存在");
+            return Ret.e(50,"用户名已存在");
         }
         user = new User();
         String pwEncrypted = Tools.passwordEncrypt(password);
