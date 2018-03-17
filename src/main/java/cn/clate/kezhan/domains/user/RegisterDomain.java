@@ -59,6 +59,7 @@ public class RegisterDomain {
         } catch (ClientException ce) {
             ce.printStackTrace();
         } catch (Exception e) {
+
             e.printStackTrace();
         }
     }
