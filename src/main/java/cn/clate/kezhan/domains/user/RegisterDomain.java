@@ -21,6 +21,7 @@ import org.nutz.lang.util.NutMap;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Random;
 
 public class RegisterDomain {
 
@@ -39,8 +40,16 @@ public class RegisterDomain {
         return Ret.s("success");
     }
 
-    public static void phoneVerifition(String phoneNumber, String code) {
+    public static void phoneVerifition(String phoneNumber) {
         try {
+            String sources = "0123456789"; // 加上一些字母，就可以生成pc站的验证码了
+            Random rand = new Random();
+            StringBuffer flag = new StringBuffer();
+            for (int j = 0; j < 6; j++) {
+                flag.append(sources.charAt(rand.nextInt(9)) + "");
+            }
+            String code = flag.toString();
+            System.out.print(code);
             SendSmsResponse response = sendSms(phoneNumber, code);
             System.out.println("短信接口返回的数据----------------");
             System.out.println("Code=" + response.getCode());

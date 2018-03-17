@@ -49,17 +49,13 @@ public class UserModule {
 
     @At("/phone")
     @Ok("json")
-    public NutMap phoneVerifition(@Param("phone")String phoneNumber) {
-        String sources = "0123456789"; // 加上一些字母，就可以生成pc站的验证码了
-        Random rand = new Random();
-        StringBuffer flag = new StringBuffer();
-        for (int j = 0; j < 6; j++)
-        {
-            flag.append(sources.charAt(rand.nextInt(9)) + "");
+    public NutMap phoneVerifition(@Param("phone") String phoneNumber) {
+        SimpleValidator validator = new SimpleValidator();
+        validator.now(phoneNumber, "用户名").require().length(11);
+        if (!validator.check()) {
+            return Ret.e(1, validator.getError());
         }
-        String code=flag.toString();
-        RegisterDomain.phoneVerifition(phoneNumber,code);
-        System.out.print(code);
+        RegisterDomain.phoneVerifition(phoneNumber);
         return Ret.s("phone verifition success");
     }
 }
