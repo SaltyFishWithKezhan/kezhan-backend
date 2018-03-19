@@ -32,15 +32,16 @@ public class UserModule {
 
     @At("/register")
     @Ok("json")
-    public NutMap register(@Param("username") String username, @Param("password") String password, @Param("phone") String phone) {
+    public NutMap register(@Param("username") String username, @Param("password") String password, @Param("phone") String phone ,@Param("verification_code") String code) {
         SimpleValidator validator = new SimpleValidator();
         validator.now(username, "用户名").require().chsDash().lenMin(5).lenMax(16);
         validator.now(password, "密码").require().lenMin(8).lenMax(40);
         validator.now(phone, "手机号码").require().length(11);//我手机号用mobilephone验证通不过
+        validator.now(code, "验证码").require().length(6);
         if (!validator.check()) {
             return Ret.e(1, validator.getError());
         }
-        NutMap ret = RegisterDomain.fire(username, password, phone);
+        NutMap ret = RegisterDomain.fire(username, password, phone,code);
         if (ret == null) {
             return Ret.e(2, "注册失败");
         }
@@ -55,7 +56,7 @@ public class UserModule {
         if (!validator.check()) {
             return Ret.e(1, validator.getError());
         }
-        RegisterDomain.phoneVerifition(phoneNumber);
+        RegisterDomain.sendMsg(phoneNumber);
         return Ret.s("phone verifition success");
     }
 }

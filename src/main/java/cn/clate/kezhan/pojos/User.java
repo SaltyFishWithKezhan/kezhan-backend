@@ -59,7 +59,7 @@ public class User {
     private String lastLoginIp;
 
     @Column("login_times")
-    private String loginTimes;
+    private long loginTimes;
 
     @Column
     private String phone;
@@ -198,11 +198,11 @@ public class User {
         this.lastLoginIp = lastLoginIp;
     }
 
-    public String getLoginTimes() {
+    public long getLoginTimes() {
         return loginTimes;
     }
 
-    public void setLoginTimes(String loginTimes) {
+    public void setLoginTimes(long loginTimes) {
         this.loginTimes = loginTimes;
     }
 
@@ -210,6 +210,12 @@ public class User {
         this.loginTimes += 1;
         this.lastLogin = this.nowLogin;
         this.lastLoginIp = this.nowLoginIp;
+        this.nowLogin = Tools.getTimeStamp();
+        this.nowLoginIp = Tools.getRemoteAddr();
+    }
+
+    public void initLoginStatus(){
+        this.loginTimes =0;
         this.nowLogin = Tools.getTimeStamp();
         this.nowLoginIp = Tools.getRemoteAddr();
     }

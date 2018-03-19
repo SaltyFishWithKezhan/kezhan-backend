@@ -1,5 +1,6 @@
 package cn.clate.kezhan.domains.user;
 
+import cn.clate.kezhan.pojos.Phone;
 import cn.clate.kezhan.pojos.User;
 import cn.clate.kezhan.utils.Conf;
 import cn.clate.kezhan.utils.Ret;
@@ -25,42 +26,76 @@ import java.util.Random;
 
 public class RegisterDomain {
 
-    public static NutMap fire(String username, String password, String phone) {
+    private static String initAccessToken(User user) {
+        String newToken = Tools.getRandStr((int) Conf.get("user.tokenLength", Integer.class));
+        user.initLoginStatus();
+        user.setAccessToken(newToken);
+        DaoFactory.get().update(user);
+        return user.getAccessToken();
+    }
+
+    public static NutMap fire(String username, String password, String phone, String code) {
         Dao dao = DaoFactory.get();
         User user = dao.fetch(User.class, username);
         if (user != null) {
-            return Ret.e(50, "用户名已存在");
+            return Ret.e(10, "用户名已存在");
         }
-        user = new User();
-        String pwEncrypted = Tools.passwordEncrypt(password);
-        user.setUsername(username);
-        user.setPassword(pwEncrypted);
-        user.setPhone(phone);
-        dao.insert(user);
-        return Ret.s("success");
+        NutMap phoneRet = phoneVerifition(phone, code);
+        System.out.println();
+        if (phoneRet.get("code").equals(200)) {
+            user = new User();
+            String pwEncrypted = Tools.passwordEncrypt(password);
+            user.setUsername(username);
+            user.setPassword(pwEncrypted);
+            user.setPhone(phone);
+            dao.insert(user);
+            String token = initAccessToken(user);
+            return Ret.s("success");
+        }
+        return phoneRet;
     }
 
-    public static void phoneVerifition(String phoneNumber) {
+    public static NutMap sendMsg(String phoneNumber) { //调用阿里短信服务API发送手机验证吗
         try {
             String sources = "0123456789"; // 加上一些字母，就可以生成pc站的验证码了
+            String sourceWithoutZreo = "123456789"; // 加上一些字母，就可以生成pc站的验证码了
             Random rand = new Random();
             StringBuffer flag = new StringBuffer();
-            for (int j = 0; j < 6; j++) {
+            flag.append(sourceWithoutZreo.charAt(rand.nextInt(9)) + "");
+            for (int j = 0; j < 5; j++) {
                 flag.append(sources.charAt(rand.nextInt(9)) + "");
             }
             String code = flag.toString();
             System.out.print(code);
-            SendSmsResponse response = sendSms(phoneNumber, code);
-            System.out.println("短信接口返回的数据----------------");
-            System.out.println("Code=" + response.getCode());
-            System.out.println("Message=" + response.getMessage());
-            System.out.println("RequestId=" + response.getRequestId());
-            System.out.println("BizId=" + response.getBizId());
+
+            Dao dao = DaoFactory.get();
+            Phone phone = dao.fetch(Phone.class, phoneNumber);
+            if (phone == null || phone.getStatus() == 0)//该手机号未验证过或验证成功
+            {
+                SendSmsResponse response = sendSms(phoneNumber, code);
+                if (phone == null)
+                    phone = new Phone();
+                phone.setPhone(phoneNumber);
+                phone.setCode(code);
+                phone.updateLastActiveTime();
+                phone.setStatus(0);
+                dao.insertOrUpdate(phone);
+
+                System.out.println("短信接口返回的数据----------------");
+                System.out.println("Code=" + response.getCode());
+                System.out.println("Message=" + response.getMessage());
+                System.out.println("RequestId=" + response.getRequestId());
+                System.out.println("BizId=" + response.getBizId());
+                return Ret.s("success");
+            } else {
+                return Ret.e(13, "该手机号已被注册");
+            }
         } catch (ClientException ce) {
             ce.printStackTrace();
+            return Ret.e(11, "短信验证错误");
         } catch (Exception e) {
-
             e.printStackTrace();
+            return Ret.e(12, "短信验证错误");
         }
     }
 
@@ -98,35 +133,28 @@ public class RegisterDomain {
         return sendSmsResponse;
     }
 
-    private QuerySendDetailsResponse querySendDetails(String bizId) throws ClientException {
-
-        //可自助调整超时时间
-        System.setProperty("sun.net.client.defaultConnectTimeout", "10000");
-        System.setProperty("sun.net.client.defaultReadTimeout", "10000");
-
-        //初始化acsClient,暂不支持region化
-        IClientProfile profile = DefaultProfile.getProfile("cn-hangzhou", (String) Conf.get("aliyun_accessKeyId", String.class), (String) Conf.get("aliyun_accessKeySecret", String.class));
-        DefaultProfile.addEndpoint("cn-hangzhou", "cn-hangzhou", (String) Conf.get("aliyun_product", String.class), (String) Conf.get("aliyun_domain", String.class));
-        IAcsClient acsClient = new DefaultAcsClient(profile);
-
-        //组装请求对象
-        QuerySendDetailsRequest request = new QuerySendDetailsRequest();
-        //必填-号码
-        request.setPhoneNumber("15000000000");
-        //可选-流水号
-        request.setBizId(bizId);
-        //必填-发送日期 支持30天内记录查询，格式yyyyMMdd
-        SimpleDateFormat ft = new SimpleDateFormat("yyyyMMdd");
-        request.setSendDate(ft.format(new Date()));
-        //必填-页大小
-        request.setPageSize(10L);
-        //必填-当前页码从1开始计数
-        request.setCurrentPage(1L);
-
-        //hint 此处可能会抛出异常，注意catch
-        QuerySendDetailsResponse querySendDetailsResponse = acsClient.getAcsResponse(request);
-
-        return querySendDetailsResponse;
+    public static NutMap phoneVerifition(String phoneNumber, String code) {
+        Dao dao = DaoFactory.get();
+        Phone phone = dao.fetch(Phone.class, phoneNumber);
+        if (phone == null) {
+            return Ret.e(14, "请先获取验证码");
+        } else if (phone.getCode().equals(code)) {
+            long time = (Tools.getTimeStamp() - phone.getLastActive());//间隔秒数
+            System.out.println(time);
+            if (phone.getStatus() == 1) {
+                return Ret.e(15, "该手机号已被注册");
+            }
+            if (time <= 300) {
+                phone.setStatus(1);
+                phone.updateLastActiveTime();
+                dao.update(phone);
+                return Ret.s("success");
+            } else {
+                return Ret.e(15, "验证码已失效");
+            }
+        } else {
+            return Ret.e(16, "验证码错误");
+        }
     }
 
 }
