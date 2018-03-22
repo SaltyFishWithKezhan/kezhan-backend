@@ -1,0 +1,20 @@
+# Created by .ignore support plugin (hsz.mobi)
+### Example user template template
+### Example user template
+
+# IntelliJ project files
+.idea
+*.iml
+out
+gen
+.idea/inspectionProfiles/
+.idea/*
+src/main/resources/conf/app.js
+target/generated-sources/
+target
+target/classes/cn/clate/kezhan/domains/user/RegisterDomain.class
+target/kezhan.war
+target/kezhan/
+target/maven-archiver/
+/target/kezhan.war
+src/main/java/cn/clate/kezhan/beans/
