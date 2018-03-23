@@ -2,12 +2,11 @@ package cn.clate.kezhan.modules;
 
 import cn.clate.kezhan.domains.user.LoginDomain;
 import cn.clate.kezhan.domains.user.RegisterDomain;
+import cn.clate.kezhan.filters.UserAuthenication;
 import cn.clate.kezhan.utils.Ret;
 import cn.clate.kezhan.utils.validators.SimpleValidator;
 import org.nutz.lang.util.NutMap;
-import org.nutz.mvc.annotation.At;
-import org.nutz.mvc.annotation.Ok;
-import org.nutz.mvc.annotation.Param;
+import org.nutz.mvc.annotation.*;
 
 import java.util.Random;
 
@@ -15,6 +14,7 @@ import java.util.Random;
 public class UserModule {
     @At("/login")
     @Ok("json")
+    @Filters({@By(type=UserAuthenication.class)})
     public NutMap login(@Param("username") String username, @Param("password") String password) {
         SimpleValidator validator = new SimpleValidator();
         validator.now(username, "用户名").require().chsDash().lenMin(5).lenMax(16);
@@ -36,7 +36,7 @@ public class UserModule {
         SimpleValidator validator = new SimpleValidator();
         validator.now(username, "用户名").require().chsDash().lenMin(5).lenMax(16);
         validator.now(password, "密码").require().lenMin(8).lenMax(40);
-        validator.now(phone, "手机号码").require().length(11);//我手机号用mobilephone验证通不过
+        validator.now(phone, "手机号码").require().mobilePhone();
         validator.now(code, "验证码").require().length(6);
         if (!validator.check()) {
             return Ret.e(1, validator.getError());
@@ -52,7 +52,7 @@ public class UserModule {
     @Ok("json")
     public NutMap phoneVerifition(@Param("phone") String phoneNumber) {
         SimpleValidator validator = new SimpleValidator();
-        validator.now(phoneNumber, "用户名").require().length(11);
+        validator.now(phoneNumber, "用户名").require().mobilePhone();
         if (!validator.check()) {
             return Ret.e(1, validator.getError());
         }

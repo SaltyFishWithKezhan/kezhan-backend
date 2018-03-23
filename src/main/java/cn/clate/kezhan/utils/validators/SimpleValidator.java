@@ -503,7 +503,7 @@ public class SimpleValidator {
      */
     public SimpleValidator mobilePhone(String subject, String errorText){
         if(mError == null && subject != null){
-            if(!matchPreg(subject, "^((17[0-9])|(14[0-9])|(13[0-9])|(15[^4,\\D])|(18[0,5-9]))\\d{8}$")){
+            if(!matchPreg(subject, "^((17[0-9])|(14[0-9])|(13[0-9])|(15[^4,\\D])|(18[0-9]))\\d{8}$")){
                 mError = errorText;
             }
         }
