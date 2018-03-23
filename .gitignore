@@ -11,6 +11,7 @@ gen
 #.idea/*
 src/main/resources/conf/app.js
 src/main/resources/ioc/dao.js
+src/main/resources/
 target/*
 #target/generated-sources/
 target
