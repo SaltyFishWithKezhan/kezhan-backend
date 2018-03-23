@@ -16,12 +16,15 @@ import com.aliyuncs.exceptions.ClientException;
 import com.aliyuncs.profile.DefaultProfile;
 import com.aliyuncs.profile.IClientProfile;
 import org.nutz.dao.Cnd;
+import org.nutz.dao.Condition;
 import org.nutz.dao.Dao;
+import org.nutz.dao.sql.Criteria;
 import org.nutz.dao.util.cri.SqlExpressionGroup;
 import org.nutz.lang.util.NutMap;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.Random;
 
 public class RegisterDomain {
@@ -48,8 +51,9 @@ public class RegisterDomain {
             user.setUsername(username);
             user.setPassword(pwEncrypted);
             user.setPhone(phone);
-            dao.insert(user);
             String token = initAccessToken(user);
+            user.setAccessToken(token);
+            dao.insert(user);
             return Ret.s("success");
         }
         return phoneRet;
@@ -69,18 +73,17 @@ public class RegisterDomain {
             System.out.print(code);
 
             Dao dao = DaoFactory.get();
-            Phone phone = dao.fetch(Phone.class, phoneNumber);
-            if (phone == null || phone.getStatus() == 0)//该手机号未验证过或验证成功
+            User user = dao.fetch(User.class, Cnd.where("phone","=",phoneNumber));
+            if (user == null)//该手机号未验证过或验证成功
             {
                 SendSmsResponse response = sendSms(phoneNumber, code);
-                if (phone == null)
-                    phone = new Phone();
+                Phone phone = new Phone();
                 phone.setPhone(phoneNumber);
                 phone.setCode(code);
-                phone.updateLastActiveTime();
+                phone.setRequestTime(Tools.getTimeStamp());
+                phone.setType(1);
                 phone.setStatus(0);
-                dao.insertOrUpdate(phone);
-
+                dao.insert(phone);
                 System.out.println("短信接口返回的数据----------------");
                 System.out.println("Code=" + response.getCode());
                 System.out.println("Message=" + response.getMessage());
@@ -92,10 +95,10 @@ public class RegisterDomain {
             }
         } catch (ClientException ce) {
             ce.printStackTrace();
-            return Ret.e(11, "短信验证错误");
+            return Ret.e(11, "短信验证错误1");
         } catch (Exception e) {
             e.printStackTrace();
-            return Ret.e(12, "短信验证错误");
+            return Ret.e(12, "短信验证错误2");
         }
     }
 
@@ -135,18 +138,21 @@ public class RegisterDomain {
 
     public static NutMap phoneVerifition(String phoneNumber, String code) {
         Dao dao = DaoFactory.get();
-        Phone phone = dao.fetch(Phone.class, phoneNumber);
+        Criteria cri = Cnd.cri();
+        cri.where().andEquals("phone_number",phoneNumber);
+        cri.getOrderBy().asc("request_time");
+        Phone phone = dao.fetch(Phone.class,cri);
         if (phone == null) {
             return Ret.e(14, "请先获取验证码");
         } else if (phone.getCode().equals(code)) {
-            long time = (Tools.getTimeStamp() - phone.getLastActive());//间隔秒数
+            long time = (Tools.getTimeStamp() - phone.getRequestTime());//间隔秒数
             System.out.println(time);
             if (phone.getStatus() == 1) {
                 return Ret.e(15, "该手机号已被注册");
             }
-            if (time <= 300) {
+            if (time <= (int)Conf.get("tokenValidTime")) {
                 phone.setStatus(1);
-                phone.updateLastActiveTime();
+                phone.updateRequestTime();
                 dao.update(phone);
                 return Ret.s("success");
             } else {

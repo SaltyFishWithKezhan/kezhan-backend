@@ -12,16 +12,22 @@ public class Phone {
     @Id
     private int id;
 
-    @Name
+    @Column("phone_number")
     private String phone;
 
     @Column("verification_code")
     private String code;
 
-    @Column("last_active_time")
-    private long lastActive;
+    @Column("request_time")
+    private long requestTime;
 
-    @Column("is_confirmed")
+    @Column("type")
+    private int type;
+
+    @Column("related_id")
+    private long relatedId;
+
+    @Column("status")
     private int status;
 
     public int getId() {
@@ -51,12 +57,30 @@ public class Phone {
         return this;
     }
 
-    public long getLastActive() {
-        return lastActive;
+    public long getRequestTime() {
+        return requestTime;
     }
 
-    public Phone setLastActive(long lastActive) {
-        this.lastActive = lastActive;
+    public Phone setRequestTime(long requestTime) {
+        this.requestTime = requestTime;
+        return this;
+    }
+
+    public int getType() {
+        return type;
+    }
+
+    public Phone setType(int type) {
+        this.type = type;
+        return this;
+    }
+
+    public long getRelatedId() {
+        return relatedId;
+    }
+
+    public Phone setRelatedId(long relatedId) {
+        this.relatedId = relatedId;
         return this;
     }
 
@@ -69,9 +93,8 @@ public class Phone {
         return this;
     }
 
-    public void updateLastActiveTime(){
-        this.lastActive = Tools.getTimeStamp();
+    public void updateRequestTime(){
+        setRequestTime(Tools.getTimeStamp());
     }
-
 
 }
