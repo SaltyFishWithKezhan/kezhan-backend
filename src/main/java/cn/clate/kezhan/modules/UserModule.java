@@ -51,11 +51,38 @@ public class UserModule {
     @Ok("json")
     public NutMap phoneVerifition(@Param("phone") String phoneNumber) {
         SimpleValidator validator = new SimpleValidator();
-        validator.now(phoneNumber, "用户名").require().mobilePhone();
+        validator.now(phoneNumber, "手机号码").require().mobilePhone();
         if (!validator.check()) {
             return Ret.e(1, validator.getError());
         }
         RegisterDomain.sendMsg(phoneNumber);
         return Ret.s("phone verifition success");
     }
+
+    @At("/resetPhone")
+    @Ok("json")
+    public NutMap resetPhone(@Param("uid") String uid,@Param("phone") String phoneNumber){
+        SimpleValidator validator = new SimpleValidator();
+        int id = Integer.parseInt(uid);
+        validator.now(uid,"用户id").require().min(0);
+        validator.now(phoneNumber, "手机号码").require().mobilePhone();
+        if (!validator.check()) {
+            return Ret.e(1, validator.getError());
+        }
+        NutMap ret = RegisterDomain.resetValidationSendMsg(id,phoneNumber);
+        return ret;
+    }
+
+    @At("/resetPwd")
+    @Ok("json")
+    public NutMap resetPwd(@Param("uid") String uid, @Param("phone") String phone, @Param("code") String code) {
+        SimpleValidator validator = new SimpleValidator();
+        validator.now(phone, "手机号码").require().mobilePhone();
+        validator.now(code, "验证码").require().length(6);
+        if (!validator.check()) {
+            return Ret.e(1, validator.getError());
+        }
+        return Ret.s("reset pwd success");
+    }
+
 }

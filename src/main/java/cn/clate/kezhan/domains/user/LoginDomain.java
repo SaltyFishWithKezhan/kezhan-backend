@@ -45,9 +45,7 @@ public class LoginDomain {
         ret.addv("last_login_ip", user.getLastLoginIp());
         ret.addv("now_login", user.getNowLogin());
         ret.addv("now_login_ip", user.getNowLoginIp());
+        ret.addv("token",token);
         return ret;
-
-
-
     }
 }
