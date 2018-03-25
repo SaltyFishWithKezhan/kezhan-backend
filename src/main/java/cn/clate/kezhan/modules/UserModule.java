@@ -14,7 +14,6 @@ import java.util.Random;
 public class UserModule {
     @At("/login")
     @Ok("json")
-    @Filters({@By(type=UserAuthenication.class)})
     public NutMap login(@Param("username") String username, @Param("password") String password) {
         SimpleValidator validator = new SimpleValidator();
         validator.now(username, "用户名").require().chsDash().lenMin(5).lenMax(16);
