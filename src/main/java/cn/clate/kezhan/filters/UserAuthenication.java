@@ -15,6 +15,12 @@ public class UserAuthenication implements ActionFilter {
     public View match(ActionContext actionContext) {
         String userId = actionContext.getRequest().getParameter("uid");
         String userToken = actionContext.getRequest().getParameter("utoken");
+        if(userId==null){
+            return new ViewWrapper(new UTF8JsonView(), "uid cannot be null");
+        }
+        if(userToken==null){
+            return new ViewWrapper(new UTF8JsonView(), "utoken cannot be null");
+        }
         Dao dao = DaoFactory.get();
         User user = dao.fetch(User.class, Integer.parseInt(userId));
         System.out.println(user.getAccessToken());

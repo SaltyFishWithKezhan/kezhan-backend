@@ -2,6 +2,7 @@ package cn.clate.kezhan.modules;
 
 import cn.clate.kezhan.domains.user.LoginDomain;
 import cn.clate.kezhan.domains.user.RegisterDomain;
+import cn.clate.kezhan.domains.user.UserInfoDomain;
 import cn.clate.kezhan.filters.UserAuthenication;
 import cn.clate.kezhan.utils.Ret;
 import cn.clate.kezhan.utils.validators.SimpleValidator;
@@ -83,6 +84,19 @@ public class UserModule {
             return Ret.e(1, validator.getError());
         }
         return Ret.s("reset pwd success");
+    }
+
+    @At("/getById")
+    @Ok("json")
+    @Filters(@By(type=UserAuthenication.class))
+    public NutMap getUserById(@Param("uid") String uid) {
+        SimpleValidator validator = new SimpleValidator();
+        validator.now(uid, "用户id").require().min(0);
+        if (!validator.check()) {
+            return Ret.e(1, validator.getError());
+        }
+        NutMap ret = UserInfoDomain.getUserById(Integer.parseInt(uid));
+        return ret;
     }
 
 }
