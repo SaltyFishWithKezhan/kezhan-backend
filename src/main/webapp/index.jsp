@@ -1,5 +1,53 @@
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<!DOCTYPE HTML>
 <html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+</head>
 <body>
-<h2>Hello World!</h2>
+<h4>用户登录：<br>
+    http://95.163.194.157:8080/kezhan/user/login<br>
+    params: <br>
+    uid<br>
+    utoken<br>
+    username<br>
+    password<br>
+    <br>
+    用户根据id获得个人信息<br>
+    http://localhost:8080/user/getById<br>
+    params:<br>
+    uid<br>
+    utoken<br>
+    <br>
+    用户发送手机验证码：<br>
+    http://95.163.194.157:8080/kezhan/user/phone<br>
+    params:<br>
+    phone<br>
+    <br>
+    用户注册：<br>
+    http://95.163.194.157:8080/kezhan/user/register<br>
+    params:<br>
+    username<br>
+    password<br>
+    phone<br>
+    verification_code<br>
+    <br>
+    用户忘记密码发送手机验证码：<br>
+    http://localhost:8080/user/resetPhone<br>
+    params:<br>
+    uid<br>
+    phone<br>
+    <br>
+    获得所有圈子<br>
+    http://localhost:8080/circle/getAll<br>
+    无参数<br>
+    <br>
+    按页获得圈子<br>
+    http://localhost:8080/circle/getByPage<br>
+    params:<br>
+    page_number<br>
+    page_size<br>
+    <br>
+</h4>
 </body>
 </html>
