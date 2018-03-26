@@ -48,6 +48,25 @@
     page_number<br>
     page_size<br>
     <br>
+    根据帖子id获取评论（type=1表示是圈子类型的评论）<br>
+    http://localhost:8080/circle/commits<br>
+    params:<br>
+    topic_type<br>
+    topic_id<br>
+    <br>
+    发布评论<br>
+    http://localhost:8080/circle/submitCommit<br>
+    params:<br>
+    topic_type=1<br>
+    topic_id=1<br>
+    from_id=8<br>
+    from_name=zhaoning<br>
+    to_id=-1<br>
+    to_name<br>
+    content=喵喵喵喵喵喵<br>
+    uid=8<br>
+    utoken=ziTk48xKFrdkRUoG<br>
+    <br>
 </h4>
 </body>
 </html>
