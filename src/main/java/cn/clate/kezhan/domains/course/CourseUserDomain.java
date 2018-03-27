@@ -1,7 +1,6 @@
 package cn.clate.kezhan.domains.course;
 
-import cn.clate.kezhan.pojos.CourseUserTake;
-import cn.clate.kezhan.pojos.Test;
+import cn.clate.kezhan.pojos.*;
 import cn.clate.kezhan.utils.factories.DaoFactory;
 import org.nutz.dao.Cnd;
 import org.nutz.dao.Dao;
@@ -28,12 +27,58 @@ public class CourseUserDomain {
         return subCourseTermIds;
     }
 
-    public static void main(String[] args){
-        ArrayList<Integer>tests=getSubCourseTermIdByUser(8);
-        System.out.println(tests.size());
-        for(Integer test:tests){
-            System.out.println(test);
+    public static ArrayList<NutMap> getTimeMessageByCourseid(int id){
+
+        Dao dao = DaoFactory.get();
+        List<CourseTimeSlot> courseTimeSlots= dao.query(CourseTimeSlot.class, Cnd.where("sub_course_term_id", "=", id));
+        ArrayList<NutMap> contentList = new ArrayList<NutMap>();
+
+        for (CourseTimeSlot courseTimeSlot: courseTimeSlots){
+            NutMap testItem=new NutMap();
+            testItem.addv("day",courseTimeSlot.getDay());
+            testItem.addv("startDate",courseTimeSlot.getStartDate());
+            testItem.addv("endDate",courseTimeSlot.getEndDate());
+            testItem.addv("startTime",courseTimeSlot.getStartTime());
+            testItem.addv("endTime",courseTimeSlot.getEndTime());
+            contentList.add(testItem);
         }
+        return  contentList;
+    }
+
+    public static String getCourseCodeByCourseid(int id){
+        Dao dao = DaoFactory.get();
+        List<Couse2018> couse2018s= dao.query(Couse2018.class, Cnd.where("course_id", "=", id));
+        return couse2018s.get(0).getCourseCode();
+    }
+
+    public static NutMap getCouseMessageByCourseCode(String code){
+        Dao dao = DaoFactory.get();
+        NutMap res=new NutMap();
+        List<Course> courses= dao.query(Course.class, Cnd.where("course_code", "=", code));
+
+
+         //System.out.println(courses.get(0));
+
+        res.addv("name",courses.get(0).getName());
+        res.addv("name_en",courses.get(0).getNameEn());
+        res.addv("desc",courses.get(0).getDesc());
+        res.addv("maxSize",courses.get(0).getMaxSize());
+        res.addv("image",courses.get(0).getCoverImg());
+        String teacherName=dao.query(Teacher.class,Cnd.where("id", "=", courses.get(0).getTeacherId())).get(0).getName();
+        res.addv("teacher",teacherName);
+
+
+        return res;
+    }
+
+    public static void main(String[] args){
+        ArrayList<NutMap>tests=getTimeMessageByCourseid(1);
+        System.out.println(tests.size());
+        for(NutMap nutmap:tests){
+            System.out.println("aaa");
+            System.out.println(nutmap.get("day"));
+        }
+       System.out.println(getCouseMessageByCourseCode("SOFT0031131130").get("name"));
 
     }
 }
