@@ -6,9 +6,11 @@ import cn.clate.kezhan.domains.user.UserInfoDomain;
 import cn.clate.kezhan.filters.UserAuthenication;
 import cn.clate.kezhan.utils.Ret;
 import cn.clate.kezhan.utils.validators.SimpleValidator;
+import org.nutz.ioc.loader.annotation.IocBean;
 import org.nutz.lang.Files;
 import org.nutz.lang.util.NutMap;
 import org.nutz.mvc.annotation.*;
+import org.nutz.mvc.ioc.provider.ComboIocProvider;
 import org.nutz.mvc.upload.UploadAdaptor;
 
 import java.io.File;
@@ -17,7 +19,9 @@ import java.io.InputStream;
 import java.util.Random;
 import java.util.UUID;
 
+
 @At("/user")
+@IocBy(args = {"ioc/avatarUpload.js"})
 public class UserModule {
     @At("/login")
     @Ok("json")
@@ -108,17 +112,19 @@ public class UserModule {
 
     @At("/uploadImg")
     @Ok("json")
+    @IocBean(name = "myUpload")
 //    @Filters(@By(type=UserAuthenication.class))
-    @AdaptBy(type = UploadAdaptor.class, args = { "${app.root}/userImg" })
+    //@AdaptBy(type = UploadAdaptor.class, args = { "ioc:myUpload" })
     public NutMap uploadImg( @Param("avatar") File f){
         if(f != null && !f.exists()){
             return Ret.e(44,"文件不存在");
         }
-        String contentType = f.getName();
+        String imageName = f.getName();
+
         //获得文件后缀名称
-        String imageName = contentType.substring(contentType.indexOf("/") + 1);
+        String surfix = imageName.substring(imageName.lastIndexOf("."),imageName.length());
         String uuid = UUID.randomUUID().toString().replace("-", "");
-        String path = "/Users/zhaoning/Desktop/"+uuid;
+        String path = "/Users/zhaoning/Desktop/"+uuid+surfix;
         File target = new File(path);
         Files.copy(f,target);
         return Ret.s(f.getName());
