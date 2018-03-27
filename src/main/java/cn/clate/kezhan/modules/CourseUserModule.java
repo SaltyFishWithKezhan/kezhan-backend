@@ -2,12 +2,11 @@ package cn.clate.kezhan.modules;
 
 import cn.clate.kezhan.domains.course.CourseUserDomain;
 import cn.clate.kezhan.domains.test.TestDomain;
+import cn.clate.kezhan.filters.UserAuthenication;
 import cn.clate.kezhan.pojos.CourseTimeSlot;
 import cn.clate.kezhan.utils.Ret;
 import org.nutz.lang.util.NutMap;
-import org.nutz.mvc.annotation.At;
-import org.nutz.mvc.annotation.Ok;
-import org.nutz.mvc.annotation.Param;
+import org.nutz.mvc.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,7 +40,8 @@ public class CourseUserModule {
 
     @At("/getAllCourseByUserId")
     @Ok("json")
-    public NutMap getAllCourseByUserId(@Param("id") String id) {
+    @Filters(@By(type=UserAuthenication.class))
+    public NutMap getAllCourseByUserId(@Param("uid") String id) {
         NutMap res = new NutMap();
         ArrayList<Integer> courseids = CourseUserDomain.getSubCourseTermIdByUser(Integer.parseInt(id));
         ArrayList<NutMap> courseList = new ArrayList<NutMap>();

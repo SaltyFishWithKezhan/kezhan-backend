@@ -67,6 +67,12 @@
     uid=8<br>
     utoken=ziTk48xKFrdkRUoG<br>
     <br>
+    根据用户id查询用户的课表<br>
+    http://localhost:8080/course/getAllCourseByUserId<br>
+    params:<br>
+    uid=8<br>
+    utoken=ziTk48xKFrdkRUoG<br>
+    <br>
 </h4>
 </body>
 </html>

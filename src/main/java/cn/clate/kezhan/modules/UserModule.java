@@ -21,7 +21,6 @@ import java.util.UUID;
 
 
 @At("/user")
-@IocBy(args = {"ioc/avatarUpload.js"})
 public class UserModule {
     @At("/login")
     @Ok("json")
@@ -42,7 +41,7 @@ public class UserModule {
 
     @At("/register")
     @Ok("json")
-    public NutMap register(@Param("username") String username, @Param("password") String password, @Param("phone") String phone ,@Param("verification_code") String code) {
+    public NutMap register(@Param("username") String username, @Param("password") String password, @Param("phone") String phone, @Param("verification_code") String code) {
         SimpleValidator validator = new SimpleValidator();
         validator.now(username, "用户名").require().chsDash().lenMin(5).lenMax(16);
         validator.now(password, "密码").require().lenMin(8).lenMax(40);
@@ -51,7 +50,7 @@ public class UserModule {
         if (!validator.check()) {
             return Ret.e(1, validator.getError());
         }
-        NutMap ret = RegisterDomain.fire(username, password, phone,code);
+        NutMap ret = RegisterDomain.fire(username, password, phone, code);
         if (ret == null) {
             return Ret.e(2, "注册失败");
         }
@@ -72,15 +71,15 @@ public class UserModule {
 
     @At("/resetPhone")
     @Ok("json")
-    public NutMap resetPhone(@Param("uid") String uid,@Param("phone") String phoneNumber){
+    public NutMap resetPhone(@Param("uid") String uid, @Param("phone") String phoneNumber) {
         SimpleValidator validator = new SimpleValidator();
         int id = Integer.parseInt(uid);
-        validator.now(uid,"用户id").require().min(0);
+        validator.now(uid, "用户id").require().min(0);
         validator.now(phoneNumber, "手机号码").require().mobilePhone();
         if (!validator.check()) {
             return Ret.e(1, validator.getError());
         }
-        NutMap ret = RegisterDomain.resetValidationSendMsg(id,phoneNumber);
+        NutMap ret = RegisterDomain.resetValidationSendMsg(id, phoneNumber);
         return ret;
     }
 
@@ -98,7 +97,7 @@ public class UserModule {
 
     @At("/getById")
     @Ok("json")
-    @Filters(@By(type=UserAuthenication.class))
+    @Filters(@By(type = UserAuthenication.class))
     public NutMap getUserById(@Param("uid") String uid) {
         SimpleValidator validator = new SimpleValidator();
         validator.now(uid, "用户id").require().min(0);
@@ -112,32 +111,39 @@ public class UserModule {
 
     @At("/uploadImg")
     @Ok("json")
-    @IocBean(name = "myUpload")
-//    @Filters(@By(type=UserAuthenication.class))
-    //@AdaptBy(type = UploadAdaptor.class, args = { "ioc:myUpload" })
-    public NutMap uploadImg( @Param("avatar") File f){
-        if(f != null && !f.exists()){
-            return Ret.e(44,"文件不存在");
+    @Filters(@By(type = UserAuthenication.class))
+    @AdaptBy(type = UploadAdaptor.class, args = {"ioc:myUpload"})
+    public NutMap uploadImg(@Param("uid") String id, @Param("avatar") File f) {
+        SimpleValidator validator = new SimpleValidator();
+        validator.now(id, "用户id").require().min(0);
+        if (!validator.check()) {
+            return Ret.e(1, validator.getError());
+        }
+        if (f != null && !f.exists()) {
+            return Ret.e(44, "文件不存在");
         }
         String imageName = f.getName();
-
         //获得文件后缀名称
-        String surfix = imageName.substring(imageName.lastIndexOf("."),imageName.length());
+        String surfix = imageName.substring(imageName.lastIndexOf("."), imageName.length());
         String uuid = UUID.randomUUID().toString().replace("-", "");
-        String path = "/Users/zhaoning/Desktop/"+uuid+surfix;
-        File target = new File(path);
-        Files.copy(f,target);
-        return Ret.s(f.getName());
+        //localhost本地根目录是kezhan_backend
+        //remote根目录是www/server/jetty
+        String path = "/webapps/kezhan/src/main/webapp/";
+        String imgName = "userImg/" + uuid + surfix;
+        //http://95.163.194.157:8080/kezhan/userImg/*.jpg
+        File target = new File(path + imgName);
+        Files.copy(f, target);
+        NutMap ret = UserInfoDomain.upLoadAvatar(Integer.parseInt(id), imgName);
+        return ret;
     }
 
     @At("/downloadImg")
     @Ok("json")
 //    @Filters(@By(type=UserAuthenication.class))
-    public NutMap downloadImg( ){
+    public NutMap downloadImg() {
 
         return Ret.s("success");
     }
-
 
 
 }

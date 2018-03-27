@@ -8,6 +8,8 @@ import org.nutz.dao.Cnd;
 import org.nutz.dao.Dao;
 import org.nutz.lang.util.NutMap;
 
+import java.io.File;
+
 public class UserInfoDomain {
     public static NutMap mdfUserInfo(User user){
         Dao dao = DaoFactory.get();
@@ -27,10 +29,27 @@ public class UserInfoDomain {
         Dao dao = DaoFactory.get();
         User user = dao.fetch(User.class, Cnd.where("id","=",id));
         if(user == null){
-            return Ret.e(2, "用户名不存在");
+            return Ret.e(2, "用户id不存在");
         }
         PojoSerializer pjsr = new PojoSerializer(user);
         NutMap ret = pjsr.allowField("id, username, avatar,type,gender,birthday,college,stuId,realName,signature").get();
         return ret;
     }
+
+    public static NutMap upLoadAvatar(int id,String path){
+        Dao dao = DaoFactory.get();
+        User user = dao.fetch(User.class, Cnd.where("id","=",id));
+        if(user == null){
+            return Ret.e(2, "用户id不存在");
+        }
+        if(null!=user.getAvatar()){
+            File f = new File("webapps/kezhan/src/main/webapp/"+user.getAvatar());
+            f.delete();
+        }
+        user.setAvatar(path);
+        dao.update(user);
+        return Ret.s("success");
+    }
+
+
 }
