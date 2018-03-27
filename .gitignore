@@ -14,5 +14,4 @@ src/main/resources/ioc/dao.js
 target/*
 #target/generated-sources/
 target
-src/main/resources/*
 src/main/java/cn/clate/kezhan/beans/

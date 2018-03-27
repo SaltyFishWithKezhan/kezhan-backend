@@ -6,10 +6,16 @@ import cn.clate.kezhan.domains.user.UserInfoDomain;
 import cn.clate.kezhan.filters.UserAuthenication;
 import cn.clate.kezhan.utils.Ret;
 import cn.clate.kezhan.utils.validators.SimpleValidator;
+import org.nutz.lang.Files;
 import org.nutz.lang.util.NutMap;
 import org.nutz.mvc.annotation.*;
+import org.nutz.mvc.upload.UploadAdaptor;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Random;
+import java.util.UUID;
 
 @At("/user")
 public class UserModule {
@@ -98,5 +104,34 @@ public class UserModule {
         NutMap ret = UserInfoDomain.getUserById(Integer.parseInt(uid));
         return ret;
     }
+
+
+    @At("/uploadImg")
+    @Ok("json")
+//    @Filters(@By(type=UserAuthenication.class))
+    @AdaptBy(type = UploadAdaptor.class, args = { "${app.root}/userImg" })
+    public NutMap uploadImg( @Param("avatar") File f){
+        if(f != null && !f.exists()){
+            return Ret.e(44,"文件不存在");
+        }
+        String contentType = f.getName();
+        //获得文件后缀名称
+        String imageName = contentType.substring(contentType.indexOf("/") + 1);
+        String uuid = UUID.randomUUID().toString().replace("-", "");
+        String path = "/Users/zhaoning/Desktop/"+uuid;
+        File target = new File(path);
+        Files.copy(f,target);
+        return Ret.s(f.getName());
+    }
+
+    @At("/downloadImg")
+    @Ok("json")
+//    @Filters(@By(type=UserAuthenication.class))
+    public NutMap downloadImg( ){
+
+        return Ret.s("success");
+    }
+
+
 
 }
