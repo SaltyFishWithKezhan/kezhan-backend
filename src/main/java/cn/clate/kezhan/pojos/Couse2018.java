@@ -1,0 +1,92 @@
+package cn.clate.kezhan.pojos;
+
+import org.nutz.dao.entity.annotation.Column;
+import org.nutz.dao.entity.annotation.Id;
+import org.nutz.dao.entity.annotation.Table;
+
+/**
+ * Created by 蛟川小盆友 on 2018/3/25.
+ */
+@Table("kz_courses_term_2018_1")
+public class Couse2018 {
+    @Id
+    private int id;
+    @Column("course_id")
+    private int courseId;
+    @Column("desc")
+    private String desc;
+    @Column("max_size")
+    private int maxSize;
+    @Column("course_code")
+    private String courseCode;
+    @Column("cover_img")
+    private String coverImg;
+    @Column("status")
+    private int status;
+    @Column("count_thumbs_up")
+    private int countThumbsUp;
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public int getCourseId() {
+        return courseId;
+    }
+
+    public void setCourseId(int courseId) {
+        this.courseId = courseId;
+    }
+
+    public String getDesc() {
+        return desc;
+    }
+
+    public void setDesc(String desc) {
+        this.desc = desc;
+    }
+
+    public int getMaxSize() {
+        return maxSize;
+    }
+
+    public void setMaxSize(int maxSize) {
+        this.maxSize = maxSize;
+    }
+
+    public String getCourseCode() {
+        return courseCode;
+    }
+
+    public void setCourseCode(String courseCode) {
+        this.courseCode = courseCode;
+    }
+
+    public String getCoverImg() {
+        return coverImg;
+    }
+
+    public void setCoverImg(String coverImg) {
+        this.coverImg = coverImg;
+    }
+
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
+    }
+
+    public int getCountThumbsUp() {
+        return countThumbsUp;
+    }
+
+    public void setCountThumbsUp(int countThumbsUp) {
+        this.countThumbsUp = countThumbsUp;
+    }
+}
