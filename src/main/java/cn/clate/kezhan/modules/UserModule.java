@@ -128,7 +128,7 @@ public class UserModule {
         String uuid = UUID.randomUUID().toString().replace("-", "");
         //localhost本地根目录是kezhan_backend
         //remote根目录是www/server/jetty
-        String path = "/webapps/kezhan/src/main/webapp/";
+        String path = "webapps/src/main/webapp/";
         String imgName = "userImg/" + uuid + surfix;
         //http://95.163.194.157:8080/kezhan/userImg/*.jpg
         File target = new File(path + imgName);
