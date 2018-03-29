@@ -6,8 +6,8 @@ import org.nutz.dao.entity.annotation.Table;
 
 import java.util.Date;
 
-@Table("kz_commits")
-public class Commit {
+@Table("kz_comments")
+public class Comment {
 
     @Id
     private int id;
@@ -40,7 +40,7 @@ public class Commit {
         return id;
     }
 
-    public Commit setId(int id) {
+    public Comment setId(int id) {
         this.id = id;
         return this;
     }
@@ -49,7 +49,7 @@ public class Commit {
         return topicId;
     }
 
-    public Commit setTopicId(int topicId) {
+    public Comment setTopicId(int topicId) {
         this.topicId = topicId;
         return this;
     }
@@ -58,7 +58,7 @@ public class Commit {
         return topicType;
     }
 
-    public Commit setTopicType(int topicType) {
+    public Comment setTopicType(int topicType) {
         this.topicType = topicType;
         return this;
     }
@@ -67,7 +67,7 @@ public class Commit {
         return fromUid;
     }
 
-    public Commit setFromUid(int fromUid) {
+    public Comment setFromUid(int fromUid) {
         this.fromUid = fromUid;
         return this;
     }
@@ -76,7 +76,7 @@ public class Commit {
         return toUid;
     }
 
-    public Commit setToUid(int toUid) {
+    public Comment setToUid(int toUid) {
         this.toUid = toUid;
         return this;
     }
@@ -85,7 +85,7 @@ public class Commit {
         return content;
     }
 
-    public Commit setContent(String content) {
+    public Comment setContent(String content) {
         this.content = content;
         return this;
     }
@@ -94,7 +94,7 @@ public class Commit {
         return fromUname;
     }
 
-    public Commit setFromUname(String fromUname) {
+    public Comment setFromUname(String fromUname) {
         this.fromUname = fromUname;
         return this;
     }
@@ -103,7 +103,7 @@ public class Commit {
         return toUname;
     }
 
-    public Commit setToUname(String toUname) {
+    public Comment setToUname(String toUname) {
         this.toUname = toUname;
         return this;
     }
@@ -112,7 +112,7 @@ public class Commit {
         return time;
     }
 
-    public Commit setTime(Date time) {
+    public Comment setTime(Date time) {
         this.time = time;
         return this;
     }
