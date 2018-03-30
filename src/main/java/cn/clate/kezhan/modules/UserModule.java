@@ -4,7 +4,9 @@ import cn.clate.kezhan.domains.user.LoginDomain;
 import cn.clate.kezhan.domains.user.RegisterDomain;
 import cn.clate.kezhan.domains.user.UserInfoDomain;
 import cn.clate.kezhan.filters.UserAuthenication;
+import cn.clate.kezhan.pojos.User;
 import cn.clate.kezhan.utils.Ret;
+import cn.clate.kezhan.utils.serializer.PojoSerializer;
 import cn.clate.kezhan.utils.validators.SimpleValidator;
 import org.nutz.ioc.loader.annotation.IocBean;
 import org.nutz.lang.Files;
@@ -65,8 +67,7 @@ public class UserModule {
         if (!validator.check()) {
             return Ret.e(1, validator.getError());
         }
-        RegisterDomain.sendMsg(phoneNumber);
-        return Ret.s("phone verifition success");
+        return RegisterDomain.sendMsg(phoneNumber);
     }
 
     @At("/resetPhone")
@@ -104,16 +105,21 @@ public class UserModule {
         if (!validator.check()) {
             return Ret.e(1, validator.getError());
         }
-        NutMap ret = UserInfoDomain.getUserById(Integer.parseInt(uid));
+        User user = UserInfoDomain.getUserById(Integer.parseInt(uid));
+        if (null == user) {
+            return Ret.e(2, "用户id不存在");
+        }
+        PojoSerializer pjsr = new PojoSerializer(user);
+        NutMap ret = pjsr.allowField("id, username, avatar,type,gender,birthday,college,stuId,realName,signature").get();
         return ret;
     }
 
 
-    @At("/uploadImg")
+    @At("/uploadAvatar")
     @Ok("json")
     @Filters(@By(type = UserAuthenication.class))
     @AdaptBy(type = UploadAdaptor.class, args = {"ioc:myUpload"})
-    public NutMap uploadImg(@Param("uid") String id, @Param("avatar") File f) {
+    public NutMap uploadAvatar(@Param("uid") String id, @Param("avatar") File f) {
         SimpleValidator validator = new SimpleValidator();
         validator.now(id, "用户id").require().min(0);
         if (!validator.check()) {
@@ -128,12 +134,13 @@ public class UserModule {
         String uuid = UUID.randomUUID().toString().replace("-", "");
         //localhost本地根目录是kezhan_backend
         //remote根目录是www/server/jetty
-        String path = "webapps/src/main/webapp/";
-        String imgName = "userImg/" + uuid + surfix;
+        String path = "/www/server/jetty/webapps";
+        String avatar = "/static/avatar/" + uuid + surfix;
+        //www.clate.cn:8080/static/
         //http://95.163.194.157:8080/kezhan/userImg/*.jpg
-        File target = new File(path + imgName);
+        File target = new File(path + avatar);
         Files.copy(f, target);
-        NutMap ret = UserInfoDomain.upLoadAvatar(Integer.parseInt(id), imgName);
+        NutMap ret = UserInfoDomain.upLoadAvatar(Integer.parseInt(id), avatar);
         return ret;
     }
 

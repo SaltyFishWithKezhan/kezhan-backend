@@ -61,45 +61,66 @@ public class RegisterDomain {
 
     //注册时发送手机验证码
     public static NutMap sendMsg(String phoneNumber) { //调用阿里短信服务API发送手机验证吗
-        try {
-            String sources = "0123456789"; // 加上一些字母，就可以生成pc站的验证码了
-            String sourceWithoutZreo = "123456789"; // 加上一些字母，就可以生成pc站的验证码了
-            Random rand = new Random();
-            StringBuffer flag = new StringBuffer();
-            flag.append(sourceWithoutZreo.charAt(rand.nextInt(9)) + "");
-            for (int j = 0; j < 5; j++) {
-                flag.append(sources.charAt(rand.nextInt(9)) + "");
+        String sources = "0123456789"; // 加上一些字母，就可以生成pc站的验证码了
+        String sourceWithoutZreo = "123456789"; // 加上一些字母，就可以生成pc站的验证码了
+        Random rand = new Random();
+        StringBuffer flag = new StringBuffer();
+        flag.append(sourceWithoutZreo.charAt(rand.nextInt(9)) + "");
+        for (int j = 0; j < 5; j++) {
+            flag.append(sources.charAt(rand.nextInt(9)) + "");
+        }
+        String code = flag.toString();
+        Dao dao = DaoFactory.get();
+        User user = dao.fetch(User.class, Cnd.where("phone", "=", phoneNumber));
+        if (user == null)//该手机号未验证过或验证成功
+        {
+            Phone phoneFound = dao.fetch(Phone.class, Cnd.where("phone_number", "=", phoneNumber).getOrderBy().desc("request_time"));
+            System.out.println("phoneFound1"+phoneFound.getRequestTime());
+            if (phoneFound != null) {
+                long nowTime = Tools.getTimeStamp() - phoneFound.getRequestTime();
+                System.out.println("nowTime"+nowTime);
+                if (nowTime < (Integer) Conf.get("sendInterval")) {
+                    return Ret.e(14, "请勿频繁发送（60s）");
+                } else {
+                    return sendSmsAndInsert(phoneNumber, code);
+                }
             }
-            String code = flag.toString();
-            System.out.print(code);
+            Phone phoneFound2 = dao.fetch(Phone.class, Cnd.where("request_ip", "=", Tools.getRemoteAddr()).getOrderBy().desc("request_time"));
+            System.out.println("phoneFound2"+phoneFound2.getRequestTime());
+            if (phoneFound2 != null) {
+                long nowTime = Tools.getTimeStamp() - phoneFound2.getRequestTime();
+                if (nowTime < (Integer) Conf.get("sendInterval")) {
+                    return Ret.e(15, "请勿调戏接口");
+                } else {
+                    return sendSmsAndInsert(phoneNumber, code);
+                }
+            }
+            return sendSmsAndInsert(phoneNumber, code);
+        } else {
+            return Ret.e(13, "该手机号已被注册");
+        }
 
-            Dao dao = DaoFactory.get();
-            User user = dao.fetch(User.class, Cnd.where("phone", "=", phoneNumber));
-            if (user == null)//该手机号未验证过或验证成功
-            {
-                SendSmsResponse response = sendSms(phoneNumber, code);
-                Phone phone = new Phone();
-                phone.setPhone(phoneNumber);
-                phone.setCode(code);
-                phone.setRequestTime(Tools.getTimeStamp());
-                phone.setType(1);
-                phone.setStatus(0);
-                dao.insert(phone);
-                System.out.println("短信接口返回的数据----------------");
-                System.out.println("Code=" + response.getCode());
-                System.out.println("Message=" + response.getMessage());
-                System.out.println("RequestId=" + response.getRequestId());
-                System.out.println("BizId=" + response.getBizId());
-                return Ret.s("success");
-            } else {
-                return Ret.e(13, "该手机号已被注册");
-            }
+    }
+
+    private static NutMap sendSmsAndInsert(String phoneNumber, String code) {
+        try {
+            SendSmsResponse response = sendSms(phoneNumber, code);
+            Phone phone = new Phone();
+            phone.setPhone(phoneNumber);
+            phone.setCode(code);
+            phone.setType(1);
+            phone.setStatus(0);
+            phone.initRequestInfo();
+            DaoFactory.get().insert(phone);
+            System.out.println("短信接口返回的数据----------------");
+            System.out.println("Code=" + response.getCode());
+            System.out.println("Message=" + response.getMessage());
+            System.out.println("RequestId=" + response.getRequestId());
+            System.out.println("BizId=" + response.getBizId());
+            return Ret.s("success");
         } catch (ClientException ce) {
             ce.printStackTrace();
             return Ret.e(11, "短信验证错误1");
-        } catch (Exception e) {
-            e.printStackTrace();
-            return Ret.e(12, "短信验证错误2");
         }
     }
 
@@ -151,9 +172,8 @@ public class RegisterDomain {
             if (phone.getStatus() == 1) {
                 return Ret.e(15, "该手机号已被注册");
             }
-            if (time <= (int) Conf.get("tokenValidTime")) {
-                phone.setStatus(1);
-                phone.updateRequestTime();
+            if (time <= (int) Conf.get("MsgValidTime")) {
+                phone.updateStatus();
                 dao.update(phone);
                 return Ret.s("success");
             } else {
@@ -225,9 +245,8 @@ public class RegisterDomain {
         } else if (phone.getCode().equals(code)) {
             long time = (Tools.getTimeStamp() - phone.getRequestTime());//间隔秒数
             System.out.println(time);
-            if (time <= (int) Conf.get("tokenValidTime")) {
-                phone.setStatus(1);
-                phone.updateRequestTime();
+            if (time <= (int) Conf.get("MsgValidTime")) {
+                phone.updateStatus();
                 dao.update(phone);
                 return Ret.s("success");
             } else {

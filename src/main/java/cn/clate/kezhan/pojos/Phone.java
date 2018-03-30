@@ -21,6 +21,9 @@ public class Phone {
     @Column("request_time")
     private long requestTime;
 
+    @Column("request_ip")
+    private String requestIp;
+
     @Column("type")
     private int type;
 
@@ -61,6 +64,15 @@ public class Phone {
         return requestTime;
     }
 
+    public String getRequestIp() {
+        return requestIp;
+    }
+
+    public Phone setRequestIp(String requestIp) {
+        this.requestIp = requestIp;
+        return this;
+    }
+
     public Phone setRequestTime(long requestTime) {
         this.requestTime = requestTime;
         return this;
@@ -93,8 +105,17 @@ public class Phone {
         return this;
     }
 
-    public void updateRequestTime(){
+    public void updateStatus(){
+        setStatus(1);
         setRequestTime(Tools.getTimeStamp());
+        setRequestIp(Tools.getRemoteAddr());
     }
+
+    public void initRequestInfo(){
+        setRequestTime(Tools.getTimeStamp());
+        setRequestIp(Tools.getRemoteAddr());
+    }
+
+
 
 }
