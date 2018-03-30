@@ -1,7 +1,7 @@
 package cn.clate.kezhan.modules;
 
 import cn.clate.kezhan.domains.circle.CircleDomain;
-import cn.clate.kezhan.domains.circle.CommitDomain;
+import cn.clate.kezhan.domains.circle.CommentDomain;
 import cn.clate.kezhan.filters.UserAuthenication;
 import cn.clate.kezhan.utils.Ret;
 import cn.clate.kezhan.utils.validators.SimpleValidator;
@@ -37,26 +37,26 @@ public class CircleModule {
         return Ret.s(ret);
     }
 
-    @At("/commits")
+    @At("/comments")
     @Ok("json")
-    public NutMap getCommitByTopic(@Param("topic_type") String topicType, @Param("topic_id") String topicId) {
+    public NutMap getCommentByTopic(@Param("topic_type") String topicType, @Param("topic_id") String topicId) {
         SimpleValidator validator = new SimpleValidator();
         validator.now(topicType, "主题类型").require().max(10);
         validator.now(topicId, "主题id").require().min(1);
         if (!validator.check()) {
             return Ret.e(1, validator.getError());
         }
-        NutMap ret = CommitDomain.getCommitByTopic(Integer.parseInt(topicType), Integer.parseInt(topicId));
+        NutMap ret = CommentDomain.getCommentByTopic(Integer.parseInt(topicType), Integer.parseInt(topicId));
         if (ret == null) {
             return Ret.e(2, "评论数据错误");
         }
         return Ret.s(ret);
     }
 
-    @At("/submitCommit")
+    @At("/submitComment")
     @Ok("json")
     @Filters(@By(type = UserAuthenication.class))
-    public NutMap submitCommit(@Param("topic_type") String topicType, @Param("topic_id") String topicId,
+    public NutMap submitComment(@Param("topic_type") String topicType, @Param("topic_id") String topicId,
                                @Param("from_id") String fromId, @Param("from_name") String fromName,
                                @Param("to_id") String toId, @Param("to_name") String toName,
                                @Param("content") String content) {
@@ -69,7 +69,7 @@ public class CircleModule {
         if (!validator.check()) {
             return Ret.e(1, validator.getError());
         }
-        NutMap ret = CommitDomain.submitCommit(Integer.parseInt(topicType), Integer.parseInt(topicId), Integer.parseInt(fromId), fromName, Integer.parseInt(toId), toName, content);
+        NutMap ret = CommentDomain.submitComment(Integer.parseInt(topicType), Integer.parseInt(topicId), Integer.parseInt(fromId), fromName, Integer.parseInt(toId), toName, content);
         return ret;
     }
 

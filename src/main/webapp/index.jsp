@@ -47,13 +47,13 @@
     page_size<br>
     <br>
     根据帖子id获取评论（type=1表示是圈子类型的评论）<br>
-    http://localhost:8080/circle/commits<br>
+    http://localhost:8080/circle/comments<br>
     params:<br>
     topic_type<br>
     topic_id<br>
     <br>
     发布评论<br>
-    http://localhost:8080/circle/submitCommit<br>
+    http://localhost:8080/circle/submitComment<br>
     params:<br>
     topic_type=1<br>
     topic_id=1<br>
