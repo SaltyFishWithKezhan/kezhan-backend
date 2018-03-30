@@ -1,6 +1,8 @@
 package cn.clate.kezhan.filters;
 
 import cn.clate.kezhan.pojos.User;
+import cn.clate.kezhan.utils.Conf;
+import cn.clate.kezhan.utils.Tools;
 import cn.clate.kezhan.utils.factories.DaoFactory;
 import org.nutz.dao.Cnd;
 import org.nutz.dao.Dao;
@@ -23,7 +25,12 @@ public class UserAuthenication implements ActionFilter {
         }
         Dao dao = DaoFactory.get();
         User user = dao.fetch(User.class, Integer.parseInt(userId));
-        System.out.println(user.getAccessToken());
+        long nowTime = Tools.getTimeStamp();
+        if(nowTime - user.getLastActiveTime() > (Integer)Conf.get("tokenValidTime")){
+            return new ViewWrapper(new UTF8JsonView(), "token failed");
+        }
+        user.setLastActiveTime((int)Tools.getTimeStamp());
+        dao.update(user);
         if(!userToken.equals(user.getAccessToken()))
             return new ViewWrapper(new UTF8JsonView(), "failed authenication ");
         return null;

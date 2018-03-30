@@ -8,8 +8,6 @@
 <h4>用户登录：<br>
     http://95.163.194.157:8080/kezhan/user/login<br>
     params: <br>
-    uid<br>
-    utoken<br>
     username<br>
     password<br>
     <br>

@@ -25,15 +25,13 @@ public class UserInfoDomain {
         return Ret.s("success");
     }
 
-    public static NutMap getUserById(int id){
+    public static User getUserById(int id){
         Dao dao = DaoFactory.get();
         User user = dao.fetch(User.class, Cnd.where("id","=",id));
         if(user == null){
-            return Ret.e(2, "用户id不存在");
+            return null;
         }
-        PojoSerializer pjsr = new PojoSerializer(user);
-        NutMap ret = pjsr.allowField("id, username, avatar,type,gender,birthday,college,stuId,realName,signature").get();
-        return ret;
+        return user;
     }
 
     public static NutMap upLoadAvatar(int id,String path){
@@ -43,7 +41,7 @@ public class UserInfoDomain {
             return Ret.e(2, "用户id不存在");
         }
         if(null!=user.getAvatar()){
-            File f = new File("webapps/kezhan/src/main/webapp/"+user.getAvatar());
+            File f = new File("/www/server/jetty/webapps"+user.getAvatar());
             f.delete();
         }
         user.setAvatar(path);
