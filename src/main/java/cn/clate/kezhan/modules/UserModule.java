@@ -1,6 +1,7 @@
 package cn.clate.kezhan.modules;
 
 import cn.clate.kezhan.domains.user.LoginDomain;
+import cn.clate.kezhan.domains.user.PhoneDomain;
 import cn.clate.kezhan.domains.user.RegisterDomain;
 import cn.clate.kezhan.domains.user.UserInfoDomain;
 import cn.clate.kezhan.filters.UserAuthenication;
@@ -67,10 +68,10 @@ public class UserModule {
         if (!validator.check()) {
             return Ret.e(1, validator.getError());
         }
-        return RegisterDomain.sendMsg(phoneNumber);
+        return PhoneDomain.sendMsg(phoneNumber);
     }
 
-    @At("/resetPhone")
+    @At("/resetSendMsg")
     @Ok("json")
     public NutMap resetPhone(@Param("uid") String uid, @Param("phone") String phoneNumber) {
         SimpleValidator validator = new SimpleValidator();
@@ -80,7 +81,7 @@ public class UserModule {
         if (!validator.check()) {
             return Ret.e(1, validator.getError());
         }
-        NutMap ret = RegisterDomain.resetValidationSendMsg(id, phoneNumber);
+        NutMap ret = PhoneDomain.resetValidationSendMsg(id, phoneNumber);
         return ret;
     }
 
@@ -93,6 +94,7 @@ public class UserModule {
         if (!validator.check()) {
             return Ret.e(1, validator.getError());
         }
+        PhoneDomain.resetValidation(uid,phone,code);
         return Ret.s("reset pwd success");
     }
 
