@@ -5,6 +5,10 @@
     "user.passwordSalt": "m4kS1oQ",
     "user.tokenLength": 16,
 
+
+    /**
+     * sms设置
+     */
     //产品名称:云通信短信API产品,开发者无需替换
     "aliyun_product": "Dysmsapi",
     //产品域名,开发者无需替换
@@ -20,5 +24,10 @@
 
     "MsgValidTime" : 300,
     "sendInterval": 60,
-    "tokenValidTime":  864000//十天
+
+    /**
+     * user设置
+     */
+    "tokenValidTime":  864000,//十天
+    "user.avatarUrl": "http://clate.cn:8080"
 }

@@ -118,7 +118,7 @@ public class PhoneDomain {
         Dao dao = DaoFactory.get();
         Criteria cri = Cnd.cri();
         cri.where().andEquals("phone_number", phoneNumber);
-        cri.getOrderBy().asc("request_time");
+        cri.getOrderBy().desc("request_time");
         Phone phone = dao.fetch(Phone.class, cri);
         if (phone == null) {
             return Ret.e(14, "请先获取验证码");
@@ -180,7 +180,7 @@ public class PhoneDomain {
         }
         Criteria cri = Cnd.cri();
         cri.where().andEquals("phone_number", phoneNumber).andEquals("type", 2);
-        cri.getOrderBy().asc("request_time");
+        cri.getOrderBy().desc("request_time");
         Phone phone = dao.fetch(Phone.class, cri);
         if (phone == null) {
             return Ret.e(14, "请先获取验证码");

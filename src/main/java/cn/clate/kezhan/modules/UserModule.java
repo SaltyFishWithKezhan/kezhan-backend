@@ -108,13 +108,11 @@ public class UserModule {
         if (!validator.check()) {
             return Ret.e(1, validator.getError());
         }
-        User user = UserInfoDomain.getUserById(Integer.parseInt(uid));
-        if (null == user) {
+        NutMap ret = UserInfoDomain.getUserById(Integer.parseInt(uid));
+        if (ret == null) {
             return Ret.e(2, "用户id不存在");
         }
-        PojoSerializer pjsr = new PojoSerializer(user);
-        NutMap ret = pjsr.allowField("id, username, avatar,type,gender,birthday,college,stuId,realName,signature").get();
-        return ret;
+        return Ret.s(ret);
     }
 
     @At("/getByName")
@@ -132,7 +130,7 @@ public class UserModule {
         }
         PojoSerializer pjsr = new PojoSerializer(user);
         NutMap ret = pjsr.allowField("id, username, avatar,type,gender,birthday,college,stuId,realName,signature").get();
-        return ret;
+        return Ret.s(ret);
     }
 
     @At("/uploadAvatar")
@@ -168,7 +166,6 @@ public class UserModule {
     @Ok("json")
 //    @Filters(@By(type=UserAuthenication.class))
     public NutMap downloadImg() {
-
         return Ret.s("success");
     }
 

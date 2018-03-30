@@ -27,16 +27,6 @@ public class CircleModule {
         return Ret.s(ret);
     }
 
-    @At("/getAll")
-    @Ok("json")
-    public NutMap getAllCircles() {
-        NutMap ret = CircleDomain.getAllCircles();
-        if (ret == null) {
-            return Ret.e(2, "圈子数据错误");
-        }
-        return Ret.s(ret);
-    }
-
     @At("/comments")
     @Ok("json")
     public NutMap getCommentByTopic(@Param("topic_type") String topicType, @Param("topic_id") String topicId) {

@@ -17,6 +17,8 @@ public class Course {
     private String nameEn;
     @Column("teacher_id")
     private int teacherId;
+    @Column("type")
+    private int type;
     @Column("desc")
     private String desc;
     @Column("max_size")
@@ -29,6 +31,8 @@ public class Course {
     private String courseCode;
     @Column("status")
     private int status;
+    @Column("credits")
+    private int credits;
 
     public int getId() {
         return id;
@@ -60,6 +64,15 @@ public class Course {
 
     public void setTeacherId(int teacherId) {
         this.teacherId = teacherId;
+    }
+
+    public int getType() {
+        return type;
+    }
+
+    public Course setType(int type) {
+        this.type = type;
+        return this;
     }
 
     public String getDesc() {
@@ -108,5 +121,14 @@ public class Course {
 
     public void setStatus(int status) {
         this.status = status;
+    }
+
+    public int getCredits() {
+        return credits;
+    }
+
+    public Course setCredits(int credits) {
+        this.credits = credits;
+        return this;
     }
 }

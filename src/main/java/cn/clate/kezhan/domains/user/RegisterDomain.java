@@ -44,7 +44,6 @@ public class RegisterDomain {
             return Ret.e(10, "用户名已存在");
         }
         NutMap phoneRet = PhoneDomain.phoneVerifition(phone, code);
-        System.out.println();
         if (phoneRet.get("code").equals(200)) {
             user = new User();
             String pwEncrypted = Tools.passwordEncrypt(password);
