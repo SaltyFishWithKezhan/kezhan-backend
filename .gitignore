@@ -9,7 +9,7 @@ out
 gen
 #.idea/inspectionProfiles/
 #.idea/*
-src/main/resources/conf/app.js
+#src/main/resources/conf/app.js
 src/main/resources/ioc/dao.js
 target/*
 #target/generated-sources/

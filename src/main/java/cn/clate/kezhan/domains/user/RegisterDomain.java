@@ -75,7 +75,7 @@ public class RegisterDomain {
         if (user == null)//该手机号未验证过或验证成功
         {
             Phone phoneFound = dao.fetch(Phone.class, Cnd.where("phone_number", "=", phoneNumber).getOrderBy().desc("request_time"));
-            System.out.println("phoneFound1"+phoneFound.getRequestTime());
+            System.out.println("phoneFound1  "+phoneFound.getRequestTime()+"   "+phoneFound.getPhone());
             if (phoneFound != null) {
                 long nowTime = Tools.getTimeStamp() - phoneFound.getRequestTime();
                 System.out.println("nowTime"+nowTime);
@@ -86,7 +86,7 @@ public class RegisterDomain {
                 }
             }
             Phone phoneFound2 = dao.fetch(Phone.class, Cnd.where("request_ip", "=", Tools.getRemoteAddr()).getOrderBy().desc("request_time"));
-            System.out.println("phoneFound2"+phoneFound2.getRequestTime());
+            System.out.println("phoneFound2  "+phoneFound2.getRequestTime());
             if (phoneFound2 != null) {
                 long nowTime = Tools.getTimeStamp() - phoneFound2.getRequestTime();
                 if (nowTime < (Integer) Conf.get("sendInterval")) {
