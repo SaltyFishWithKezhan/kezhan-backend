@@ -34,6 +34,15 @@ public class UserInfoDomain {
         return user;
     }
 
+    public static User getUserByName(String name){
+        Dao dao = DaoFactory.get();
+        User user = dao.fetch(User.class, Cnd.where("username","=",name));
+        if(user == null){
+            return null;
+        }
+        return user;
+    }
+
     public static NutMap upLoadAvatar(int id,String path){
         Dao dao = DaoFactory.get();
         User user = dao.fetch(User.class, Cnd.where("id","=",id));

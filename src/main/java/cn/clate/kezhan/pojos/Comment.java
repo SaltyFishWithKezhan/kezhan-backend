@@ -6,7 +6,7 @@ import org.nutz.dao.entity.annotation.Table;
 
 import java.util.Date;
 
-@Table("kz_comments")
+@Table("kz_circle_comments")
 public class Comment {
 
     @Id
@@ -26,12 +26,6 @@ public class Comment {
 
     @Column("content")
     private String content;
-
-    @Column("from_uname")
-    private String fromUname;
-
-    @Column("to_uname")
-    private String toUname;
 
     @Column("time")
     private Date time;
@@ -87,24 +81,6 @@ public class Comment {
 
     public Comment setContent(String content) {
         this.content = content;
-        return this;
-    }
-
-    public String getFromUname() {
-        return fromUname;
-    }
-
-    public Comment setFromUname(String fromUname) {
-        this.fromUname = fromUname;
-        return this;
-    }
-
-    public String getToUname() {
-        return toUname;
-    }
-
-    public Comment setToUname(String toUname) {
-        this.toUname = toUname;
         return this;
     }
 

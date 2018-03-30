@@ -25,6 +25,7 @@ import java.util.UUID;
 
 @At("/user")
 public class UserModule {
+
     @At("/login")
     @Ok("json")
     public NutMap login(@Param("username") String username, @Param("password") String password) {
@@ -94,7 +95,7 @@ public class UserModule {
         if (!validator.check()) {
             return Ret.e(1, validator.getError());
         }
-        PhoneDomain.resetValidation(uid,phone,code);
+        PhoneDomain.resetValidation(uid, phone, code);
         return Ret.s("reset pwd success");
     }
 
@@ -116,6 +117,23 @@ public class UserModule {
         return ret;
     }
 
+    @At("/getByName")
+    @Ok("json")
+    @Filters(@By(type = UserAuthenication.class))
+    public NutMap getUserByName(@Param("uname") String name) {
+        SimpleValidator validator = new SimpleValidator();
+        validator.now(name, "用户姓名").require();
+        if (!validator.check()) {
+            return Ret.e(1, validator.getError());
+        }
+        User user = UserInfoDomain.getUserByName(name);
+        if (null == user) {
+            return Ret.e(2, "用户id不存在");
+        }
+        PojoSerializer pjsr = new PojoSerializer(user);
+        NutMap ret = pjsr.allowField("id, username, avatar,type,gender,birthday,college,stuId,realName,signature").get();
+        return ret;
+    }
 
     @At("/uploadAvatar")
     @Ok("json")

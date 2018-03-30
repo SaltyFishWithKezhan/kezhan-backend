@@ -20,5 +20,5 @@
 
     "MsgValidTime" : 300,
     "sendInterval": 60,
-    "tokenValidTime":  86400
+    "tokenValidTime":  864000//十天
 }

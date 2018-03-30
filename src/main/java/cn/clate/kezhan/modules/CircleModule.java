@@ -57,19 +57,15 @@ public class CircleModule {
     @Ok("json")
     @Filters(@By(type = UserAuthenication.class))
     public NutMap submitComment(@Param("topic_type") String topicType, @Param("topic_id") String topicId,
-                               @Param("from_id") String fromId, @Param("from_name") String fromName,
-                               @Param("to_id") String toId, @Param("to_name") String toName,
-                               @Param("content") String content) {
+                               @Param("to_id") String toId, @Param("uid") String fromId, @Param("content") String content) {
         SimpleValidator validator = new SimpleValidator();
-        validator.now(topicType, "主题类型").require();
+        validator.now(topicType, "主题类型").require().lenMin(1);
         validator.now(topicId, "主题id").require();
         validator.now(content, "评论内容").require();
-        validator.now(fromId, "评论者id").require();
-        validator.now(fromName, "评论者").require();
         if (!validator.check()) {
             return Ret.e(1, validator.getError());
         }
-        NutMap ret = CommentDomain.submitComment(Integer.parseInt(topicType), Integer.parseInt(topicId), Integer.parseInt(fromId), fromName, Integer.parseInt(toId), toName, content);
+        NutMap ret = CommentDomain.submitComment(Integer.parseInt(topicType), Integer.parseInt(topicId), Integer.parseInt(fromId),Integer.parseInt(toId), content);
         return ret;
     }
 
