@@ -19,6 +19,7 @@ public class NoticeModule {
     @Filters(@By(type = UserAuthenication.class))
     public NutMap getBySubCourse(@Param("uid") String userId, @Param("sub_course_id") String subCourseId) {
         SimpleValidator validator = new SimpleValidator();
+        validator.now(subCourseId, "班级ID").require();
         validator.num(subCourseId, "请求格式不合法");
         if(!validator.check()){
             return Ret.e(0, validator.getError());
@@ -32,6 +33,7 @@ public class NoticeModule {
     @Filters(@By(type = UserAuthenication.class))
     public NutMap getByNoticeId(@Param("uid")String userId, @Param("notice_id") String noticeId){
         SimpleValidator validator = new SimpleValidator();
+        validator.now(noticeId, "公告ID").require();
         validator.num(noticeId, "请求格式不合法");
         if(!validator.check()){
             return Ret.e(0, validator.getError());

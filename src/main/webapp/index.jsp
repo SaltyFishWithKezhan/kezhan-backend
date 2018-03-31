@@ -91,6 +91,16 @@
     params:<br>
     sub_id=1<br>
     <br>
+    获取圈子的所有type<br>
+    http://localhost:8080/circle/allCircleTypes<br>
+    no params<br>
+    <br>
+    根据班级ID取得公告信息<br>
+    localhost:8080/notice/getBySubCourse?uid=8&&sub_course_id=1&&utoken=wVAAT2EdF9mTPU92<br>
+    <br>
+    根据公告ID取得公告信息<br>
+    localhost:8080/notice/getByNoticeId?uid=8&&notice_id=1&&utoken=wVAAT2EdF9mTPU92<br>
+    <br>
 </h4>
 </body>
 </html>
