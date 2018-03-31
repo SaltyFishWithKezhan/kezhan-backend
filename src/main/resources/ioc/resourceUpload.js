@@ -27,7 +27,7 @@
         }
     },
 
-    myUpload : {
+    fileUpload : {
         type : 'org.nutz.mvc.upload.UploadAdaptor',
             singleton: false,
             args: [{refer: 'uploadFileContext'}]

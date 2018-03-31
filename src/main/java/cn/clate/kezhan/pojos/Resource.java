@@ -12,8 +12,8 @@ public class Resource {
     @Id
     private int id;
 
-    @Column("update_time")
-    private Date updateTime;
+    @Column("upload_time")
+    private Date uploadTime;
 
     @Column("poster_id")
     private int posterId;
@@ -24,7 +24,7 @@ public class Resource {
     @Column("file_loc")
     private String fileLoc;
 
-    @Column("file__name")
+    @Column("file_name")
     private String fileName;
 
     @Column("file_type")
@@ -48,12 +48,12 @@ public class Resource {
         return this;
     }
 
-    public Date getUpdateTime() {
-        return updateTime;
+    public Date getUpLoadTime() {
+        return uploadTime;
     }
 
-    public Resource setUpdateTime(Date updateTime) {
-        this.updateTime = updateTime;
+    public Resource setUpLoadTime(Date uploadTime) {
+        this.uploadTime = uploadTime;
         return this;
     }
 

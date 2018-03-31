@@ -3,13 +3,20 @@ package cn.clate.kezhan.modules;
 import cn.clate.kezhan.domains.course.ResourceDomain;
 import cn.clate.kezhan.filters.UserAuthenication;
 import cn.clate.kezhan.pojos.Resource;
+import cn.clate.kezhan.utils.Conf;
 import cn.clate.kezhan.utils.Ret;
+import cn.clate.kezhan.utils.Tools;
 import cn.clate.kezhan.utils.validators.SimpleValidator;
+import org.nutz.lang.Files;
 import org.nutz.lang.util.NutMap;
 import org.nutz.mvc.annotation.*;
+import org.nutz.mvc.upload.UploadAdaptor;
 
+import java.io.File;
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @At("/resource")
 public class ResourceModule {
@@ -42,8 +49,33 @@ public class ResourceModule {
     @At("/uploadCourseResource")
     @Ok("json")
     @Filters(@By(type = UserAuthenication.class))
-    public NutMap uploadCourseResource(@Param("uid") String posterId){
-        return null;
+    @AdaptBy(type = UploadAdaptor.class, args = {"ioc:fileUpload"})
+    public NutMap uploadCourseResource(@Param("uid") String posterId,@Param("course_id") String courseId,@Param("resource") File file){
+        SimpleValidator validator = new SimpleValidator();
+        validator.now(posterId, "用户id").require().min(5).max(16);
+        if (!validator.check()) {
+            return Ret.e(1, validator.getError());
+        }
+        if (file != null && ! file.exists()) {
+            return Ret.e(44, "文件不存在");
+        }
+        String imageName = file.getName();
+        String surfix = imageName.substring(imageName.lastIndexOf("."), imageName.length());
+        String uuid = UUID.randomUUID().toString().replace("-", "");
+        String path = "/www/server/jetty/webapps";
+//        String avatar = "/static/resource/" + uuid + surfix;
+        String avatar = "src/main/webapp/userImg/" + uuid + surfix;
+        File target = new File(avatar);
+        Files.copy(file, target);
+        Resource resource = new Resource().
+                setUpLoadTime(new Date(System.currentTimeMillis())).
+                setPosterId(Integer.parseInt(posterId)).
+                setCourseId(Integer.parseInt(courseId)).
+                setFileLoc(Conf.get("user.avatarUrl")+avatar).
+                setFileName(imageName).
+                setFileType(surfix.substring(1,surfix.length()));
+        ResourceDomain.insertCourseResource(resource);
+        return Ret.s(Conf.get("user.avatarUrl")+avatar);
     }
 
     @At("/uploadCourseTermResource")

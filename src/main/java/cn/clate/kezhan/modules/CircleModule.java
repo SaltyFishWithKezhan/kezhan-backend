@@ -39,6 +39,7 @@ public class CircleModule {
             NutMap circleNutmap = pjsr.get();
             NutMap typeRet = CircleTypeDomain.getTypeById(circle.getType());
             NutMap authorRet = UserInfoDomain.getUserById(circle.getAuthor());
+            circleNutmap.remove("content");
             circleNutmap.addv("type_name",typeRet.get("type_name"));
             circleNutmap.addv("author_name",authorRet.get("username"));
             circleNutmap.addv("avatar",authorRet.get("avatar"));
