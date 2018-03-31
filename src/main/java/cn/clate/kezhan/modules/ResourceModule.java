@@ -42,14 +42,14 @@ public class ResourceModule {
     @At("/uploadCourseResource")
     @Ok("json")
     @Filters(@By(type = UserAuthenication.class))
-    public NutMap uploadCourseResource(@Param("uid") String posterId, @Param()){
-
+    public NutMap uploadCourseResource(@Param("uid") String posterId){
+        return null;
     }
 
     @At("/uploadCourseTermResource")
     @Ok("json")
     @Filters(@By(type = UserAuthenication.class))
-    public NutMap uploadCourseTermResource(@Param("uid") String posterId, @Param()){
-
+    public NutMap uploadCourseTermResource(@Param("uid") String posterId){
+        return null;
     }
 }

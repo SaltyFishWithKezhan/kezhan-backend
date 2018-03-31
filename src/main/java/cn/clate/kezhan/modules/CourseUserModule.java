@@ -2,7 +2,6 @@ package cn.clate.kezhan.modules;
 
 import cn.clate.kezhan.domains.course.CourseUserDomain;
 import cn.clate.kezhan.domains.teacher.TeacherDomain;
-import cn.clate.kezhan.domains.test.TestDomain;
 import cn.clate.kezhan.filters.UserAuthenication;
 import cn.clate.kezhan.pojos.CourseTimeSlot;
 import cn.clate.kezhan.utils.Ret;
@@ -15,7 +14,7 @@ import java.util.List;
 
 /**
  * Created by 蛟川小盆友 on 2018/3/27.
- * Modified by Nora on 2018/3/29
+ * Modified by Nora on 2018/3/29.
  */
 @At("/course")
 public class CourseUserModule {

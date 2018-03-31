@@ -3,18 +3,24 @@ package cn.clate.kezhan.modules;
 import cn.clate.kezhan.domains.circle.CircleDomain;
 import cn.clate.kezhan.domains.circle.CircleTypeDomain;
 import cn.clate.kezhan.domains.circle.CommentDomain;
+import cn.clate.kezhan.domains.user.UserInfoDomain;
 import cn.clate.kezhan.filters.UserAuthenication;
+import cn.clate.kezhan.pojos.Circle;
 import cn.clate.kezhan.utils.Ret;
+import cn.clate.kezhan.utils.serializer.PojoSerializer;
 import cn.clate.kezhan.utils.validators.SimpleValidator;
 import org.nutz.lang.util.NutMap;
 import org.nutz.mvc.annotation.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @At("/circle")
 public class CircleModule {
 
     @At("/getByTypePage")
     @Ok("json")
-    public NutMap getCirclesByPage(@Param("type_id") String type, @Param("page_number") String pageNumber, @Param("page_size") String pageSize) {
+    public NutMap getCirclesByTypePage(@Param("type_id") String type, @Param("page_number") String pageNumber, @Param("page_size") String pageSize) {
         SimpleValidator validator = new SimpleValidator();
         validator.now(type, "圈子类型").require();
         validator.now(pageNumber, "当前页数").require().min(0);
@@ -26,7 +32,23 @@ public class CircleModule {
         if (ret == null) {
             return Ret.e(2, "分页错误");
         }
-        return Ret.s(ret);
+        List<NutMap> cirlesNutMap = new ArrayList<>();
+        List<Circle> content = (List<Circle>)ret.get("content");
+        for (Circle circle:content){
+            PojoSerializer pjsr = new PojoSerializer(circle);
+            NutMap circleNutmap = pjsr.get();
+            NutMap typeRet = CircleTypeDomain.getTypeById(circle.getType());
+            NutMap authorRet = UserInfoDomain.getUserById(circle.getAuthor());
+            circleNutmap.addv("type_name",typeRet.get("type_name"));
+            circleNutmap.addv("author_name",authorRet.get("username"));
+            cirlesNutMap.add(circleNutmap);
+        }
+        NutMap retComplete= new NutMap();
+        retComplete.addv("now_page", ret.get("now_page"));
+        retComplete.addv("per_page_size", ret.get("per_page_size"));
+        retComplete.addv("page_count", ret.get("page_count"));
+        retComplete.addv("content", cirlesNutMap);
+        return Ret.s(retComplete);
     }
 
     @At("/comments")
@@ -78,7 +100,9 @@ public class CircleModule {
         }
         NutMap circleRet = CircleDomain.getCircleDetails(Integer.parseInt(id));
         NutMap typeRet = CircleTypeDomain.getTypeById((int)circleRet.get("type"));
+        NutMap authorRet = UserInfoDomain.getUserById((int)circleRet.get("author"));
         circleRet.addv("type_name",typeRet.get("type_name"));
+        circleRet.addv("author_name",authorRet.get("username"));
         return Ret.s(circleRet);
     }
 

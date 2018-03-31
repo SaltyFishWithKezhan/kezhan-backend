@@ -16,7 +16,7 @@ public class Circle {
     private int type;
 
     @Column
-    private String author;
+    private int author;
 
     @Column
     private String title;
@@ -54,11 +54,11 @@ public class Circle {
         return this;
     }
 
-    public String getAuthor() {
+    public int getAuthor() {
         return author;
     }
 
-    public Circle setAuthor(String author) {
+    public Circle setAuthor(int author) {
         this.author = author;
         return this;
     }
