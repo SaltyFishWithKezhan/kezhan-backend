@@ -47,9 +47,10 @@
     http://clate.cn:8080/kezhan/circle/getAll<br>
     无参数<br>
     <br>
-    按页获得圈子<br>
-    http://clate.cn:8080/kezhan/circle/getByPage<br>
+    按圈子类型和页获得圈子（其中type_id为0默认返回所有类型）<br>
+    http://clate.cn:8080/kezhan/circle/getByTypePage<br>
     params:<br>
+    type_id<br>
     page_number<br>
     page_size<br>
     <br>
@@ -101,6 +102,10 @@
     根据公告ID取得公告信息<br>
     localhost:8080/notice/getByNoticeId?uid=8&&notice_id=1&&utoken=wVAAT2EdF9mTPU92<br>
     <br>
+    根据圈子id获取圈子详情<br>
+    http://localhost:8080/circle/getById<br>
+    params<br>
+    id=1<br>
 </h4>
 </body>
 </html>

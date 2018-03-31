@@ -12,7 +12,7 @@ public class Circle {
     @Id
     private int id;
 
-    @Column
+    @Column("type_id")
     private int type;
 
     @Column
@@ -27,8 +27,8 @@ public class Circle {
     @Column
     private Date date;
 
-    @Column("count_evaluate")
-    private int countEvaluate;
+    @Column("count_comment")
+    private int countComment;
 
     @Column("count_thumbs_up")
     private int countThumbsUp;
@@ -90,12 +90,12 @@ public class Circle {
         return this;
     }
 
-    public int getCountEvaluate() {
-        return countEvaluate;
+    public int getCountComment() {
+        return countComment;
     }
 
-    public Circle setCountEvaluate(int countEvaluate) {
-        this.countEvaluate = countEvaluate;
+    public Circle setCountComment(int countComment) {
+        this.countComment = countComment;
         return this;
     }
 

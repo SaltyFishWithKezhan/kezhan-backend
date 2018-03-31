@@ -63,7 +63,9 @@ public class UserInfoDomain {
         }
         user.setAvatar(path);
         dao.update(user);
-        return Ret.s("success");
+        NutMap ret = new NutMap();
+        ret.addv("avatar","clate.cn:8080"+user.getAvatar());
+        return ret;
     }
 
 
