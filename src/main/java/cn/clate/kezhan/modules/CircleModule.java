@@ -68,5 +68,19 @@ public class CircleModule {
         return ret;
     }
 
+    @At("/getById")
+    @Ok("json")
+    public NutMap getCirclebyId(@Param("id")String id) {
+        SimpleValidator validator = new SimpleValidator();
+        validator.now(id,"圈子id").require().num();
+        if (!validator.check()) {
+            return Ret.e(1, validator.getError());
+        }
+        NutMap circleRet = CircleDomain.getCircleDetails(Integer.parseInt(id));
+        NutMap typeRet = CircleTypeDomain.getTypeById((int)circleRet.get("type"));
+        circleRet.addv("type_name",typeRet.get("type_name"));
+        return Ret.s(circleRet);
+    }
+
 
 }

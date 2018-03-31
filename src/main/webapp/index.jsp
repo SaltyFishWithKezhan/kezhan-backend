@@ -96,6 +96,11 @@
     http://localhost:8080/circle/allCircleTypes<br>
     no params<br>
     <br>
+    根据圈子id获取圈子详情<br>
+    http://localhost:8080/circle/getById<br>
+    params<br>
+    id=1<br>
+
 </h4>
 </body>
 </html>

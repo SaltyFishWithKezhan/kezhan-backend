@@ -159,15 +159,7 @@ public class UserModule {
         File target = new File(path + avatar);
         Files.copy(f, target);
         NutMap ret = UserInfoDomain.upLoadAvatar(Integer.parseInt(id), avatar);
-        return ret;
+        return Ret.s(ret);
     }
-
-    @At("/downloadImg")
-    @Ok("json")
-//    @Filters(@By(type=UserAuthenication.class))
-    public NutMap downloadImg() {
-        return Ret.s("success");
-    }
-
 
 }
