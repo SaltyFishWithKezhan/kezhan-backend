@@ -71,6 +71,13 @@
     uid=8<br>
     utoken=ziTk48xKFrdkRUoG<br>
     <br>
+    <br>
+    根据班级ID取得作业信息<br>
+    localhost:8080/homework/getBySubCourse?sub_course_id=1<br>
+    <br>
+    <br>
+    根据作业ID取得作业信息<br>
+    localhost:8080/homework/getByHomeworkId?homework_id=1<br>
 </h4>
 </body>
 </html>

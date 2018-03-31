@@ -70,6 +70,21 @@ public class User {
     @Column("access_token")
     private String accessToken;
 
+    public void removeCriticalInfo(){
+        this.birthday = null;
+        this.username = null;
+        this.password = null;
+        this.signature = null;
+        this.nowLogin = -1;
+        this.nowLoginIp = null;
+        this.lastLogin = -1;
+        this.lastLoginIp = null;
+        this.loginTimes = -1;
+        this.phone = null;
+        this.lastActiveTime = -1;
+        this.accessToken = null;
+    }
+
     public int getId() {
         return id;
     }
