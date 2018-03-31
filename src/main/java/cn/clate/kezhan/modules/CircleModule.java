@@ -41,6 +41,7 @@ public class CircleModule {
             NutMap authorRet = UserInfoDomain.getUserById(circle.getAuthor());
             circleNutmap.addv("type_name",typeRet.get("type_name"));
             circleNutmap.addv("author_name",authorRet.get("username"));
+            circleNutmap.addv("avatar",authorRet.get("avatar"));
             cirlesNutMap.add(circleNutmap);
         }
         NutMap retComplete= new NutMap();
@@ -103,6 +104,7 @@ public class CircleModule {
         NutMap authorRet = UserInfoDomain.getUserById((int)circleRet.get("author"));
         circleRet.addv("type_name",typeRet.get("type_name"));
         circleRet.addv("author_name",authorRet.get("username"));
+        circleRet.addv("avatar",authorRet.get("avatar"));
         return Ret.s(circleRet);
     }
 

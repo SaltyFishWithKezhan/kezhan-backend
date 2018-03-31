@@ -35,7 +35,7 @@ public class UserInfoDomain {
         String phone = user.getPhone().substring(0,3)+"****"+user.getPhone().substring(7,11);
         user.setPhone(phone);
         PojoSerializer pjsr = new PojoSerializer(user);
-        NutMap ret = pjsr.allowField("id, username, avatar,type,gender,phone,birthday,college,stuId,realName,signature").get();
+        NutMap ret = pjsr.allowField("id,username,avatar,type,gender,phone,birthday,college,stuId,realName,signature").get();
         if(user.getAvatar()!=null){
             ret.setv("avatar", Conf.get("user.avatarUrl")+user.getAvatar());
         }

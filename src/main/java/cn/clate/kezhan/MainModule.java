@@ -7,7 +7,8 @@ import org.nutz.mvc.ioc.provider.ComboIocProvider;
 
 @IocBy(type = ComboIocProvider.class,
         args = {"*js",
-                "ioc/avatarUpload.js"
+                "ioc/avatarUpload.js",
+                "ioc/resourceUpload.js"
         })
 public class MainModule {
     @At("/hello")

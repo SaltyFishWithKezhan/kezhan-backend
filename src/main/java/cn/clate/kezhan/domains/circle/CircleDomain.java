@@ -46,7 +46,7 @@ public class CircleDomain {
             return Ret.e(2, "圈子id不存在");
         }
         PojoSerializer pjsr = new PojoSerializer(circle);
-        NutMap ret = pjsr.allowField("id,type,author,title,desc,content,date,count_comment,count_thumbs_up").get();
+        NutMap ret = pjsr.get();
         return ret;
     }
 

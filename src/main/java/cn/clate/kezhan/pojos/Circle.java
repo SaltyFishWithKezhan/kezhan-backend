@@ -24,6 +24,9 @@ public class Circle {
     @Column
     private String desc;
 
+    @Column("content")
+    private String content;
+
     @Column
     private Date date;
 
@@ -78,6 +81,15 @@ public class Circle {
 
     public Circle setDesc(String desc) {
         this.desc = desc;
+        return this;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public Circle setContent(String content) {
+        this.content = content;
         return this;
     }
 
