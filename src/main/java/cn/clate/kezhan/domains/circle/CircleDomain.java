@@ -5,6 +5,7 @@ import cn.clate.kezhan.utils.Ret;
 import cn.clate.kezhan.utils.factories.DaoFactory;
 import org.nutz.dao.Cnd;
 import org.nutz.dao.Dao;
+import org.nutz.dao.pager.Pager;
 import org.nutz.dao.sql.Criteria;
 import org.nutz.lang.util.NutMap;
 
@@ -15,19 +16,18 @@ public class CircleDomain {
 
     public static NutMap getCirclesByPage(int pageNumber,int pageSize) {
         Dao dao = DaoFactory.get();
-        List<Circle> circles = dao.query(Circle.class, null, dao.createPager(pageNumber, pageSize));  //LinkedList
+        Pager pager = dao.createPager(pageNumber, pageSize);
+        List<Circle> circles = dao.query(Circle.class,  Cnd.where("status", "!=", -1).desc("id"),pager );  //LinkedList
+        pager.setRecordCount(dao.count(Circle.class,  Cnd.where("status", "!=", -1)));
         if(circles==null)//TODO:  circles.size()==0
             return null;
         ArrayList<Circle> circleArrayList = new ArrayList<>(circles);
-        return Ret.s("success",circleArrayList);
+        NutMap ret = new NutMap();
+        ret.addv("now_page", pager.getPageNumber());
+        ret.addv("per_page_size", pager.getPageSize());
+        ret.addv("page_count", pager.getPageCount());
+        ret.addv("content", circleArrayList);
+        return Ret.s(ret);
     }
 
-    public static NutMap getAllCircles() {
-        Dao dao = DaoFactory.get();
-        List<Circle> circles = dao.query(Circle.class, null);  //LinkedList
-        if(circles==null)
-            return null;
-        ArrayList<Circle> circleArrayList = new ArrayList<>(circles);
-        return Ret.s("success",circleArrayList);
-    }
 }

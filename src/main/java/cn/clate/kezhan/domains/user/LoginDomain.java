@@ -31,16 +31,7 @@ public class LoginDomain {
         }
         String token = refreshAccessToken(user);
         NutMap ret = new NutMap();
-
-        ret.addv("id", user.getId());
-        ret.addv("type", user.getType());
-        ret.addv("username", user.getUsername());
-        ret.addv("gender", user.getGender());
-        ret.addv("birthday", user.getBirthday());
-        ret.addv("avatar", user.getAvatar());
-        ret.addv("college", user.getCollege());
-        ret.addv("class_name", user.getClassName());
-        ret.addv("signature", user.getSignature());
+        ret.attach(UserInfoDomain.getUserById(user.getId()));
         ret.addv("last_login", user.getLastLogin());
         ret.addv("last_login_ip", user.getLastLoginIp());
         ret.addv("now_login", user.getNowLogin());

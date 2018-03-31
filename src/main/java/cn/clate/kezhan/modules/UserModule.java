@@ -1,6 +1,7 @@
 package cn.clate.kezhan.modules;
 
 import cn.clate.kezhan.domains.user.LoginDomain;
+import cn.clate.kezhan.domains.user.PhoneDomain;
 import cn.clate.kezhan.domains.user.RegisterDomain;
 import cn.clate.kezhan.domains.user.UserInfoDomain;
 import cn.clate.kezhan.filters.UserAuthenication;
@@ -24,6 +25,7 @@ import java.util.UUID;
 
 @At("/user")
 public class UserModule {
+
     @At("/login")
     @Ok("json")
     public NutMap login(@Param("username") String username, @Param("password") String password) {
@@ -67,10 +69,10 @@ public class UserModule {
         if (!validator.check()) {
             return Ret.e(1, validator.getError());
         }
-        return RegisterDomain.sendMsg(phoneNumber);
+        return PhoneDomain.sendMsg(phoneNumber);
     }
 
-    @At("/resetPhone")
+    @At("/resetSendMsg")
     @Ok("json")
     public NutMap resetPhone(@Param("uid") String uid, @Param("phone") String phoneNumber) {
         SimpleValidator validator = new SimpleValidator();
@@ -80,7 +82,7 @@ public class UserModule {
         if (!validator.check()) {
             return Ret.e(1, validator.getError());
         }
-        NutMap ret = RegisterDomain.resetValidationSendMsg(id, phoneNumber);
+        NutMap ret = PhoneDomain.resetValidationSendMsg(id, phoneNumber);
         return ret;
     }
 
@@ -93,6 +95,7 @@ public class UserModule {
         if (!validator.check()) {
             return Ret.e(1, validator.getError());
         }
+        PhoneDomain.resetValidation(uid, phone, code);
         return Ret.s("reset pwd success");
     }
 
@@ -105,15 +108,30 @@ public class UserModule {
         if (!validator.check()) {
             return Ret.e(1, validator.getError());
         }
-        User user = UserInfoDomain.getUserById(Integer.parseInt(uid));
+        NutMap ret = UserInfoDomain.getUserById(Integer.parseInt(uid));
+        if (ret == null) {
+            return Ret.e(2, "用户id不存在");
+        }
+        return Ret.s(ret);
+    }
+
+    @At("/getByName")
+    @Ok("json")
+    @Filters(@By(type = UserAuthenication.class))
+    public NutMap getUserByName(@Param("uname") String name) {
+        SimpleValidator validator = new SimpleValidator();
+        validator.now(name, "用户姓名").require();
+        if (!validator.check()) {
+            return Ret.e(1, validator.getError());
+        }
+        User user = UserInfoDomain.getUserByName(name);
         if (null == user) {
             return Ret.e(2, "用户id不存在");
         }
         PojoSerializer pjsr = new PojoSerializer(user);
         NutMap ret = pjsr.allowField("id, username, avatar,type,gender,birthday,college,stuId,realName,signature").get();
-        return ret;
+        return Ret.s(ret);
     }
-
 
     @At("/uploadAvatar")
     @Ok("json")
@@ -148,7 +166,6 @@ public class UserModule {
     @Ok("json")
 //    @Filters(@By(type=UserAuthenication.class))
     public NutMap downloadImg() {
-
         return Ret.s("success");
     }
 

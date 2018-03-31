@@ -227,6 +227,7 @@ public class User {
         this.lastLoginIp = this.nowLoginIp;
         this.nowLogin = Tools.getTimeStamp();
         this.nowLoginIp = Tools.getRemoteAddr();
+        this.lastActiveTime = (int)Tools.getTimeStamp();
     }
 
     public void initLoginStatus(){

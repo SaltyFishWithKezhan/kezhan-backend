@@ -25,6 +25,8 @@ public class Couse2018 {
     private int status;
     @Column("count_thumbs_up")
     private int countThumbsUp;
+    @Column("count_learning")
+    private int countLearning;
 
     public int getId() {
         return id;
@@ -88,5 +90,14 @@ public class Couse2018 {
 
     public void setCountThumbsUp(int countThumbsUp) {
         this.countThumbsUp = countThumbsUp;
+    }
+
+    public int getCountLearning() {
+        return countLearning;
+    }
+
+    public Couse2018 setCountLearning(int countLearning) {
+        this.countLearning = countLearning;
+        return this;
     }
 }

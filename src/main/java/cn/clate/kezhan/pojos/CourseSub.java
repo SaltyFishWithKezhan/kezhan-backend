@@ -19,6 +19,8 @@ public class CourseSub {
     private int maxSize;
     @Column("now_size")
     private int nowSize;
+    @Column("classroom")
+    private String classroom;
     @Column("status")
     private int status;
 
@@ -60,6 +62,15 @@ public class CourseSub {
 
     public void setNowSize(int nowSize) {
         this.nowSize = nowSize;
+    }
+
+    public String getClassroom() {
+        return classroom;
+    }
+
+    public CourseSub setClassroom(String classroom) {
+        this.classroom = classroom;
+        return this;
     }
 
     public int getStatus() {

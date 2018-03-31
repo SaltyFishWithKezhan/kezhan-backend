@@ -1,6 +1,7 @@
 package cn.clate.kezhan.domains.circle;
 
 import cn.clate.kezhan.pojos.Comment;
+import cn.clate.kezhan.pojos.User;
 import cn.clate.kezhan.utils.Ret;
 import cn.clate.kezhan.utils.factories.DaoFactory;
 import org.nutz.dao.Cnd;
@@ -24,10 +25,17 @@ public class CommentDomain {
         return Ret.s("success", commentArrayList);
     }
 
-    public static NutMap submitComment(int topicType, int topicId, int fromId, String fromName, int toId, String toName, String content) {
+    public static NutMap submitComment(int topicType, int topicId, int fromId, int toId, String content) {
         Dao dao = DaoFactory.get();
+        if(toId!=-1){
+            User toUser = dao.fetch(User.class, Cnd.where("id", "=", toId));
+            if (toUser == null) {
+                return Ret.e(20,"回复用户不存在");
+            }
+        }
         Comment comment = new Comment();
-        comment.setTopicId(topicId).setTopicType(topicType).setContent(content).setFromUid(fromId).setFromUname(fromName).setToUid(toId).setToUname(toName).setTime(new Date());
+        comment.setTopicId(topicId).setTopicType(topicType).setContent(content).
+                setFromUid(fromId).setToUid(toId).setTime(new Date());
         dao.insert(comment);
         return Ret.s("success");
     }
