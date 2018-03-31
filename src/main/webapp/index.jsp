@@ -47,9 +47,10 @@
     http://clate.cn:8080/kezhan/circle/getAll<br>
     无参数<br>
     <br>
-    按页获得圈子<br>
-    http://clate.cn:8080/kezhan/circle/getByPage<br>
+    按圈子类型和页获得圈子（其中type_id为0默认返回所有类型）<br>
+    http://clate.cn:8080/kezhan/circle/getByTypePage<br>
     params:<br>
+    type_id<br>
     page_number<br>
     page_size<br>
     <br>
@@ -90,6 +91,10 @@
     http://clate.cn:8080/kezhan/course/getCourseBySubId<br>
     params:<br>
     sub_id=1<br>
+    <br>
+    获取圈子的所有type<br>
+    http://localhost:8080/circle/allCircleTypes<br>
+    no params<br>
     <br>
 </h4>
 </body>
