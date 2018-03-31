@@ -1,6 +1,7 @@
 package cn.clate.kezhan.modules;
 
 import cn.clate.kezhan.domains.course.CourseUserDomain;
+import cn.clate.kezhan.domains.teacher.TeacherDomain;
 import cn.clate.kezhan.domains.test.TestDomain;
 import cn.clate.kezhan.filters.UserAuthenication;
 import cn.clate.kezhan.pojos.CourseTimeSlot;
@@ -14,6 +15,7 @@ import java.util.List;
 
 /**
  * Created by 蛟川小盆友 on 2018/3/27.
+ * Modified by Nora on 2018/3/29
  */
 @At("/course")
 public class CourseUserModule {
@@ -46,13 +48,27 @@ public class CourseUserModule {
 
     @At("/getCourseBySubId")
     @Ok("json")
-    public NutMap getCourseBySubId(@Param("sub_id")String id){
+    public NutMap getCourseBySubId(@Param("sub_id") String id) {
         SimpleValidator validator = new SimpleValidator();
-        validator.now(id, "班级课程id").require();
+        validator.now(id, "班级课程id").require().num();
         if (!validator.check()) {
             return Ret.e(1, validator.getError());
         }
-        NutMap ret = CourseUserDomain.getCourseBySubId(Integer.parseInt(id));
+        NutMap courseSub = CourseUserDomain.getCourseSubBySubId(Integer.parseInt(id));
+        NutMap courseTerm = CourseUserDomain.getCourseTermByCourseTermId((int) courseSub.get("courseTermId"));
+        NutMap course = CourseUserDomain.getCourseByCourseId((int) courseTerm.get("courseId"));
+        NutMap teacher = TeacherDomain.getTeacherById((int) course.get("teacherId"));
+        NutMap timeSlots = CourseUserDomain.getTimeSlotsByCourseSubid(Integer.parseInt(id));
+        NutMap ret = new NutMap();
+        ret.addv("course_name", course.get("name"));
+        ret.addv("course_name_en", course.get("nameEn"));
+        ret.addv("teacher", teacher.get("name"));
+        ret.addv("type", course.get("type"));
+        ret.addv("credit", course.get("credits"));
+        ret.addv("classroom", courseSub.get("classroom"));
+        ret.addv("count_thumbs_up", courseTerm.get("countThumbsUp"));
+        ret.addv("count_learning", course.get("countLearning"));
+        ret.attach(timeSlots);
         return Ret.s(ret);
     }
 
