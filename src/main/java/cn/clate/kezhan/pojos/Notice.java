@@ -5,6 +5,7 @@ import org.nutz.dao.entity.annotation.Column;
 import org.nutz.dao.entity.annotation.Id;
 import org.nutz.dao.entity.annotation.One;
 import org.nutz.dao.entity.annotation.Table;
+import org.nutz.mvc.annotation.Ok;
 
 import java.sql.Date;
 
@@ -19,7 +20,10 @@ public class Notice {
     @Column("desc")
     private String description;
 
-    @One(field = "poster_id")
+    @Column("poster_id")
+    private int posterId;
+
+    @One(field = "posterId")
     private User poster;
 
     @Column("update_time")
@@ -29,7 +33,12 @@ public class Notice {
     private int viewerCount;
 
     @Column("course_sub_id")
-    private int belongToCourseId;
+    private int subCourseId;
+
+    @One(field = "subCourseId")
+    private CourseSub courseSub;
+
+    private boolean read;
 
     public Notice() {
     }
@@ -38,55 +47,89 @@ public class Notice {
         return id;
     }
 
-    public void setId(int id) {
+    public Notice setId(int id) {
         this.id = id;
+        return this;
     }
 
     public String getTitle() {
         return title;
     }
 
-    public void setTitle(String title) {
+    public Notice setTitle(String title) {
         this.title = title;
+        return this;
     }
 
     public String getDescription() {
         return description;
     }
 
-    public void setDescription(String description) {
+    public Notice setDescription(String description) {
         this.description = description;
+        return this;
+    }
+
+    public int getPosterId() {
+        return posterId;
+    }
+
+    public Notice setPosterId(int posterId) {
+        this.posterId = posterId;
+        return this;
     }
 
     public User getPoster() {
         return poster;
     }
 
-    public void setPoster(User poster) {
+    public Notice setPoster(User poster) {
         this.poster = poster;
+        return this;
     }
 
     public Date getUpdateTime() {
         return updateTime;
     }
 
-    public void setUpdateTime(Date updateTime) {
+    public Notice setUpdateTime(Date updateTime) {
         this.updateTime = updateTime;
+        return this;
     }
 
     public int getViewerCount() {
         return viewerCount;
     }
 
-    public void setViewerCount(int viewerCount) {
+    public Notice setViewerCount(int viewerCount) {
         this.viewerCount = viewerCount;
+        return this;
     }
 
-    public int getBelongToCourseId() {
-        return belongToCourseId;
+    public int getSubCourseId() {
+        return subCourseId;
     }
 
-    public void setBelongToCourseId(int belongToCourseId) {
-        this.belongToCourseId = belongToCourseId;
+    public Notice setSubCourseId(int subCourseId) {
+        this.subCourseId = subCourseId;
+        return this;
+    }
+
+    public CourseSub getCourseSub() {
+        return courseSub;
+    }
+
+    public Notice setCourseSub(CourseSub courseSub) {
+        this.courseSub = courseSub;
+        return this;
+    }
+
+    public boolean isRead() {
+        return read;
+    }
+
+    public Notice setRead(boolean read) {
+        this.read = read;
+        return this;
     }
 }
