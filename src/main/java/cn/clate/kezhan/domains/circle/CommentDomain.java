@@ -27,10 +27,10 @@ public class CommentDomain {
 
     public static NutMap submitComment(int topicType, int topicId, int fromId, int toId, String content) {
         Dao dao = DaoFactory.get();
-        if(toId!=-1){
+        if (toId != -1) {
             User toUser = dao.fetch(User.class, Cnd.where("id", "=", toId));
             if (toUser == null) {
-                return Ret.e(20,"回复用户不存在");
+                return Ret.e(20, "回复用户不存在");
             }
         }
         Comment comment = new Comment();

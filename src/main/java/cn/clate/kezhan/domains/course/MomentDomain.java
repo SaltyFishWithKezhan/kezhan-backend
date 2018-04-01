@@ -3,7 +3,8 @@ package cn.clate.kezhan.domains.course;
 import cn.clate.kezhan.pojos.Homework;
 import cn.clate.kezhan.pojos.Moment;
 import cn.clate.kezhan.pojos.Notice;
-import cn.clate.kezhan.pojos.Resource;
+import cn.clate.kezhan.pojos.ResourceTerm;
+import cn.clate.kezhan.utils.Ret;
 import cn.clate.kezhan.utils.factories.DaoFactory;
 import org.nutz.dao.Cnd;
 import org.nutz.dao.Dao;
@@ -44,18 +45,34 @@ public class MomentDomain {
                 ret = dao.fetch(Notice.class, typeId);
                 break;
             case 3:
-                ret = dao.fetch(Resource.class, typeId);
+                ret = dao.fetch(ResourceTerm.class, typeId);
                 break;
             default:
                 ret = null;
                 break;
         }
         if (ret == null) {
-            return null;
+            return Ret.e(4, "动态获取失败");
         }
         NutMap nutMap = new NutMap();
         nutMap.addv("type", type);
         nutMap.addv("detail", ret);
         return nutMap;
+    }
+
+    public static boolean addOrUpdateMoment(int type, int typeId, String updateTime, int subCourseId) {
+        Dao dao = DaoFactory.get();
+        Moment moment = dao.fetch(Moment.class, Cnd.where("type", "=", type)
+                .and("typeId", "=", typeId));
+        if (moment != null) {
+            moment.setUpdateTime(updateTime);
+            dao.update(moment);
+        } else {
+            Moment newMoment = new Moment();
+            newMoment.setType(type).setTypeId(typeId).setUpdateTime(updateTime)
+                    .setSubCourseId(subCourseId);
+            dao.fastInsert(newMoment);
+        }
+        return true;
     }
 }

@@ -14,7 +14,7 @@ public class Notice {
     @Column("title")
     private String title;
 
-    @Column("desc")
+    @Column("content")
     private String description;
 
     @Column("poster_id")
