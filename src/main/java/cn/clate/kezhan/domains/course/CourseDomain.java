@@ -1,14 +1,12 @@
 package cn.clate.kezhan.domains.course;
 
-import cn.clate.kezhan.pojos.Course;
-import cn.clate.kezhan.pojos.CourseSub;
-import cn.clate.kezhan.pojos.CourseTimeSlot;
-import cn.clate.kezhan.pojos.Couse2018;
+import cn.clate.kezhan.pojos.*;
 import cn.clate.kezhan.utils.Ret;
 import cn.clate.kezhan.utils.factories.DaoFactory;
 import cn.clate.kezhan.utils.serializer.PojoSerializer;
 import org.nutz.dao.Cnd;
 import org.nutz.dao.Dao;
+import org.nutz.dao.sql.Criteria;
 import org.nutz.lang.util.NutMap;
 
 import java.util.ArrayList;
@@ -96,6 +94,36 @@ public class CourseDomain {
         ArrayList<Course> courseArrayList = new ArrayList<>(courses);
         NutMap ret = new NutMap();
         ret.addv("courses", courseArrayList);
+        return ret;
+    }
+
+    public static NutMap getSubCourseTermIdListByUserId(int id) {
+        Dao dao = DaoFactory.get();
+        List<CourseUserTake> courseUserTakeList = dao.query(CourseUserTake.class, Cnd.where("user_id", "=", id).and("status", "!=", -1));
+        if (courseUserTakeList == null)
+            return null;
+        // System.out.println(courseUserTakeList.size());
+        ArrayList<CourseUserTake> subCourseTermIds = new ArrayList<CourseUserTake>(courseUserTakeList);
+        NutMap ret = new NutMap();
+        ret.addv("courseUserTakeList", subCourseTermIds);
+        return ret;
+    }
+
+    public static NutMap getTimeSlotsByCourseSubidList(NutMap subIdList) {
+        Dao dao = DaoFactory.get();
+        List<CourseUserTake> courseUserTakes = (List<CourseUserTake>) subIdList.get("courseUserTakeList");
+        Criteria cri = Cnd.cri();
+        for (CourseUserTake cut : courseUserTakes) {
+            cri.where().or("sub_course_term_id", "=", cut.getSubCourseTermId());
+        }
+        cri.where().and("status", "!=", -1);
+        cri.getOrderBy().asc("start_time").asc("day");
+        List<CourseTimeSlot> courseTimeSlots = dao.query(CourseTimeSlot.class, cri, null);
+        if(courseTimeSlots == null)
+            return null;
+        ArrayList<CourseTimeSlot> timeSlots = new ArrayList<>(courseTimeSlots);
+        NutMap ret = new NutMap();
+        ret.addv("time_slots", timeSlots);
         return ret;
     }
 

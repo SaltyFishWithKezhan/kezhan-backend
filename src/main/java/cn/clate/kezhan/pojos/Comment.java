@@ -15,9 +15,6 @@ public class Comment {
     @Column("topic_id")
     private int topicId;
 
-    @Column("topic_type")
-    private int topicType;
-
     @Column("from_uid")
     private int fromUid;
 
@@ -29,6 +26,9 @@ public class Comment {
 
     @Column("time")
     private Date time;
+
+    @Column("status")
+    private Date status;
 
     public int getId() {
         return id;
@@ -45,15 +45,6 @@ public class Comment {
 
     public Comment setTopicId(int topicId) {
         this.topicId = topicId;
-        return this;
-    }
-
-    public int getTopicType() {
-        return topicType;
-    }
-
-    public Comment setTopicType(int topicType) {
-        this.topicType = topicType;
         return this;
     }
 
@@ -90,6 +81,15 @@ public class Comment {
 
     public Comment setTime(Date time) {
         this.time = time;
+        return this;
+    }
+
+    public Date getStatus() {
+        return status;
+    }
+
+    public Comment setStatus(Date status) {
+        this.status = status;
         return this;
     }
 }

@@ -6,6 +6,7 @@ import cn.clate.kezhan.utils.Ret;
 import cn.clate.kezhan.utils.factories.DaoFactory;
 import org.nutz.dao.Cnd;
 import org.nutz.dao.Dao;
+import org.nutz.dao.pager.Pager;
 import org.nutz.lang.util.NutMap;
 
 import java.util.ArrayList;
@@ -14,18 +15,24 @@ import java.util.List;
 
 public class CommentDomain {
 
-    public static NutMap getCommentByTopic(int topicType, int topicId) {
+    public static NutMap getCommentByCircleId(int circleId, int pageNumber, int pageSize) {
         Dao dao = DaoFactory.get();
+        Pager pager = dao.createPager(pageNumber, pageSize);
         List<Comment> comments = dao.query(Comment.class,
-                Cnd.where("topic_type", "=", topicType).
-                        and("topic_id", "=", topicId).getOrderBy().asc("time"));
-        if (comments == null)//TODO:  circles.size()==0
+                Cnd.where("topic_id", "=", circleId).asc("time"), pager);
+        pager.setRecordCount(dao.count(Comment.class, Cnd.where("status", "!=", -1)));
+        if (comments == null || comments.size() == 0)//TODO:  circles.size()==0
             return null;
         ArrayList<Comment> commentArrayList = new ArrayList<>(comments);
-        return Ret.s("success", commentArrayList);
+        NutMap ret = new NutMap();
+        ret.addv("now_page", pager.getPageNumber());
+        ret.addv("per_page_size", pager.getPageSize());
+        ret.addv("page_count", pager.getPageCount());
+        ret.addv("comments", commentArrayList);
+        return ret;
     }
 
-    public static NutMap submitComment(int topicType, int topicId, int fromId, int toId, String content) {
+    public static NutMap submitComment(int circleId, int fromId, int toId, String content) {
         Dao dao = DaoFactory.get();
         if (toId != -1) {
             User toUser = dao.fetch(User.class, Cnd.where("id", "=", toId));
@@ -34,7 +41,7 @@ public class CommentDomain {
             }
         }
         Comment comment = new Comment();
-        comment.setTopicId(topicId).setTopicType(topicType).setContent(content).
+        comment.setTopicId(circleId).setContent(content).
                 setFromUid(fromId).setToUid(toId).setTime(new Date());
         dao.insert(comment);
         return Ret.s("success");

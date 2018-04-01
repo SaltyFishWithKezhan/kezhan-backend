@@ -23,6 +23,8 @@ public class CourseTimeSlot {
     private int startTime;
     @Column("end_time")
     private int endTime;
+    @Column("status")
+    private int status;
 
     public int getId() {
         return id;
@@ -86,6 +88,15 @@ public class CourseTimeSlot {
 
     public void setDay(int day) {
         this.day = day;
+    }
+
+    public int getStatus() {
+        return status;
+    }
+
+    public CourseTimeSlot setStatus(int status) {
+        this.status = status;
+        return this;
     }
 
     @Column("is_odd")
