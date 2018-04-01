@@ -31,12 +31,11 @@ public class CircleDomain {
         }
         if (circles == null)
             return null;
-        ArrayList<Circle> circleArrayList = new ArrayList<>(circles);
         NutMap ret = new NutMap();
         ret.addv("now_page", pager.getPageNumber());
         ret.addv("per_page_size", pager.getPageSize());
         ret.addv("page_count", pager.getPageCount());
-        ret.addv("content", circleArrayList);
+        ret.addv("content", new ArrayList<>(circles));
         return ret;
     }
 

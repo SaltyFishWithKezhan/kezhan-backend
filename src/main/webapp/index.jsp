@@ -118,7 +118,21 @@
     params<br>
     string=编译<br>
     <br>
-
+    根据小表课程id分页查看公告并刷新已读／未读<br>
+    http://localhost:8080/notice/getBySubCourse <br>
+    params<br>
+    uid=8 <br>
+    utoken=ThWm4t9BQCSyd5wR <br>
+    sub_course_id=1 <br>
+    page_number=1 <br>
+    page_size=1 <br>
+    <br>
+    根据小表课程id分页查看作业<br>
+    http://localhost:8080/homework/getBySubCourse<br>
+    params<br>
+    sub_course_id=1<br>
+    page_number=1<br>
+    page_size=1
 </h4>
 </body>
 </html>

@@ -18,15 +18,15 @@ public class NoticeModule {
     @At("/getBySubCourse")
     @Ok("json")
     @Filters(@By(type = UserAuthenication.class))
-    public NutMap getBySubCourse(@Param("uid") String userId, @Param("sub_course_id") String subCourseId) {
+    public NutMap getBySubCourse(@Param("uid") String userId, @Param("sub_course_id") String subCourseId,@Param("page_number") String pageNumber,@Param("page_size") String pageSize) {
         SimpleValidator validator = new SimpleValidator();
         validator.now(subCourseId, "班级ID").require();
         validator.num(subCourseId, "请求格式不合法");
         if (!validator.check()) {
             return Ret.e(0, validator.getError());
         }
-        List<Notice> noticeList = NoticeDomain.getNoticeByUidSubCourseId(Integer.parseInt(userId), Integer.parseInt(subCourseId));
-        return Ret.s("success", new ArrayList<>(noticeList));
+        NutMap noticeListRet = NoticeDomain.getNoticeByUidSubCourseId(Integer.parseInt(userId), Integer.parseInt(subCourseId),Integer.parseInt(pageNumber),Integer.parseInt(pageSize));
+        return Ret.s("success", noticeListRet);
     }
 
     @At("/getByNoticeId")

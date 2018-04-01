@@ -10,9 +10,11 @@ import cn.clate.kezhan.utils.factories.DaoFactory;
 import org.nutz.dao.Chain;
 import org.nutz.dao.Cnd;
 import org.nutz.dao.Dao;
+import org.nutz.dao.pager.Pager;
 import org.nutz.lang.util.NutMap;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -52,18 +54,25 @@ public class NoticeDomain {
         }
     }
 
-    public static List<Notice> getNoticeByUidSubCourseId(int uId, int subCourseId) {
+    public static NutMap getNoticeByUidSubCourseId(int uId, int subCourseId,int pageNumber, int pageSize) {
         Dao dao = DaoFactory.get();
+        Pager pager = dao.createPager(pageNumber, pageSize);
         List<Notice> noticeList = dao.query(Notice.class, Cnd.where("subCourseId", "=", subCourseId)
-                .desc("updateTime"));
+                .desc("updateTime"),pager);
         if (noticeList == null) {
             return null;
         }
+        pager.setRecordCount(dao.count(Notice.class, Cnd.where("subCourseId", "=", subCourseId)));
         for (Notice it : noticeList) {
             it.setRead(getReadStatus(uId, it.getId()));
             it.setUpdateTime(Tools.dateTimeTodate(it.getUpdateTime()));
         }
-        return noticeList;
+        NutMap ret = new NutMap();
+        ret.addv("now_page", pager.getPageNumber());
+        ret.addv("per_page_size", pager.getPageSize());
+        ret.addv("page_count", pager.getPageCount());
+        ret.addv("content", new ArrayList<>(noticeList));
+        return ret;
     }
 
     public static Notice getNoticeDetailByUidNoticeId(int uId, int noticeId) {
