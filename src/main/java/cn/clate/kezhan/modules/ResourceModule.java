@@ -64,7 +64,7 @@ public class ResourceModule {
         String uuid = UUID.randomUUID().toString().replace("-", "");
         String path = "/www/server/jetty/webapps";
 //        String avatar = "/static/resource/" + uuid + surfix;
-        String avatar = "src/main/webapp/userImg/" + uuid + surfix;
+        String avatar = "/src/main/webapp/userImg/" + uuid + surfix;
         File target = new File(avatar);
         Files.copy(file, target);
         Resource resource = new Resource().
