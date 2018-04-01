@@ -1,7 +1,6 @@
 package cn.clate.kezhan.modules;
 
 import cn.clate.kezhan.domains.course.CourseDomain;
-import cn.clate.kezhan.domains.course.CourseUserDomain;
 import cn.clate.kezhan.domains.teacher.TeacherDomain;
 import cn.clate.kezhan.filters.UserAuthenication;
 import cn.clate.kezhan.pojos.CourseTimeSlot;
@@ -13,27 +12,33 @@ import org.nutz.mvc.annotation.*;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by 蛟川小盆友 on 2018/3/27.
- * Modified by Nora on 2018/3/29.
- */
 @At("/course")
-public class CourseUserModule {
+public class CourseModule {
     @At("/getAllCourseByUserId")
     @Ok("json")
     @Filters(@By(type = UserAuthenication.class))
     public NutMap getAllCourseByUserId(@Param("uid") String id) {
-        NutMap res = new NutMap();
-        ArrayList<Integer> courseids = CourseUserDomain.getSubCourseTermIdByUser(Integer.parseInt(id));
-        ArrayList<NutMap> courseList = new ArrayList<NutMap>();
-        List<CourseTimeSlot> courseTimeSlots = CourseUserDomain.getTimeSlotsByCourseIdList(courseids);
+        SimpleValidator validator = new SimpleValidator();
+        validator.now(id, "用户id").require().num();
+        if (!validator.check()) {
+            return Ret.e(1, validator.getError());
+        }
+        NutMap courseUserTakeList = CourseDomain.getSubCourseTermIdListByUserId(Integer.parseInt(id));
+        if (courseUserTakeList == null)
+            return Ret.e("用户没有课程安排");
+        NutMap timeSlots = CourseDomain.getTimeSlotsByCourseSubidList(courseUserTakeList);
+        if (timeSlots == null)
+            return Ret.e("课程开课时间未安排");
+        List<CourseTimeSlot> courseTimeSlots = (List<CourseTimeSlot>) timeSlots.get("time_slots");
+        ArrayList<NutMap> courseList = new ArrayList<>();
         for (CourseTimeSlot timeSlot : courseTimeSlots) {
             NutMap courseItem = new NutMap();
+            NutMap courseSub = CourseDomain.getCourseSubBySubId(timeSlot.getSubCourseTermId());
+            NutMap courseTerm = CourseDomain.getCourseTermByCourseTermId((int) courseSub.get("course_term_id"));
+            NutMap course = CourseDomain.getCourseByCourseId((int) courseTerm.get("course_id"));
+            courseItem.addv("course_name", course.get("name"));
+            courseItem.addv("classroom", courseSub.get("classroom"));
             courseItem.addv("subCourseTermId", timeSlot.getSubCourseTermId());
-            String coursecode = CourseUserDomain.getCourseCodeByCourseTermId(timeSlot.getSubCourseTermId());
-            courseItem.addv("course_code", coursecode);
-            String courseName = CourseUserDomain.getCouseNameByCourseCode(coursecode);
-            courseItem.addv("course_name", courseName);
             courseItem.addv("startDate", timeSlot.getStartDate());
             courseItem.addv("endDate", timeSlot.getEndDate());
             courseItem.addv("day", timeSlot.getDay());
@@ -42,8 +47,7 @@ public class CourseUserModule {
             courseItem.addv("isOdd", timeSlot.getIsOdd());
             courseList.add(courseItem);
         }
-        res.addv("list", courseList);
-        return Ret.s(res);
+        return Ret.s("courseList", courseList);
     }
 
     @At("/getCourseBySubId")
@@ -55,9 +59,9 @@ public class CourseUserModule {
             return Ret.e(1, validator.getError());
         }
         NutMap courseSub = CourseDomain.getCourseSubBySubId(Integer.parseInt(id));
-        NutMap courseTerm = CourseDomain.getCourseTermByCourseTermId((int) courseSub.get("courseTermId"));
-        NutMap course = CourseDomain.getCourseByCourseId((int) courseTerm.get("courseId"));
-        NutMap teacher = TeacherDomain.getTeacherById((int) course.get("teacherId"));
+        NutMap courseTerm = CourseDomain.getCourseTermByCourseTermId((int) courseSub.get("course_term_id"));
+        NutMap course = CourseDomain.getCourseByCourseId((int) courseTerm.get("course_id"));
+        NutMap teacher = TeacherDomain.getTeacherById((int) course.get("teacher_id"));
         NutMap timeSlots = CourseDomain.getTimeSlotsByCourseSubid(Integer.parseInt(id));
         NutMap ret = new NutMap();
         ret.addv("course_name", course.get("name"));
