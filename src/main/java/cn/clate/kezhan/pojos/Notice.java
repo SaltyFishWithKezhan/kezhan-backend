@@ -5,9 +5,6 @@ import org.nutz.dao.entity.annotation.Column;
 import org.nutz.dao.entity.annotation.Id;
 import org.nutz.dao.entity.annotation.One;
 import org.nutz.dao.entity.annotation.Table;
-import org.nutz.mvc.annotation.Ok;
-
-import java.sql.Date;
 
 @Table("kz_notices_2018_1")
 public class Notice {
@@ -27,7 +24,7 @@ public class Notice {
     private User poster;
 
     @Column("update_time")
-    private Date updateTime;
+    private String updateTime;
 
     @Column("viewer_count")
     private int viewerCount;
@@ -88,11 +85,11 @@ public class Notice {
         return this;
     }
 
-    public Date getUpdateTime() {
+    public String getUpdateTime() {
         return updateTime;
     }
 
-    public Notice setUpdateTime(Date updateTime) {
+    public Notice setUpdateTime(String updateTime) {
         this.updateTime = updateTime;
         return this;
     }

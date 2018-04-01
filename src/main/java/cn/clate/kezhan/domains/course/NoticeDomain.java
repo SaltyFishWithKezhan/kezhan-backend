@@ -2,6 +2,7 @@ package cn.clate.kezhan.domains.course;
 
 import cn.clate.kezhan.pojos.Notice;
 import cn.clate.kezhan.pojos.NoticeReadStatus;
+import cn.clate.kezhan.utils.Tools;
 import cn.clate.kezhan.utils.factories.DaoFactory;
 import org.nutz.dao.Chain;
 import org.nutz.dao.Cnd;
@@ -36,6 +37,7 @@ public class NoticeDomain {
         }
         for (Notice it : noticeList) {
             it.setRead(getReadStatus(uId, it.getId()));
+            it.setUpdateTime(Tools.getDateStr(Tools.convertDatetimeToDate(it.getUpdateTime())));
         }
         return noticeList;
     }
@@ -46,6 +48,7 @@ public class NoticeDomain {
         if(notice == null){
             return null;
         }
+        notice.setUpdateTime(Tools.getDateStr(Tools.convertDatetimeToDate(notice.getUpdateTime())));
         dao.fetchLinks(notice, "poster");
         //TODO 原子性不保证
         setRead(uId, noticeId);
