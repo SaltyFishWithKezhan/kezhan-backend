@@ -1,5 +1,6 @@
 package cn.clate.kezhan.modules;
 
+import cn.clate.kezhan.domains.course.CourseDomain;
 import cn.clate.kezhan.domains.course.CourseUserDomain;
 import cn.clate.kezhan.domains.teacher.TeacherDomain;
 import cn.clate.kezhan.filters.UserAuthenication;
@@ -53,11 +54,11 @@ public class CourseUserModule {
         if (!validator.check()) {
             return Ret.e(1, validator.getError());
         }
-        NutMap courseSub = CourseUserDomain.getCourseSubBySubId(Integer.parseInt(id));
-        NutMap courseTerm = CourseUserDomain.getCourseTermByCourseTermId((int) courseSub.get("courseTermId"));
-        NutMap course = CourseUserDomain.getCourseByCourseId((int) courseTerm.get("courseId"));
+        NutMap courseSub = CourseDomain.getCourseSubBySubId(Integer.parseInt(id));
+        NutMap courseTerm = CourseDomain.getCourseTermByCourseTermId((int) courseSub.get("courseTermId"));
+        NutMap course = CourseDomain.getCourseByCourseId((int) courseTerm.get("courseId"));
         NutMap teacher = TeacherDomain.getTeacherById((int) course.get("teacherId"));
-        NutMap timeSlots = CourseUserDomain.getTimeSlotsByCourseSubid(Integer.parseInt(id));
+        NutMap timeSlots = CourseDomain.getTimeSlotsByCourseSubid(Integer.parseInt(id));
         NutMap ret = new NutMap();
         ret.addv("course_name", course.get("name"));
         ret.addv("course_name_en", course.get("nameEn"));

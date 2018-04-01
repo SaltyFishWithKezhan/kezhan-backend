@@ -12,9 +12,6 @@ import org.nutz.lang.util.NutMap;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by 蛟川小盆友 on 2018/3/25.
- */
 public class CourseUserDomain {
     public static ArrayList<Integer> getSubCourseTermIdByUser(int id) {
         Dao dao = DaoFactory.get();
@@ -25,15 +22,6 @@ public class CourseUserDomain {
             subCourseTermIds.add(courseUserTake.getSubCourseTermId());
         }
         return subCourseTermIds;
-    }
-
-    public static NutMap getTimeSlotsByCourseSubid(int id) {
-        Dao dao = DaoFactory.get();
-        List<CourseTimeSlot> courseTimeSlots = dao.query(CourseTimeSlot.class, Cnd.where("sub_course_term_id", "=", id));
-        ArrayList<CourseTimeSlot> timeSlots = new ArrayList<>(courseTimeSlots);
-        NutMap ret = new NutMap();
-        ret.addv("time_slots",timeSlots);
-        return ret;
     }
 
     public static String getCourseCodeByCourseTermId(int id) {
@@ -66,29 +54,5 @@ public class CourseUserDomain {
 
     public static void main(String[] args) {
 
-    }
-
-    public static NutMap getCourseSubBySubId(int subId){
-        Dao dao = DaoFactory.get();
-        CourseSub courseSub = dao.fetch(CourseSub.class,Cnd.where("id","=",subId).and("status","!=",-1));
-        PojoSerializer pjsr = new PojoSerializer(courseSub);
-        NutMap ret = pjsr.get();
-        return ret;
-    }
-
-    public static NutMap getCourseTermByCourseTermId(int courseTermId){
-        Dao dao = DaoFactory.get();
-        Couse2018 couseTerm = dao.fetch(Couse2018.class,Cnd.where("id","=",courseTermId).and("status","!=",-1));
-        PojoSerializer pjsr = new PojoSerializer(couseTerm);
-        NutMap ret = pjsr.get();
-        return ret;
-    }
-
-    public static NutMap getCourseByCourseId(int courseId){
-        Dao dao = DaoFactory.get();
-        Course course = dao.fetch(Course.class,Cnd.where("id","=",courseId).and("status","!=",-1));
-        PojoSerializer pjsr = new PojoSerializer(course);
-        NutMap ret = pjsr.get();
-        return ret;
     }
 }

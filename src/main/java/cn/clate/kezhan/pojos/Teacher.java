@@ -37,26 +37,8 @@ public class Teacher {
     @Column("is_active")
     private int isActive;
 
-    @Column("now_login")
-    private long nowLogin;
-
-    @Column("now_login_ip")
-    private String nowLoginIp;
-
-    @Column("last_login")
-    private long lastLogin;
-
-    @Column("last_login_ip")
-    private String lastLoginIp;
-
-    @Column("login_times")
-    private long loginTimes;
-
-    @Column("last_active")
-    private long lastActive;
-
-    @Column
-    private String token;
+    @Column("user_id")
+    private int userId;
 
     public int getId() {
         return id;
@@ -148,66 +130,12 @@ public class Teacher {
         return this;
     }
 
-    public long getNowLogin() {
-        return nowLogin;
+    public int getUserId() {
+        return userId;
     }
 
-    public Teacher setNowLogin(long nowLogin) {
-        this.nowLogin = nowLogin;
-        return this;
-    }
-
-    public String getNowLoginIp() {
-        return nowLoginIp;
-    }
-
-    public Teacher setNowLoginIp(String nowLoginIp) {
-        this.nowLoginIp = nowLoginIp;
-        return this;
-    }
-
-    public long getLastLogin() {
-        return lastLogin;
-    }
-
-    public Teacher setLastLogin(long lastLogin) {
-        this.lastLogin = lastLogin;
-        return this;
-    }
-
-    public String getLastLoginIp() {
-        return lastLoginIp;
-    }
-
-    public Teacher setLastLoginIp(String lastLoginIp) {
-        this.lastLoginIp = lastLoginIp;
-        return this;
-    }
-
-    public long getLoginTimes() {
-        return loginTimes;
-    }
-
-    public Teacher setLoginTimes(long loginTimes) {
-        this.loginTimes = loginTimes;
-        return this;
-    }
-
-    public long getLastActive() {
-        return lastActive;
-    }
-
-    public Teacher setLastActive(long lastActive) {
-        this.lastActive = lastActive;
-        return this;
-    }
-
-    public String getToken() {
-        return token;
-    }
-
-    public Teacher setToken(String token) {
-        this.token = token;
+    public Teacher setUserId(int userId) {
+        this.userId = userId;
         return this;
     }
 }

@@ -106,6 +106,18 @@
     http://localhost:8080/circle/getById<br>
     params<br>
     id=1<br>
+    <br>
+    根据老师id获取老师信息<br>
+    http://localhost:8080/teacher/getById<br>
+    params<br>
+    teacher_id=1<br>
+    <br>
+    搜索框模糊查询老师或课程<br>
+    http://localhost:8080/search/getByString<br>
+    params<br>
+    string=编译<br>
+    <br>
+
 </h4>
 </body>
 </html>
