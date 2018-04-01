@@ -5,15 +5,13 @@ import org.nutz.dao.entity.annotation.Id;
 import org.nutz.dao.entity.annotation.One;
 import org.nutz.dao.entity.annotation.Table;
 
-import java.sql.Date;
-
 @Table("kz_resources_2018_1")
 public class ResourceTerm {
     @Id
     private int id;
 
-    @Column("update_time")
-    private Date updateTime;
+    @Column("upload_time")
+    private String uploadTime;
 
     @Column("poster_id")
     private int posterId;
@@ -24,7 +22,7 @@ public class ResourceTerm {
     @Column("file_loc")
     private String fileLoc;
 
-    @Column("file__name")
+    @Column("file_name")
     private String fileName;
 
     @Column("file_type")
@@ -48,12 +46,12 @@ public class ResourceTerm {
         return this;
     }
 
-    public Date getUpdateTime() {
-        return updateTime;
+    public String getUploadTime() {
+        return uploadTime;
     }
 
-    public ResourceTerm setUpdateTime(Date updateTime) {
-        this.updateTime = updateTime;
+    public ResourceTerm setUploadTime(String uploadTime) {
+        this.uploadTime = uploadTime;
         return this;
     }
 

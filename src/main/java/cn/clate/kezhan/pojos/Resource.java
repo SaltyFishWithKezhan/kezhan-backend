@@ -13,7 +13,7 @@ public class Resource {
     private int id;
 
     @Column("upload_time")
-    private Date uploadTime;
+    private String uploadTime;
 
     @Column("poster_id")
     private int posterId;
@@ -48,11 +48,11 @@ public class Resource {
         return this;
     }
 
-    public Date getUpLoadTime() {
+    public String getUpLoadTime() {
         return uploadTime;
     }
 
-    public Resource setUpLoadTime(Date uploadTime) {
+    public Resource setUpLoadTime(String uploadTime) {
         this.uploadTime = uploadTime;
         return this;
     }
