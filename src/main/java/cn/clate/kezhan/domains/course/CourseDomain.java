@@ -6,6 +6,7 @@ import cn.clate.kezhan.utils.factories.DaoFactory;
 import cn.clate.kezhan.utils.serializer.PojoSerializer;
 import org.nutz.dao.Cnd;
 import org.nutz.dao.Dao;
+import org.nutz.dao.pager.Pager;
 import org.nutz.dao.sql.Criteria;
 import org.nutz.lang.util.NutMap;
 
@@ -68,12 +69,13 @@ public class CourseDomain {
         return ret;
     }
 
-    public static NutMap getCoursesByCourseNameFuzzy(String courseName) {
+    public static NutMap getCoursesByCourseNameFuzzy(String courseName ,int pageNumber, int pageSize) {
         Dao dao = DaoFactory.get();
-        List<Course> courses = dao.query(Course.class, Cnd.where("name", "LIKE", "%" + courseName + "%").and("status", "!=", -1));
-        if (courses == null || courses.size() == 0)
+        Pager pager = dao.createPager(pageNumber, pageSize);
+        List<Course> courses = dao.query(Course.class, Cnd.where("name", "LIKE", "%" + courseName + "%").and("status", "!=", -1),pager);
+        if (courses == null)
             return null;
-//        ArrayList<Course> courseArrayList = new ArrayList<>(courses);
+        pager.setRecordCount(dao.count(Course.class, Cnd.where("name", "LIKE", "%" + courseName + "%").and("status", "!=", -1)));
         NutMap ret = new NutMap();
         ret.addv("course_num", courses.size());
         List<NutMap> courseArrayList = new ArrayList<>();
@@ -81,8 +83,12 @@ public class CourseDomain {
             PojoSerializer pjsr = new PojoSerializer(circle);
             NutMap courseNutmap = pjsr.get();
             courseNutmap.remove("desc");
+            courseArrayList.add(courseNutmap);
         }
         ret.addv("courses", courseArrayList);
+        ret.addv("now_page", pager.getPageNumber());
+        ret.addv("per_page_size", pager.getPageSize());
+        ret.addv("page_count", pager.getPageCount());
         return ret;
     }
 

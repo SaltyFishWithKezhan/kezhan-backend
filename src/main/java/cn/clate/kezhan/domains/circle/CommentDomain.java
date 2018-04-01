@@ -19,9 +19,9 @@ public class CommentDomain {
         Dao dao = DaoFactory.get();
         Pager pager = dao.createPager(pageNumber, pageSize);
         List<Comment> comments = dao.query(Comment.class,
-                Cnd.where("topic_id", "=", circleId).asc("time"), pager);
-        pager.setRecordCount(dao.count(Comment.class, Cnd.where("status", "!=", -1)));
-        if (comments == null || comments.size() == 0)//TODO:  circles.size()==0
+                Cnd.where("topic_id", "=", circleId).and("status", "!=", -1).asc("time"), pager);
+        pager.setRecordCount(dao.count(Comment.class, Cnd.where("topic_id", "=", circleId).and("status", "!=", -1)));
+        if (comments == null)//TODO:  circles.size()==0
             return null;
         ArrayList<Comment> commentArrayList = new ArrayList<>(comments);
         NutMap ret = new NutMap();

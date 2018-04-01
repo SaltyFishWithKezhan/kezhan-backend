@@ -23,12 +23,13 @@ public class CircleDomain {
         if(type==0){
             circles = dao.query(Circle.class, Cnd.where("status", "!=", -1).
                     desc("id"), pager);
+            pager.setRecordCount(dao.count(Circle.class, Cnd.where("status", "!=", -1)));
         }else {
             circles = dao.query(Circle.class, Cnd.where("status", "!=", -1).
                     and("type_id","=",type).desc("id"), pager);
+            pager.setRecordCount(dao.count(Circle.class, Cnd.where("status", "!=", -1).and("type_id","=",type)));
         }
-        pager.setRecordCount(dao.count(Circle.class, Cnd.where("status", "!=", -1)));
-        if (circles == null)//TODO:  circles.size()==0
+        if (circles == null)
             return null;
         ArrayList<Circle> circleArrayList = new ArrayList<>(circles);
         NutMap ret = new NutMap();

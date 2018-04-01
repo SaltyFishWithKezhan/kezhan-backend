@@ -6,6 +6,7 @@ import cn.clate.kezhan.domains.circle.CommentDomain;
 import cn.clate.kezhan.domains.user.UserInfoDomain;
 import cn.clate.kezhan.filters.UserAuthenication;
 import cn.clate.kezhan.pojos.Circle;
+import cn.clate.kezhan.pojos.Comment;
 import cn.clate.kezhan.utils.Ret;
 import cn.clate.kezhan.utils.serializer.PojoSerializer;
 import cn.clate.kezhan.utils.validators.SimpleValidator;
@@ -58,13 +59,31 @@ public class CircleModule {
     public NutMap getCommentByTopic(@Param("topic_id") String topicId,@Param("page_number") String pageNumber, @Param("page_size") String pageSize) {
         SimpleValidator validator = new SimpleValidator();
         validator.now(topicId, "评论所属的圈子id").require().min(1);
+        validator.now(pageNumber, "当前页数").require().min(0);
+        validator.now(pageSize, "页大小").require().min(1);
         if (!validator.check()) {
             return Ret.e(1, validator.getError());
         }
         NutMap ret = CommentDomain.getCommentByCircleId(Integer.parseInt(topicId),Integer.parseInt(pageNumber),Integer.parseInt(pageSize));
         if (ret == null) {
-            return Ret.e(2, "评论数据错误");
+            return Ret.e("评论数据错误");
         }
+        List<Comment> comments = (List<Comment>)ret.get("comments");
+        ArrayList<NutMap> commentsNutMap = new ArrayList<>();
+        ret.remove("comments");
+        for (Comment comment:comments){
+            PojoSerializer pjsr = new PojoSerializer(comment);
+            NutMap commentNutmap = pjsr.get();
+            NutMap fromUser = UserInfoDomain.getUserById(comment.getFromUid());
+            commentNutmap.addv("from_name",fromUser.get("username"));
+            commentNutmap.addv("from_avatar",fromUser.get("avatar"));
+            NutMap toUser = UserInfoDomain.getUserById(comment.getToUid());
+            if(toUser!=null){
+                commentNutmap.addv("to_name",toUser.get("username"));
+            }
+            commentsNutMap.add(commentNutmap);
+        }
+        ret.addv("comments",commentsNutMap);
         return Ret.s(ret);
     }
 

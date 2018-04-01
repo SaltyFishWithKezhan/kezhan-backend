@@ -6,23 +6,33 @@ import cn.clate.kezhan.utils.factories.DaoFactory;
 import org.nutz.dao.Chain;
 import org.nutz.dao.Cnd;
 import org.nutz.dao.Dao;
+import org.nutz.dao.pager.Pager;
+import org.nutz.lang.util.NutMap;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class HomeworkDomain {
 
-    public static List<Homework> getHomeworkListBySubCourseId(int subCourseId) {
+    public static NutMap getHomeworkListBySubCourseId(int subCourseId,int pageNumber, int pageSize) {
         Dao dao = DaoFactory.get();
+        Pager pager = dao.createPager(pageNumber, pageSize);
         List<Homework> homeworkList = dao.query(Homework.class, Cnd.where("course_sub_id", "=", subCourseId)
-                .desc("update_time"));
+                .desc("update_time"),pager);
         if (homeworkList == null) {
             return null;
         }
+        pager.setRecordCount(dao.count(Homework.class, Cnd.where("course_sub_id", "=", subCourseId)));
         for (Homework it : homeworkList) {
             it.setUpdateTime(Tools.dateTimeTodate(it.getUpdateTime()));
             it.setDeadline(Tools.dateTimeTodate(it.getDeadline()));
         }
-        return homeworkList;
+        NutMap ret = new NutMap();
+        ret.addv("now_page", pager.getPageNumber());
+        ret.addv("per_page_size", pager.getPageSize());
+        ret.addv("page_count", pager.getPageCount());
+        ret.addv("homeworkList",new ArrayList<Homework>(homeworkList));
+        return ret;
     }
 
     public static Homework getHomeworkByHomeworkId(int homeworkId) {
@@ -43,11 +53,11 @@ public class HomeworkDomain {
     }
 
     public static void main(String[] args) {
-        List<Homework> homework = getHomeworkListBySubCourseId(13);
-        for (Homework it : homework) {
-            System.out.println(it.getDescription());
-        }
-        Homework homework1 = getHomeworkByHomeworkId(2);
-        System.out.println(homework1.getPoster().getRealName());
+//        List<Homework> homework = getHomeworkListBySubCourseId(13);
+//        for (Homework it : homework) {
+//            System.out.println(it.getDescription());
+//        }
+//        Homework homework1 = getHomeworkByHomeworkId(2);
+//        System.out.println(homework1.getPoster().getRealName());
     }
 }

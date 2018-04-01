@@ -18,18 +18,19 @@ public class HomeworkModule {
 
     @At("/getBySubCourse")
     @Ok("json")
-    public NutMap getAllHomeworkBySubCourse(@Param("sub_course_id") String subCourseId) {
+    public NutMap getHomeworkBySubCourse(@Param("sub_course_id") String subCourseId,@Param("page_number") String pageNumber, @Param("page_size") String pageSize) {
         SimpleValidator validator = new SimpleValidator();
-        validator.now(subCourseId, "班级ID").require();
-        validator.num(subCourseId, "班级ID格式不合法");
+        validator.now(subCourseId, "班级ID").require().num();
+        validator.now(pageNumber, "当前页数").require().min(0);
+        validator.now(pageSize, "页大小").require().min(1);
         if (!validator.check()) {
             return Ret.e(0, validator.getError());
         }
-        List<Homework> homeworkList = HomeworkDomain.getHomeworkListBySubCourseId(Integer.parseInt(subCourseId));
-        if (homeworkList == null) {
+        NutMap homeworkListRet = HomeworkDomain.getHomeworkListBySubCourseId(Integer.parseInt(subCourseId),Integer.parseInt(pageNumber),Integer.parseInt(pageSize));
+        if (homeworkListRet == null) {
             return Ret.e(4, "作业数据错误");
         }
-        return Ret.s("success", new ArrayList<>(homeworkList));
+        return Ret.s("success", homeworkListRet);
     }
 
     @At("/getByHomeworkId")

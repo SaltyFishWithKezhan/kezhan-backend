@@ -16,27 +16,32 @@ public class SearchModule {
 
     @At("/getByString")
     @Ok("json")
-    public NutMap getById(@Param("string") String str) {
+    public NutMap getByString(@Param("string") String str, @Param("page_number") String pageNumber, @Param("page_size") String pageSize) {
         SimpleValidator validator = new SimpleValidator();
         validator.now(str, "搜索内容").require();
+        validator.now(pageNumber, "当前页数").require().min(0);
+        validator.now(pageSize, "页大小").require().min(1);
         if (!validator.check()) {
             return Ret.e(70, validator.getError());
         }
-        NutMap retTeachers = TeacherDomain.getTeachersByName(str);
-        NutMap retCourses = CourseDomain.getCoursesByCourseNameFuzzy(str);
-        if (retTeachers == null && retCourses == null)
-            return Ret.e(71, "查询无结果");
         NutMap ret = new NutMap();
-        if (retTeachers != null) {
-            ret.attach(retTeachers);
-        } else {
-            ret.addv("teachers", -1);
+        NutMap retTeachers = null;
+        if (Integer.parseInt(pageNumber) == 1) {
+            retTeachers = TeacherDomain.getTeachersByName(str);
+            if (retTeachers != null) {
+                ret.attach(retTeachers);
+            } else {
+                ret.addv("teachers", -1);
+            }
         }
+        NutMap retCourses = CourseDomain.getCoursesByCourseNameFuzzy(str, Integer.parseInt(pageNumber), Integer.parseInt(pageSize));
         if (retCourses != null) {
             ret.attach(retCourses);
         } else {
             ret.addv("courses", -1);
         }
+        if (retTeachers == null && retCourses == null)
+            return Ret.e(71, "查询无结果");
         return Ret.s(ret);
     }
 }
