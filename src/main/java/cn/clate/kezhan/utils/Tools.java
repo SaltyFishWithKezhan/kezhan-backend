@@ -14,6 +14,10 @@ import java.util.regex.Pattern;
 
 public class Tools {
 
+    public static String dateTimeTodate(String datetime) {
+        return getDateStr(convertDatetimeToDate(datetime));
+    }
+
     public static String getDateStr(Date date) {
         return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(date);
     }

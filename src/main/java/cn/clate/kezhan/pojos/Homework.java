@@ -5,8 +5,6 @@ import org.nutz.dao.entity.annotation.Id;
 import org.nutz.dao.entity.annotation.One;
 import org.nutz.dao.entity.annotation.Table;
 
-import java.sql.Date;
-
 @Table("kz_homework_2018_1")
 public class Homework {
     @Id
@@ -19,10 +17,10 @@ public class Homework {
     private String description;
 
     @Column("deadline")
-    private Date deadline;
+    private String deadline;
 
     @Column("update_time")
-    private Date updateTime;
+    private String updateTime;
 
     @Column("viewer_count")
     private int viewerCount;
@@ -90,20 +88,20 @@ public class Homework {
         return this;
     }
 
-    public Date getDeadline() {
+    public String getDeadline() {
         return deadline;
     }
 
-    public Homework setDeadline(Date deadline) {
+    public Homework setDeadline(String deadline) {
         this.deadline = deadline;
         return this;
     }
 
-    public Date getUpdateTime() {
+    public String getUpdateTime() {
         return updateTime;
     }
 
-    public Homework setUpdateTime(Date updateTime) {
+    public Homework setUpdateTime(String updateTime) {
         this.updateTime = updateTime;
         return this;
     }

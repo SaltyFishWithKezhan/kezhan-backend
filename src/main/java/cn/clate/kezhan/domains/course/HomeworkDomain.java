@@ -1,6 +1,7 @@
 package cn.clate.kezhan.domains.course;
 
 import cn.clate.kezhan.pojos.Homework;
+import cn.clate.kezhan.utils.Tools;
 import cn.clate.kezhan.utils.factories.DaoFactory;
 import org.nutz.dao.Chain;
 import org.nutz.dao.Cnd;
@@ -17,6 +18,10 @@ public class HomeworkDomain {
         if (homeworkList == null) {
             return null;
         }
+        for (Homework it : homeworkList) {
+            it.setUpdateTime(Tools.dateTimeTodate(it.getUpdateTime()));
+            it.setDeadline(Tools.dateTimeTodate(it.getDeadline()));
+        }
         return homeworkList;
     }
 
@@ -24,14 +29,16 @@ public class HomeworkDomain {
         Dao dao = DaoFactory.get();
 
         Homework homework = dao.fetch(Homework.class, homeworkId);
-        //懒加载
-        dao.fetchLinks(homework, "poster");
-        dao.fetchLinks(homework, "subCourse");
         if (homework == null) {
             return null;
         }
+        //懒加载
+        dao.fetchLinks(homework, "poster");
+        dao.fetchLinks(homework, "subCourse");
+        homework.setUpdateTime(Tools.dateTimeTodate(homework.getUpdateTime()));
+        homework.setDeadline(Tools.dateTimeTodate(homework.getDeadline()));
         //TODO 未考虑原子性问题
-        dao.update(Homework.class, Chain.makeSpecial("viewerCount", "+1"), Cnd.where("id","=", homeworkId));
+        dao.update(Homework.class, Chain.makeSpecial("viewerCount", "+1"), Cnd.where("id", "=", homeworkId));
         return homework;
     }
 

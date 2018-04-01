@@ -37,7 +37,7 @@ public class NoticeDomain {
         }
         for (Notice it : noticeList) {
             it.setRead(getReadStatus(uId, it.getId()));
-            it.setUpdateTime(Tools.getDateStr(Tools.convertDatetimeToDate(it.getUpdateTime())));
+            it.setUpdateTime(Tools.dateTimeTodate(it.getUpdateTime()));
         }
         return noticeList;
     }
@@ -48,7 +48,7 @@ public class NoticeDomain {
         if(notice == null){
             return null;
         }
-        notice.setUpdateTime(Tools.getDateStr(Tools.convertDatetimeToDate(notice.getUpdateTime())));
+        notice.setUpdateTime(Tools.dateTimeTodate(notice.getUpdateTime()));
         dao.fetchLinks(notice, "poster");
         //TODO 原子性不保证
         setRead(uId, noticeId);
