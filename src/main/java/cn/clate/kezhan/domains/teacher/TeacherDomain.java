@@ -53,4 +53,18 @@ public class TeacherDomain {
         ret.addv("teachers",teacherArrayList);
         return ret;
     }
+
+    public static NutMap getTeacheInforByCourseSubId(int id) {
+        Dao dao = DaoFactory.get();
+        NutMap courseSub = CourseDomain.getCourseSubBySubId(id);
+        NutMap courseTerm = CourseDomain.getCourseTermByCourseTermId((int) courseSub.get("course_term_id"));
+        NutMap course = CourseDomain.getCourseByCourseId((int) courseTerm.get("course_id"));
+        Teacher teacher = dao.fetch(Teacher.class, Cnd.where("id", "=", (int)course.get("teacher_id")).and("is_active", "!=", -1));
+        if (teacher == null) {
+            return null;
+        }
+        PojoSerializer pjsr = new PojoSerializer(teacher);
+        NutMap ret = pjsr.get();
+        return ret;
+    }
 }

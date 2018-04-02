@@ -64,12 +64,8 @@
     发布评论<br>
     http://clate.cn:8080/kezhan/circle/submitComment<br>
     params:<br>
-    topic_type=1<br>
     topic_id=1<br>
-    from_id=8<br>
-    from_name=zhaoning<br>
     to_id=-1<br>
-    to_name<br>
     content=喵喵喵喵喵喵<br>
     uid=8<br>
     utoken=ziTk48xKFrdkRUoG<br>

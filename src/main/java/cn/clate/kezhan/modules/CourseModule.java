@@ -2,8 +2,12 @@ package cn.clate.kezhan.modules;
 
 import cn.clate.kezhan.domains.course.CourseDomain;
 import cn.clate.kezhan.domains.teacher.TeacherDomain;
+import cn.clate.kezhan.domains.user.UserInfoDomain;
 import cn.clate.kezhan.filters.UserAuthenication;
 import cn.clate.kezhan.pojos.CourseTimeSlot;
+import cn.clate.kezhan.pojos.CourseUserTake;
+import cn.clate.kezhan.pojos.Representative;
+import cn.clate.kezhan.pojos.Teacher;
 import cn.clate.kezhan.utils.Ret;
 import cn.clate.kezhan.utils.validators.SimpleValidator;
 import org.nutz.lang.util.NutMap;
@@ -26,7 +30,7 @@ public class CourseModule {
         NutMap courseUserTakeList = CourseDomain.getSubCourseTermIdListByUserId(Integer.parseInt(id));
         if (courseUserTakeList == null)
             return Ret.e("用户没有课程安排");
-        NutMap timeSlots = CourseDomain.getTimeSlotsByCourseSubidList(courseUserTakeList);
+        NutMap timeSlots = CourseDomain.getTimeSlotsByCourseSubIdList(courseUserTakeList);
         if (timeSlots == null)
             return Ret.e("课程开课时间未安排");
         List<CourseTimeSlot> courseTimeSlots = (List<CourseTimeSlot>) timeSlots.get("time_slots");
@@ -74,6 +78,55 @@ public class CourseModule {
         ret.addv("count_learning", course.get("countLearning"));
         ret.attach(timeSlots);
         return Ret.s(ret);
+    }
+
+    @At("/getMembersBySubId")
+    @Ok("json")
+    public NutMap getMembersBySubId(@Param("sub_id") String id) {
+        SimpleValidator validator = new SimpleValidator();
+        validator.now(id, "班级课程id").require().num();
+        if (!validator.check()) {
+            return Ret.e(1, validator.getError());
+        }
+        NutMap studentList = CourseDomain.getStudentListByCourseSubId(Integer.parseInt(id));
+        NutMap representiceList = CourseDomain.getRepresentiveByCourseSubId(Integer.parseInt(id));
+        NutMap teacher = TeacherDomain.getTeacheInforByCourseSubId(Integer.parseInt(id));
+        if (studentList == null)
+            return Ret.e("用户列表获取错误");
+        if (representiceList == null)
+            return Ret.e("课代表列表获取错误");
+        if (teacher == null)
+            return Ret.e("老师信息获取错误");
+        List<CourseUserTake> courseUserTakes = (List<CourseUserTake>) studentList.get("student_list");
+        List<Representative> representatives = (List<Representative>) representiceList.get("representative_list");
+        ArrayList<NutMap> ret = new ArrayList<>();
+        NutMap teacherInfo = new NutMap();
+        teacherInfo.addv("id", teacher.get("id"));
+        teacherInfo.addv("name", teacher.get("name"));
+        teacherInfo.addv("avatar", teacher.get("avatar"));
+        teacherInfo.addv("identity", 2);
+        ret.add(teacherInfo);
+        for (CourseUserTake courseUserTake : courseUserTakes) {
+            NutMap item = new NutMap();
+            NutMap user = UserInfoDomain.getUserById(courseUserTake.getUserId());
+            item.addv("id", user.get("id"));
+            item.addv("name", user.get("username"));
+            item.addv("avatar", user.get("avatar"));
+            int flag = 1;
+            for (Representative representative : representatives) {
+                if ((int)user.get("id")==representative.getUserId())
+                {
+                    item.addv("identity", 1);
+                    flag = 0;
+                }
+            }
+            if (flag == 1) {
+                item.addv("identity", 0);
+            }
+            //identity 为0 表示普通学生 1表示该课课代表 2表示该课老师
+            ret.add(item);
+        }
+        return Ret.s("student_list", ret);
     }
 
 }
