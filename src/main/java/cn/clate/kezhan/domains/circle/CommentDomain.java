@@ -19,7 +19,7 @@ public class CommentDomain {
         Dao dao = DaoFactory.get();
         Pager pager = dao.createPager(pageNumber, pageSize);
         List<Comment> comments = dao.query(Comment.class,
-                Cnd.where("topic_id", "=", circleId).and("status", "!=", -1).asc("time"), pager);
+                Cnd.where("topic_id", "=", circleId).and("status", "!=", -1).desc("time"), pager);
         pager.setRecordCount(dao.count(Comment.class, Cnd.where("topic_id", "=", circleId).and("status", "!=", -1)));
         if (comments == null)//TODO:  circles.size()==0
             return null;
@@ -41,7 +41,7 @@ public class CommentDomain {
             }
         }
         Comment comment = new Comment();
-        comment.setTopicId(circleId).setContent(content).
+        comment.setTopicId(circleId).setContent(content).setStatus(0).
                 setFromUid(fromId).setToUid(toId).setTime(new Date());
         dao.insert(comment);
         return Ret.s("success");

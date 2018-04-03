@@ -1,6 +1,7 @@
 package cn.clate.kezhan.modules;
 
 import cn.clate.kezhan.domains.course.CourseDomain;
+import cn.clate.kezhan.domains.search.SearchDomain;
 import cn.clate.kezhan.domains.teacher.TeacherDomain;
 import cn.clate.kezhan.utils.Ret;
 import cn.clate.kezhan.utils.validators.SimpleValidator;
@@ -42,6 +43,18 @@ public class SearchModule {
         }
         if (retTeachers == null && retCourses == null)
             return Ret.e(71, "查询无结果");
+        return Ret.s(ret);
+    }
+
+    @At("/getStringsByName")
+    @Ok("json")
+    public NutMap getStringsByName(@Param("name") String name) {
+        SimpleValidator validator = new SimpleValidator();
+        validator.now(name, "搜索字段").require();
+        if (!validator.check()) {
+            return Ret.e(70, validator.getError());
+        }
+        NutMap ret = SearchDomain.getSearchByName(name);
         return Ret.s(ret);
     }
 }

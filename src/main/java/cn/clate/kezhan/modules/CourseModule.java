@@ -102,7 +102,8 @@ public class CourseModule {
         ArrayList<NutMap> ret = new ArrayList<>();
         NutMap teacherInfo = new NutMap();
         teacherInfo.addv("id", teacher.get("id"));
-        teacherInfo.addv("name", teacher.get("name"));
+        teacherInfo.addv("name", teacher.get("username"));
+        teacherInfo.addv("real_name", teacher.get("name"));
         teacherInfo.addv("avatar", teacher.get("avatar"));
         teacherInfo.addv("identity", 2);
         ret.add(teacherInfo);
@@ -111,6 +112,7 @@ public class CourseModule {
             NutMap user = UserInfoDomain.getUserById(courseUserTake.getUserId());
             item.addv("id", user.get("id"));
             item.addv("name", user.get("username"));
+            item.addv("real_name", user.get("real_name"));
             item.addv("avatar", user.get("avatar"));
             int flag = 1;
             for (Representative representative : representatives) {

@@ -28,7 +28,7 @@ public class Comment {
     private Date time;
 
     @Column("status")
-    private Date status;
+    private int status;
 
     public int getId() {
         return id;
@@ -84,11 +84,11 @@ public class Comment {
         return this;
     }
 
-    public Date getStatus() {
+    public int getStatus() {
         return status;
     }
 
-    public Comment setStatus(Date status) {
+    public Comment setStatus(int status) {
         this.status = status;
         return this;
     }

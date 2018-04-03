@@ -128,7 +128,12 @@
     params<br>
     sub_course_id=1<br>
     page_number=1<br>
-    page_size=1
+    page_size=1<<br>
+    <br>
+    获取班级成员列表+身份标识<<br>
+    http://localhost:8080/course/getMembersBySubId<br>
+    sub_id=1<br>
+    <br>
 </h4>
 </body>
 </html>
