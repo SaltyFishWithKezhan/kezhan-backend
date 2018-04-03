@@ -43,6 +43,8 @@ public class SearchDomain {
         List<String> result = searchSql(dao,name);
         ArrayList<String> res = new ArrayList<>(result);
         res.sort((a,b) -> a.length() - b.length());
-        return Ret.s("search_result",res);
+        NutMap ret = new NutMap();
+        ret.addv("search_result",res);
+        return ret;
     }
 }

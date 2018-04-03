@@ -10,6 +10,7 @@ import org.nutz.mvc.annotation.At;
 import org.nutz.mvc.annotation.Ok;
 import org.nutz.mvc.annotation.Param;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @At("/search")
@@ -25,25 +26,19 @@ public class SearchModule {
         if (!validator.check()) {
             return Ret.e(70, validator.getError());
         }
-        NutMap ret = new NutMap();
-        NutMap retTeachers = null;
-        if (Integer.parseInt(pageNumber) == 1) {
-            retTeachers = TeacherDomain.getTeachersByName(str);
-            if (retTeachers != null) {
-                ret.attach(retTeachers);
-            } else {
-                ret.addv("teachers", -1);
-            }
+        NutMap retTeachers = TeacherDomain.getTeachersByName(str);
+        if (retTeachers == null) {
+            retTeachers.addv("teachers", -1);
         }
         NutMap retCourses = CourseDomain.getCoursesByCourseNameFuzzy(str, Integer.parseInt(pageNumber), Integer.parseInt(pageSize));
         if (retCourses != null) {
-            ret.attach(retCourses);
+            retTeachers.attach(retCourses);
         } else {
-            ret.addv("courses", -1);
+            retTeachers.addv("courses", -1);
         }
         if (retTeachers == null && retCourses == null)
             return Ret.e(71, "查询无结果");
-        return Ret.s(ret);
+        return Ret.s(retTeachers);
     }
 
     @At("/getStringsByName")
@@ -55,6 +50,7 @@ public class SearchModule {
             return Ret.e(70, validator.getError());
         }
         NutMap ret = SearchDomain.getSearchByName(name);
-        return Ret.s(ret);
+        ArrayList<String> strings = (ArrayList<String>) ret.get("search_result");
+        return Ret.s("search_result", strings);
     }
 }

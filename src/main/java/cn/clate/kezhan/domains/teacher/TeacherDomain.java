@@ -32,25 +32,19 @@ public class TeacherDomain {
     //fuzzy check
     public static NutMap getTeachersByName(String name) {
         Dao dao = DaoFactory.get();
-        Teacher teacher = dao.fetch(Teacher.class, Cnd.where("name", "=", name).and("is_active", "!=", -1));
         List<Teacher> teachers = dao.query(Teacher.class, Cnd.where("name", "LIKE", "%" + name + "%").and("is_active", "!=", -1));
-        if (teachers == null||teachers.size()==0) {//teachers.size()==0
+        if (teachers == null) {//teachers.size()==0
             return null;
         }
-        System.out.print(teachers.size());
+        System.out.print("mmm"+teachers.size());
         ArrayList<Teacher> teacherArrayList = new ArrayList<>();
-        if (teacher != null) {
-            teacherArrayList.add(teacher);
-            teacherArrayList.add(teachers.get(0));
-        } else {
-            teacherArrayList.add(teachers.get(0));
-            if (teachers.size() > 1) {
-                teacherArrayList.add(teachers.get(1));
-            }
+        for(int i = 0; i < Math.min(2, teachers.size()); i++){
+            teacherArrayList.add(teachers.get(i));
         }
         NutMap ret = new NutMap();
-        ret.addv("teacher_num",teachers.size());
+        ret.addv("teacher_num",teacherArrayList.size());
         ret.addv("teachers",teacherArrayList);
+        System.out.println(ret.toString());
         return ret;
     }
 

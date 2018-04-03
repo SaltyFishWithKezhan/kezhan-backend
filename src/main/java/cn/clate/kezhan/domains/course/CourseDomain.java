@@ -1,5 +1,6 @@
 package cn.clate.kezhan.domains.course;
 
+import cn.clate.kezhan.domains.teacher.TeacherDomain;
 import cn.clate.kezhan.pojos.*;
 import cn.clate.kezhan.utils.Ret;
 import cn.clate.kezhan.utils.factories.DaoFactory;
@@ -79,16 +80,19 @@ public class CourseDomain {
         NutMap ret = new NutMap();
         ret.addv("course_num", courses.size());
         List<NutMap> courseArrayList = new ArrayList<>();
-        for (Course circle : courses) {
-            PojoSerializer pjsr = new PojoSerializer(circle);
+        for (Course course : courses) {
+            NutMap teacher = TeacherDomain.getTeacherById(course.getTeacherId());
+            PojoSerializer pjsr = new PojoSerializer(course);
             NutMap courseNutmap = pjsr.get();
             courseNutmap.remove("desc");
+            courseNutmap.addv("teacher_name",teacher.get("name"));
             courseArrayList.add(courseNutmap);
         }
         ret.addv("courses", courseArrayList);
         ret.addv("now_page", pager.getPageNumber());
         ret.addv("per_page_size", pager.getPageSize());
         ret.addv("page_count", pager.getPageCount());
+        System.out.println();ret.toString();
         return ret;
     }
 
