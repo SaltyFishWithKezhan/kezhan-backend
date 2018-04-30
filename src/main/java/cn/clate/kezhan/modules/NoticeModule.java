@@ -4,6 +4,7 @@ import cn.clate.kezhan.domains.course.MomentDomain;
 import cn.clate.kezhan.domains.course.NoticeDomain;
 import cn.clate.kezhan.filters.UserAuthenication;
 import cn.clate.kezhan.pojos.Notice;
+import cn.clate.kezhan.pojos.User;
 import cn.clate.kezhan.utils.Ret;
 import cn.clate.kezhan.utils.serializer.PojoSerializer;
 import cn.clate.kezhan.utils.validators.SimpleValidator;
@@ -68,6 +69,27 @@ public class NoticeModule {
         Notice notice = (Notice) ret.get("success");
         NoticeDomain.setNoticeUnreadAfterNewNotice(notice.getId(), notice.getSubCourseId());
         MomentDomain.addOrUpdateMoment(2, notice.getId(), notice.getUpdateTime(), notice.getSubCourseId());
+        return Ret.s("success");
+    }
+
+    @At("/updateNotice")
+    @Ok("json")
+    @Filters(@By(type = UserAuthenication.class))
+    public NutMap updateNotice(@Param("uid") String posterId, @Param("notice_id") String noticeId, @Param("title") String title,
+                               @Param("desc") String description) {
+        SimpleValidator validator = new SimpleValidator();
+        validator.now(title, "公告主题").require().lenMin(1);
+        validator.now(description, "公告内容").require().lenMin(1);
+        validator.now(noticeId, "公告ID").require();
+        if (!validator.check()) {
+            return Ret.e(0, validator.getError());
+        }
+        NutMap ret = NoticeDomain.updateNotice(Integer.parseInt(noticeId), title, description);
+        if(!ret.containsKey("success")){
+            return Ret.e("公告ID不合法");
+        }
+        NoticeDomain.setNoticeUnreadAfterNoticeUpdate(Integer.parseInt(noticeId));
+        MomentDomain.addOrUpdateMoment(2, Integer.parseInt(noticeId), ((Notice)ret.get("success")).getUpdateTime(), -1);
         return Ret.s("success");
     }
 }

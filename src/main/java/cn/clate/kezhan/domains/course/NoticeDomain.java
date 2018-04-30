@@ -54,11 +54,11 @@ public class NoticeDomain {
         }
     }
 
-    public static NutMap getNoticeByUidSubCourseId(int uId, int subCourseId,int pageNumber, int pageSize) {
+    public static NutMap getNoticeByUidSubCourseId(int uId, int subCourseId, int pageNumber, int pageSize) {
         Dao dao = DaoFactory.get();
         Pager pager = dao.createPager(pageNumber, pageSize);
         List<Notice> noticeList = dao.query(Notice.class, Cnd.where("subCourseId", "=", subCourseId)
-                .desc("updateTime"),pager);
+                .desc("updateTime"), pager);
         if (noticeList == null) {
             return null;
         }
@@ -107,11 +107,17 @@ public class NoticeDomain {
         return ret;
     }
 
-    public static void updateNotice(int noticeId, String title, String description) {
+    public static NutMap updateNotice(int noticeId, String title, String description) {
         Dao dao = DaoFactory.get();
-        Notice notice = new Notice();
+        Notice notice = dao.fetch(Notice.class, noticeId);
+        if (notice == null) {
+            return Ret.e(0, "公告ID不合法");
+        }
         notice.setUpdateTime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()))
                 .setTitle(title).setDescription(description);
         dao.update(notice);
+        NutMap ret = new NutMap();
+        ret.addv("success", notice);
+        return ret;
     }
 }
