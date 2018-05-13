@@ -2,7 +2,6 @@ package cn.clate.kezhan.domains.course;
 
 import cn.clate.kezhan.domains.teacher.TeacherDomain;
 import cn.clate.kezhan.pojos.*;
-import cn.clate.kezhan.utils.Ret;
 import cn.clate.kezhan.utils.factories.DaoFactory;
 import cn.clate.kezhan.utils.serializer.PojoSerializer;
 import org.nutz.dao.Cnd;
@@ -25,7 +24,7 @@ public class CourseDomain {
 
     public static NutMap getCourseTermByCourseTermId(int courseTermId) {
         Dao dao = DaoFactory.get();
-        Couse2018 couseTerm = dao.fetch(Couse2018.class, Cnd.where("id", "=", courseTermId).and("status", "!=", -1));
+        CourseTerm couseTerm = dao.fetch(CourseTerm.class, Cnd.where("id", "=", courseTermId).and("status", "!=", -1));
         //该课程开设count个班级
         int count = dao.count(CourseSub.class, Cnd.where("course_term_id", "=", courseTermId).and("status", "!=", -1));
         PojoSerializer pjsr = new PojoSerializer(couseTerm);

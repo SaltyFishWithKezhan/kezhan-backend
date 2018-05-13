@@ -9,10 +9,21 @@ import java.security.NoSuchAlgorithmException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Tools {
+    private final static int year = 2018;
+
+    private final static int semester = 1;
+
+    public static HashMap<String, Integer> getYestAndSemester(int yid, int sid) {
+        HashMap<String, Integer> retMp = new HashMap<>();
+        retMp.put("yid", yid != -1 ? yid : year);
+        retMp.put("sid", sid != -1 ? sid: semester);
+        return retMp;
+    }
 
     public static String dateTimeTodate(String datetime) {
         return getDateStr(convertDatetimeToDate(datetime));
