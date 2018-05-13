@@ -74,19 +74,25 @@ public class MomentDomain {
 
     }
 
-    public static boolean addOrUpdateMoment(int type, int typeId, String updateTime, int subCourseId) {
-        Dao dao = DaoFactory.get();
-        Moment moment = dao.fetch(Moment.class, Cnd.where("type", "=", type)
-                .and("typeId", "=", typeId));
-        if (moment != null) {
-            moment.setUpdateTime(updateTime);
-            dao.update(moment);
-        } else {
-            Moment newMoment = new Moment();
-            newMoment.setType(type).setTypeId(typeId).setUpdateTime(updateTime)
-                    .setSubCourseId(subCourseId);
-            dao.fastInsert(newMoment);
+    public static boolean addOrUpdateMoment(int type, int typeId, String updateTime, int subCourseId, int yid, int sid) {
+        try {
+            TableName.set(Tools.getYestAndSemester(yid, sid));
+            Dao dao = DaoFactory.get();
+            Moment moment = dao.fetch(Moment.class, Cnd.where("type", "=", type)
+                    .and("typeId", "=", typeId));
+            if (moment != null) {
+                moment.setUpdateTime(updateTime);
+                dao.update(moment);
+            } else {
+                Moment newMoment = new Moment();
+                newMoment.setType(type).setTypeId(typeId).setUpdateTime(updateTime)
+                        .setSubCourseId(subCourseId);
+                dao.fastInsert(newMoment);
+            }
+            return true;
+        } finally {
+            TableName.clear();
         }
-        return true;
+
     }
 }
