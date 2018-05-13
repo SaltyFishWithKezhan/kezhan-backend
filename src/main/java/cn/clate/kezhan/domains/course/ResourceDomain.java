@@ -7,6 +7,7 @@ import cn.clate.kezhan.utils.Tools;
 import cn.clate.kezhan.utils.factories.DaoFactory;
 import org.nutz.dao.Cnd;
 import org.nutz.dao.Dao;
+import org.nutz.dao.TableName;
 
 import java.util.List;
 
@@ -25,21 +26,27 @@ public class ResourceDomain {
         return resourceList;
     }
 
-    public static List<ResourceTerm> getAllSubCourseResource(int subCourseId) {
-        Dao dao = DaoFactory.get();
-        CourseSub courseSub = dao.fetch(CourseSub.class, subCourseId);
-        List<ResourceTerm> resourceTermList = dao.query(ResourceTerm.class,
-                Cnd.where("courseTermId", "=", courseSub.getCourseTermId())
-                        .desc("uploadTime"));
-        if (resourceTermList == null) {
-            return null;
+    public static List<ResourceTerm> getAllTermCourseResource(int subCourseId, int yid, int sid) {
+        try {
+            TableName.set(Tools.getYestAndSemester(yid, sid));
+            Dao dao = DaoFactory.get();
+            CourseSub courseSub = dao.fetch(CourseSub.class, subCourseId);
+            List<ResourceTerm> resourceTermList = dao.query(ResourceTerm.class,
+                    Cnd.where("courseTermId", "=", courseSub.getCourseTermId())
+                            .desc("uploadTime"));
+            if (resourceTermList == null) {
+                return null;
+            }
+            for (ResourceTerm it : resourceTermList) {
+                dao.fetchLinks(it, "poster");
+                it.getPoster().removeCriticalInfo();
+                it.setUploadTime(Tools.dateTimeTodate(it.getUploadTime()));
+            }
+            return resourceTermList;
+        } finally {
+            TableName.clear();
         }
-        for (ResourceTerm it : resourceTermList) {
-            dao.fetchLinks(it, "poster");
-            it.getPoster().removeCriticalInfo();
-            it.setUploadTime(Tools.dateTimeTodate(it.getUploadTime()));
-        }
-        return resourceTermList;
+
     }
 
     public static void insertCourseResource(Resource resource) {
@@ -47,8 +54,14 @@ public class ResourceDomain {
         dao.insert(resource);
     }
 
-    public static void insertCourseTermResource(ResourceTerm resourceTerm) {
-        Dao dao = DaoFactory.get();
-        dao.insert(resourceTerm);
+    public static void insertCourseTermResource(ResourceTerm resourceTerm, int yid, int sid) {
+        try {
+            TableName.set(Tools.getYestAndSemester(yid, sid));
+            Dao dao = DaoFactory.get();
+            dao.insert(resourceTerm);
+        } finally {
+            TableName.clear();
+        }
+
     }
 }

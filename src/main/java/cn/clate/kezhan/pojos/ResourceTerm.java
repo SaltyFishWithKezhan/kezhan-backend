@@ -5,7 +5,7 @@ import org.nutz.dao.entity.annotation.Id;
 import org.nutz.dao.entity.annotation.One;
 import org.nutz.dao.entity.annotation.Table;
 
-@Table("kz_resources_2018_1")
+@Table("kz_resources_${yid}_${sid}")
 public class ResourceTerm {
     @Id
     private int id;

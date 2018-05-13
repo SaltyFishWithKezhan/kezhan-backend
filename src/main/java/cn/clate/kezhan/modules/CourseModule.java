@@ -7,7 +7,6 @@ import cn.clate.kezhan.filters.UserAuthenication;
 import cn.clate.kezhan.pojos.CourseTimeSlot;
 import cn.clate.kezhan.pojos.CourseUserTake;
 import cn.clate.kezhan.pojos.Representative;
-import cn.clate.kezhan.pojos.Teacher;
 import cn.clate.kezhan.utils.Ret;
 import cn.clate.kezhan.utils.validators.SimpleValidator;
 import org.nutz.lang.util.NutMap;
@@ -21,7 +20,7 @@ public class CourseModule {
     @At("/getAllCourseByUserId")
     @Ok("json")
     @Filters(@By(type = UserAuthenication.class))
-    public NutMap getAllCourseByUserId(@Param("uid") String id) {
+    public NutMap getAllCourseByUserId(@Param("uid") String id,  @Param(df = "-1", value = "year") String yid, @Param(df = "-1", value = "semester") String sid) {
         SimpleValidator validator = new SimpleValidator();
         validator.now(id, "用户id").require().num();
         if (!validator.check()) {
@@ -116,8 +115,7 @@ public class CourseModule {
             item.addv("avatar", user.get("avatar"));
             int flag = 1;
             for (Representative representative : representatives) {
-                if ((int)user.get("id")==representative.getUserId())
-                {
+                if ((int) user.get("id") == representative.getUserId()) {
                     item.addv("identity", 1);
                     flag = 0;
                 }

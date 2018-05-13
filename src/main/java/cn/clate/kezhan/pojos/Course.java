@@ -4,9 +4,6 @@ import org.nutz.dao.entity.annotation.Column;
 import org.nutz.dao.entity.annotation.Id;
 import org.nutz.dao.entity.annotation.Table;
 
-/**
- * Created by 蛟川小盆友 on 2018/3/27.
- */
 @Table("kz_courses")
 public class Course {
     @Id

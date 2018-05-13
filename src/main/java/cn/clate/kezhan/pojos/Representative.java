@@ -4,7 +4,7 @@ import org.nutz.dao.entity.annotation.Column;
 import org.nutz.dao.entity.annotation.Id;
 import org.nutz.dao.entity.annotation.Table;
 
-@Table("kz_representative_2018_1")
+@Table("kz_representative_${yid}_${sid}")
 public class Representative {
     @Id
     private int id;

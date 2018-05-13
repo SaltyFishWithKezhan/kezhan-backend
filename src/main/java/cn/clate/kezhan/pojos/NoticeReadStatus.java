@@ -5,7 +5,7 @@ import org.nutz.dao.entity.annotation.Id;
 import org.nutz.dao.entity.annotation.PK;
 import org.nutz.dao.entity.annotation.Table;
 
-@Table("kz_notices_read_status_2018_1")
+@Table("kz_notices_read_status_${yid}_${sid}")
 @PK({"userId", "noticeId"})
 public class NoticeReadStatus {
     @Column("user_id")

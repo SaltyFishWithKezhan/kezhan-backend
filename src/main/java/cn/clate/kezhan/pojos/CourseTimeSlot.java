@@ -9,7 +9,7 @@ import java.util.Date;
 /**
  * Created by 蛟川小盆友 on 2018/3/25.
  */
-@Table("kz_courses_term_2018_1_time_slots")
+@Table("kz_courses_term_${yid}_${sid}_time_slots")
 public class CourseTimeSlot {
     @Id
     private int id;

@@ -7,7 +7,7 @@ import org.nutz.dao.entity.annotation.Table;
 /**
  * Created by 蛟川小盆友 on 2018/3/25.
  */
-@Table("kz_courses_term_2018_1_users_take")
+@Table("kz_courses_term_${yid}_${sid}_users_take")
 public class CourseUserTake {
     @Id
     private int id;
