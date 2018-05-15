@@ -20,24 +20,29 @@ public class CourseModule {
     @At("/getAllCourseByUserId")
     @Ok("json")
     @Filters(@By(type = UserAuthenication.class))
-    public NutMap getAllCourseByUserId(@Param("uid") String id,  @Param(df = "-1", value = "year") String yid, @Param(df = "-1", value = "semester") String sid) {
+    public NutMap getAllCourseByUserId(@Param("uid") String id, @Param(df = "-1", value = "year") String yid,
+                                       @Param(df = "-1", value = "semester") String sid) {
         SimpleValidator validator = new SimpleValidator();
         validator.now(id, "用户id").require().num();
         if (!validator.check()) {
             return Ret.e(1, validator.getError());
         }
-        NutMap courseUserTakeList = CourseDomain.getSubCourseTermIdListByUserId(Integer.parseInt(id));
+        NutMap courseUserTakeList = CourseDomain.getSubCourseTermIdListByUserId(Integer.parseInt(id), Integer.parseInt(yid),
+                Integer.parseInt(sid));
         if (courseUserTakeList == null)
             return Ret.e("用户没有课程安排");
-        NutMap timeSlots = CourseDomain.getTimeSlotsByCourseSubIdList(courseUserTakeList);
+        NutMap timeSlots = CourseDomain.getTimeSlotsByCourseSubIdList(courseUserTakeList, Integer.parseInt(yid),
+                Integer.parseInt(sid));
         if (timeSlots == null)
             return Ret.e("课程开课时间未安排");
         List<CourseTimeSlot> courseTimeSlots = (List<CourseTimeSlot>) timeSlots.get("time_slots");
         ArrayList<NutMap> courseList = new ArrayList<>();
         for (CourseTimeSlot timeSlot : courseTimeSlots) {
             NutMap courseItem = new NutMap();
-            NutMap courseSub = CourseDomain.getCourseSubBySubId(timeSlot.getSubCourseTermId());
-            NutMap courseTerm = CourseDomain.getCourseTermByCourseTermId((int) courseSub.get("course_term_id"));
+            NutMap courseSub = CourseDomain.getCourseSubBySubId(timeSlot.getSubCourseTermId(), Integer.parseInt(yid),
+                    Integer.parseInt(sid));
+            NutMap courseTerm = CourseDomain.getCourseTermByCourseTermId((int) courseSub.get("course_term_id"),
+                    Integer.parseInt(yid), Integer.parseInt(sid));
             NutMap course = CourseDomain.getCourseByCourseId((int) courseTerm.get("course_id"));
             courseItem.addv("course_name", course.get("name"));
             courseItem.addv("classroom", courseSub.get("classroom"));
@@ -55,17 +60,21 @@ public class CourseModule {
 
     @At("/getCourseBySubId")
     @Ok("json")
-    public NutMap getCourseBySubId(@Param("sub_id") String id) {
+    public NutMap getCourseBySubId(@Param("sub_id") String id, @Param(df = "-1", value = "year") String yid,
+                                   @Param(df = "-1", value = "semester") String sid) {
         SimpleValidator validator = new SimpleValidator();
         validator.now(id, "班级课程id").require().num();
         if (!validator.check()) {
             return Ret.e(1, validator.getError());
         }
-        NutMap courseSub = CourseDomain.getCourseSubBySubId(Integer.parseInt(id));
-        NutMap courseTerm = CourseDomain.getCourseTermByCourseTermId((int) courseSub.get("course_term_id"));
+        NutMap courseSub = CourseDomain.getCourseSubBySubId(Integer.parseInt(id), Integer.parseInt(yid),
+                Integer.parseInt(sid));
+        NutMap courseTerm = CourseDomain.getCourseTermByCourseTermId((int) courseSub.get("course_term_id"),
+                Integer.parseInt(yid), Integer.parseInt(sid));
         NutMap course = CourseDomain.getCourseByCourseId((int) courseTerm.get("course_id"));
         NutMap teacher = TeacherDomain.getTeacherById((int) course.get("teacher_id"));
-        NutMap timeSlots = CourseDomain.getTimeSlotsByCourseSubid(Integer.parseInt(id));
+        NutMap timeSlots = CourseDomain.getTimeSlotsByCourseSubid(Integer.parseInt(id), Integer.parseInt(yid),
+                Integer.parseInt(sid));
         NutMap ret = new NutMap();
         ret.addv("course_name", course.get("name"));
         ret.addv("course_name_en", course.get("nameEn"));
@@ -81,15 +90,19 @@ public class CourseModule {
 
     @At("/getMembersBySubId")
     @Ok("json")
-    public NutMap getMembersBySubId(@Param("sub_id") String id) {
+    public NutMap getMembersBySubId(@Param("sub_id") String id, @Param(df = "-1", value = "year") String yid,
+                                    @Param(df = "-1", value = "semester") String sid) {
         SimpleValidator validator = new SimpleValidator();
         validator.now(id, "班级课程id").require().num();
         if (!validator.check()) {
             return Ret.e(1, validator.getError());
         }
-        NutMap studentList = CourseDomain.getStudentListByCourseSubId(Integer.parseInt(id));
-        NutMap representiceList = CourseDomain.getRepresentiveByCourseSubId(Integer.parseInt(id));
-        NutMap teacher = TeacherDomain.getTeacheInforByCourseSubId(Integer.parseInt(id));
+        NutMap studentList = CourseDomain.getStudentListByCourseSubId(Integer.parseInt(id), Integer.parseInt(yid),
+                Integer.parseInt(sid));
+        NutMap representiceList = CourseDomain.getRepresentiveByCourseSubId(Integer.parseInt(id), Integer.parseInt(yid),
+                Integer.parseInt(sid));
+        NutMap teacher = TeacherDomain.getTeacheInforByCourseSubId(Integer.parseInt(id), Integer.parseInt(yid),
+                Integer.parseInt(sid));
         if (studentList == null)
             return Ret.e("用户列表获取错误");
         if (representiceList == null)
