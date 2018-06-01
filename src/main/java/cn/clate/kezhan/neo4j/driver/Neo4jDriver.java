@@ -12,7 +12,7 @@ public class Neo4jDriver implements AutoCloseable{
 
     public static synchronized Driver getInstance() {
         if (driver == null) {
-            driver = GraphDatabase.driver("bolt://localhost:7687",AuthTokens.basic("neo4j", "123456"));
+            driver = GraphDatabase.driver("bolt://95.163.194.157:7687",AuthTokens.basic("neo4j", "kezhan"));
         }
         return driver;
     }
