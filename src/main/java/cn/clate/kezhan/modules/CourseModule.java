@@ -4,9 +4,7 @@ import cn.clate.kezhan.domains.course.CourseDomain;
 import cn.clate.kezhan.domains.teacher.TeacherDomain;
 import cn.clate.kezhan.domains.user.UserInfoDomain;
 import cn.clate.kezhan.filters.UserAuthenication;
-import cn.clate.kezhan.pojos.CourseTimeSlot;
-import cn.clate.kezhan.pojos.CourseUserTake;
-import cn.clate.kezhan.pojos.Representative;
+import cn.clate.kezhan.pojos.*;
 import cn.clate.kezhan.utils.Ret;
 import cn.clate.kezhan.utils.validators.SimpleValidator;
 import org.nutz.lang.util.NutMap;
@@ -17,6 +15,61 @@ import java.util.List;
 
 @At("/course")
 public class CourseModule {
+    @At("/getCourse")
+    @Ok("json")
+    public NutMap getCourse(@Param("cid") String cid, @Param(df = "-1", value = "year") String yid,
+                            @Param(df = "-1", value = "semester") String sid) {
+        SimpleValidator validator = new SimpleValidator();
+        validator.now(cid, "课程ID").require().num().lenMax(8);
+        if (!validator.check()) {
+            return Ret.e(0, validator.getError());
+        }
+        NutMap ret = new NutMap();
+        NutMap courseInfo = CourseDomain.getCourseByCourseId(Integer.parseInt(cid));
+        if (!(boolean) courseInfo.get("ok?")) {
+            return Ret.e(0, "不合法课程ID");
+        }
+        NutMap termCourseId = CourseDomain.getCourseTermByCourseId(Integer.parseInt(cid), Integer.parseInt(yid),
+                Integer.parseInt(sid));
+        List<List<CourseTimeSlot>> courseTimeSlots = new ArrayList<>();
+        if (!(boolean) termCourseId.get("ok?")) {
+            ret.addv("timeslot", courseTimeSlots);
+            ret.addv("courseInfo", courseInfo);
+            return ret;
+        }
+        CourseTerm courseTerm = (CourseTerm) termCourseId.get("courseTerm");
+        NutMap subCourse = CourseDomain.getCourseSubByCourseTermId(courseTerm.getId(), Integer.parseInt(yid),
+                Integer.parseInt(sid));
+        if (!(boolean) subCourse.get("ok?")) {
+            return Ret.e(0, "数据库爆炸了");
+        }
+        List<CourseSub> courseSubs = (List<CourseSub>) subCourse.get("courseSubs");
+
+        for (CourseSub it : courseSubs) {
+            courseTimeSlots.add((List<CourseTimeSlot>) CourseDomain.getTimeSlotsByCourseSubid(it.getId(), Integer.parseInt(yid),
+                    Integer.parseInt(sid)).get("time_slots"));
+        }
+        ret.addv("courseInfo", courseInfo);
+        ret.addv("timeSlots", courseTimeSlots);
+        return Ret.s(ret);
+    }
+
+    @At("/getCourseComments")
+    @Ok("json")
+    public NutMap getCourseComments(@Param("cid") String cid, @Param("page_number") String pageNumber,
+                                    @Param("page_size") String pageSize) {
+        SimpleValidator validator = new SimpleValidator();
+        validator.now(cid, "课程ID").require().num();
+        validator.now(pageNumber, "当前页数").require().min(0);
+        validator.now(pageSize, "页大小").require().min(1);
+        if (!validator.check()) {
+            return Ret.e(0, validator.getError());
+        }
+        NutMap ret = CourseDomain.getCourseCommentByCid(Integer.parseInt(cid), Integer.parseInt(pageNumber),
+                Integer.parseInt(pageSize));
+        return Ret.s(ret);
+    }
+
     @At("/getAllCourseByUserId")
     @Ok("json")
     @Filters(@By(type = UserAuthenication.class))

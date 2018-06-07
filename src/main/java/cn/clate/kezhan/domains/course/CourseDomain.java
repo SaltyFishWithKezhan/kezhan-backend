@@ -16,6 +16,29 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CourseDomain {
+
+    public static NutMap getCourseCommentByCid(int cid, int pageNumber, int pageSize) {
+        Dao dao = DaoFactory.get();
+        Pager pager = dao.createPager(pageNumber, pageSize);
+        List<CourseComment> courseComments = dao.query(CourseComment.class, Cnd.where("course_id", "=", cid)
+                .and("status", "=", 0).desc("time"), pager);
+        for (CourseComment it : courseComments) {
+            if (!it.isAnno()) {
+                dao.fetchLinks(it, "poster");
+                it.getPoster().removeCriticalInfo();
+            } else {
+                it.setPosterId(-1);
+            }
+        }
+        pager.setRecordCount(dao.count(CourseComment.class, Cnd.where("course_id", "=", cid).and("status", "=", 0)));
+        NutMap ret = new NutMap();
+        ret.addv("now_page", pager.getPageNumber());
+        ret.addv("per_page_size", pager.getPageSize());
+        ret.addv("page_count", pager.getPageCount());
+        ret.addv("courseComments", courseComments);
+        return ret;
+    }
+
     public static NutMap getCourseSubBySubId(int subId, int yid, int sid) {
         try {
             TableName.set(Tools.getYestAndSemester(yid, sid));
@@ -49,13 +72,54 @@ public class CourseDomain {
     public static NutMap getCourseByCourseId(int courseId) {
         Dao dao = DaoFactory.get();
         Course course = dao.fetch(Course.class, Cnd.where("id", "=", courseId).and("status", "!=", -1));
+        if (course == null) {
+            return new NutMap().addv("ok?", false);
+        }
+        dao.fetchLinks(course, "teacher");
         PojoSerializer pjsr = new PojoSerializer(course);
         NutMap ret = pjsr.get();
+        ret.addv("ok?", true);
         return ret;
     }
 
-    public static NutMap getTimeSlotsByCourseSubid(int id, int yid, int sid) {
+    public static NutMap getCourseTermByCourseId(int cid, int yid, int sid) {
+        try {
+            TableName.set(Tools.getYestAndSemester(yid, sid));
+            Dao dao = DaoFactory.get();
+            CourseTerm courseTerm = dao.fetch(CourseTerm.class, Cnd.where("course_id", "=", cid));
+            NutMap ret = new NutMap();
+            if (courseTerm != null) {
+                ret.addv("courseTerm", courseTerm);
+                ret.addv("ok?", true);
+            } else {
+                ret.addv("ok?", false);
+            }
+            return ret;
+        } finally {
+            TableName.clear();
+        }
+    }
+
+    public static NutMap getCourseSubByCourseTermId(int ctid, int yid, int sid){
         try{
+            TableName.set(Tools.getYestAndSemester(yid, sid));
+            Dao dao = DaoFactory.get();
+            List<CourseSub> courseSubs = dao.query(CourseSub.class, Cnd.where("course_term_id", "=", ctid));
+            NutMap ret = new NutMap();
+            if (courseSubs.size() != 0) {
+                ret.addv("courseSubs", courseSubs);
+                ret.addv("ok?", true);
+            } else {
+                ret.addv("ok?", false);
+            }
+            return ret;
+        } finally {
+            TableName.clear();
+        }
+    }
+
+    public static NutMap getTimeSlotsByCourseSubid(int id, int yid, int sid) {
+        try {
             TableName.set(Tools.getYestAndSemester(yid, sid));
             Dao dao = DaoFactory.get();
             List<CourseTimeSlot> courseTimeSlots = dao.query(CourseTimeSlot.class, Cnd.where("sub_course_term_id", "=", id));
@@ -169,7 +233,7 @@ public class CourseDomain {
     }
 
     public static NutMap getStudentListByCourseSubId(int courseSubId, int yid, int sid) {
-        try{
+        try {
             TableName.set(Tools.getYestAndSemester(yid, sid));
             Dao dao = DaoFactory.get();
             List<CourseUserTake> userTakes = dao.query(CourseUserTake.class, Cnd.where("sub_course_term_id", "=", courseSubId).and("status", "!=", -1));
@@ -186,7 +250,7 @@ public class CourseDomain {
     }
 
     public static NutMap getRepresentiveByCourseSubId(int courseSubId, int yid, int sid) {
-        try{
+        try {
             TableName.set(Tools.getYestAndSemester(yid, sid));
             Dao dao = DaoFactory.get();
             List<Representative> representatives = dao.query(Representative.class, Cnd.where("sub_course_term_id", "=", courseSubId).and("status", "!=", -1));

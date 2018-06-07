@@ -1,8 +1,6 @@
 package cn.clate.kezhan.pojos;
 
-import org.nutz.dao.entity.annotation.Column;
-import org.nutz.dao.entity.annotation.Id;
-import org.nutz.dao.entity.annotation.Table;
+import org.nutz.dao.entity.annotation.*;
 
 @Table("kz_courses")
 public class Course {
@@ -14,6 +12,8 @@ public class Course {
     private String nameEn;
     @Column("teacher_id")
     private int teacherId;
+    @One(field = "teacherId")
+    private Teacher teacher;
     @Column("type")
     private int type;
     @Column("desc")
@@ -30,6 +30,29 @@ public class Course {
     private int status;
     @Column("credits")
     private int credits;
+    @Column("total_rating")
+    private double totalRating;
+
+    public double getTotal_rating() {
+        return totalRating;
+    }
+
+    public Course setTotal_rating(double total_rating) {
+        this.totalRating = total_rating;
+        return this;
+    }
+
+    public Course() {
+    }
+
+    public Teacher getTeacher() {
+        return teacher;
+    }
+
+    public Course setTeacher(Teacher teacher) {
+        this.teacher = teacher;
+        return this;
+    }
 
     public int getId() {
         return id;

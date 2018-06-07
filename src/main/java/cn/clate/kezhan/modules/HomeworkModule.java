@@ -34,7 +34,8 @@ public class HomeworkModule {
 
     @At("/getByHomeworkId")
     @Ok("json")
-    public NutMap getHomeworkById(@Param("homework_id") String homeworkId, @Param(df = "-1", value = "year") String yid, @Param(df = "-1", value = "semester") String sid) {
+    public NutMap getHomeworkById(@Param("homework_id") String homeworkId, @Param(df = "-1", value = "year") String yid,
+                                  @Param(df = "-1", value = "semester") String sid) {
         SimpleValidator validator = new SimpleValidator();
         validator.now(homeworkId, "作业ID").require();
         validator.num(homeworkId, "作业ID格式不合法");

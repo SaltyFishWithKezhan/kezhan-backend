@@ -40,6 +40,9 @@ public class Teacher {
     @Column("user_id")
     private int userId;
 
+    public Teacher() {
+    }
+
     public int getId() {
         return id;
     }

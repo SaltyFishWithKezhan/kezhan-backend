@@ -55,7 +55,7 @@
     page_size<br>
     <br>
     根据帖子id获取评论（type=1表示是圈子类型的评论）<br>
-    http://clate.cn:8080/kezhan/circle/comments<br>
+    http://clate.cn:8080/kezhan/circle/circleComments<br>
     params:<br>
     topic_id<br>
     page_number<<br>

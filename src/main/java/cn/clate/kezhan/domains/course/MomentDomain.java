@@ -49,12 +49,18 @@ public class MomentDomain {
             switch (type) {
                 case 1:
                     ret = dao.fetch(Homework.class, typeId);
+                    dao.fetchLinks(ret, "poster");
+                    ((Homework) ret).getPoster().removeCriticalInfo();
                     break;
                 case 2:
                     ret = dao.fetch(Notice.class, typeId);
+                    dao.fetchLinks(ret, "poster");
+                    ((Notice) ret).getPoster().removeCriticalInfo();
                     break;
                 case 3:
                     ret = dao.fetch(ResourceTerm.class, typeId);
+                    dao.fetchLinks(ret, "poster");
+                    ((ResourceTerm) ret).getPoster().removeCriticalInfo();
                     break;
                 default:
                     ret = null;

@@ -72,7 +72,6 @@ public class User {
 
     public void removeCriticalInfo(){
         this.birthday = null;
-        this.username = null;
         this.password = null;
         this.signature = null;
         this.nowLogin = -1;

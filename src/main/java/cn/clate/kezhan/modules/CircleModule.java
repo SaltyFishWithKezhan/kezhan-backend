@@ -6,7 +6,7 @@ import cn.clate.kezhan.domains.circle.CommentDomain;
 import cn.clate.kezhan.domains.user.UserInfoDomain;
 import cn.clate.kezhan.filters.UserAuthenication;
 import cn.clate.kezhan.pojos.Circle;
-import cn.clate.kezhan.pojos.Comment;
+import cn.clate.kezhan.pojos.CircleComment;
 import cn.clate.kezhan.utils.Ret;
 import cn.clate.kezhan.utils.serializer.PojoSerializer;
 import cn.clate.kezhan.utils.validators.SimpleValidator;
@@ -68,22 +68,22 @@ public class CircleModule {
         if (ret == null) {
             return Ret.e("评论数据错误");
         }
-        List<Comment> comments = (List<Comment>)ret.get("comments");
+        List<CircleComment> circleComments = (List<CircleComment>)ret.get("circleComments");
         ArrayList<NutMap> commentsNutMap = new ArrayList<>();
-        ret.remove("comments");
-        for (Comment comment:comments){
-            PojoSerializer pjsr = new PojoSerializer(comment);
+        ret.remove("circleComments");
+        for (CircleComment circleComment : circleComments){
+            PojoSerializer pjsr = new PojoSerializer(circleComment);
             NutMap commentNutmap = pjsr.get();
-            NutMap fromUser = UserInfoDomain.getUserById(comment.getFromUid());
+            NutMap fromUser = UserInfoDomain.getUserById(circleComment.getFromUid());
             commentNutmap.addv("from_name",fromUser.get("username"));
             commentNutmap.addv("from_avatar",fromUser.get("avatar"));
-            NutMap toUser = UserInfoDomain.getUserById(comment.getToUid());
+            NutMap toUser = UserInfoDomain.getUserById(circleComment.getToUid());
             if(toUser!=null){
                 commentNutmap.addv("to_name",toUser.get("username"));
             }
             commentsNutMap.add(commentNutmap);
         }
-        ret.addv("comments",commentsNutMap);
+        ret.addv("circleComments",commentsNutMap);
         return Ret.s(ret);
     }
 

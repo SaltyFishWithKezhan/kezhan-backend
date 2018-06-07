@@ -7,7 +7,7 @@ import org.nutz.dao.entity.annotation.Table;
 import java.util.Date;
 
 @Table("kz_circle_comments")
-public class Comment {
+public class CircleComment {
 
     @Id
     private int id;
@@ -34,7 +34,7 @@ public class Comment {
         return id;
     }
 
-    public Comment setId(int id) {
+    public CircleComment setId(int id) {
         this.id = id;
         return this;
     }
@@ -43,7 +43,7 @@ public class Comment {
         return topicId;
     }
 
-    public Comment setTopicId(int topicId) {
+    public CircleComment setTopicId(int topicId) {
         this.topicId = topicId;
         return this;
     }
@@ -52,7 +52,7 @@ public class Comment {
         return fromUid;
     }
 
-    public Comment setFromUid(int fromUid) {
+    public CircleComment setFromUid(int fromUid) {
         this.fromUid = fromUid;
         return this;
     }
@@ -61,7 +61,7 @@ public class Comment {
         return toUid;
     }
 
-    public Comment setToUid(int toUid) {
+    public CircleComment setToUid(int toUid) {
         this.toUid = toUid;
         return this;
     }
@@ -70,7 +70,7 @@ public class Comment {
         return content;
     }
 
-    public Comment setContent(String content) {
+    public CircleComment setContent(String content) {
         this.content = content;
         return this;
     }
@@ -79,7 +79,7 @@ public class Comment {
         return time;
     }
 
-    public Comment setTime(Date time) {
+    public CircleComment setTime(Date time) {
         this.time = time;
         return this;
     }
@@ -88,7 +88,7 @@ public class Comment {
         return status;
     }
 
-    public Comment setStatus(int status) {
+    public CircleComment setStatus(int status) {
         this.status = status;
         return this;
     }
