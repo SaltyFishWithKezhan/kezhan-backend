@@ -32,12 +32,24 @@ public class Notice {
     @Column("course_sub_id")
     private int subCourseId;
 
+    @Column("status")
+    private int status;
+
     @One(field = "subCourseId")
     private CourseSub courseSub;
 
     private boolean read;
 
     public Notice() {
+    }
+
+    public int getStatus() {
+        return status;
+    }
+
+    public Notice setStatus(int status) {
+        this.status = status;
+        return this;
     }
 
     public int getId() {

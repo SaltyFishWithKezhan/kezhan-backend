@@ -17,6 +17,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MomentDomain {
+
+    public static void deleteMomentAfterDeleteNotice(int noticeId, int yid, int sid) {
+        try {
+            TableName.set(Tools.getYestAndSemester(yid, sid));
+            Dao dao = DaoFactory.get();
+            dao.clear(Moment.class, Cnd.where("type", "=", 2)
+                    .and("type_id", "=", noticeId));
+        } finally {
+            TableName.clear();
+        }
+    }
+
+
     public static NutMap getMomentByCourseId(int subCourseId, int pageNumber, int pageSize, int yid, int sid) {
         try {
             TableName.set(Tools.getYestAndSemester(yid, sid));

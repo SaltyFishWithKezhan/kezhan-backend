@@ -1,9 +1,6 @@
 package cn.clate.kezhan.domains.course;
 
-import cn.clate.kezhan.pojos.CourseUserTake;
-import cn.clate.kezhan.pojos.Notice;
-import cn.clate.kezhan.pojos.NoticeReadStatus;
-import cn.clate.kezhan.pojos.User;
+import cn.clate.kezhan.pojos.*;
 import cn.clate.kezhan.utils.Ret;
 import cn.clate.kezhan.utils.Tools;
 import cn.clate.kezhan.utils.factories.DaoFactory;
@@ -24,9 +21,6 @@ public class NoticeDomain {
         Dao dao = DaoFactory.get();
         NoticeReadStatus noticeReadStatus = dao.fetch(NoticeReadStatus.class, Cnd.where("userId", "=", uId)
                 .and("noticeId", "=", noticeId));
-        if (noticeReadStatus == null) {
-            return false;
-        }
         return (noticeReadStatus.getStatus() == 1);
     }
 
@@ -61,6 +55,7 @@ public class NoticeDomain {
             Dao dao = DaoFactory.get();
             Pager pager = dao.createPager(pageNumber, pageSize);
             List<Notice> noticeList = dao.query(Notice.class, Cnd.where("subCourseId", "=", subCourseId)
+                    .and("status", "=", 0)
                     .desc("updateTime"), pager);
             if (noticeList == null) {
                 return null;
@@ -130,7 +125,7 @@ public class NoticeDomain {
     }
 
     public static NutMap updateNotice(int noticeId, String title, String description, int yid, int sid) {
-        try{
+        try {
             TableName.set(Tools.getYestAndSemester(yid, sid));
             Dao dao = DaoFactory.get();
             Notice notice = dao.fetch(Notice.class, noticeId);
@@ -147,6 +142,24 @@ public class NoticeDomain {
         } finally {
             TableName.clear();
         }
+    }
 
+    public static NutMap deleteNotice(int noticeId, int yid, int sid){
+        try {
+            TableName.set(Tools.getYestAndSemester(yid, sid));
+            Dao dao = DaoFactory.get();
+            Notice notice = dao.fetch(Notice.class, noticeId);
+            NutMap ret = new NutMap();
+            if (notice == null) {
+                ret.addv("ok?", false);
+                return ret;
+            }
+            notice.setStatus(1);
+            dao.update(notice);
+            ret.addv("ok?", true);
+            return ret;
+        } finally {
+            TableName.clear();
+        }
     }
 }

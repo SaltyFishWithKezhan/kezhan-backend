@@ -35,7 +35,7 @@ public class CourseModule {
         if (!(boolean) termCourseId.get("ok?")) {
             ret.addv("timeslot", courseTimeSlots);
             ret.addv("courseInfo", courseInfo);
-            return ret;
+            return Ret.s(ret);
         }
         CourseTerm courseTerm = (CourseTerm) termCourseId.get("courseTerm");
         NutMap subCourse = CourseDomain.getCourseSubByCourseTermId(courseTerm.getId(), Integer.parseInt(yid),
