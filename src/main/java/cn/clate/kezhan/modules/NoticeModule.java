@@ -52,8 +52,7 @@ public class NoticeModule {
         if (!validator.check()) {
             return Ret.e(0, validator.getError());
         }
-        NutMap noticeListRet = NoticeDomain.getNoticeByUidSubCourseId(Integer.parseInt(userId), Integer.parseInt(subCourseId),
-                Integer.parseInt(pageNumber), Integer.parseInt(pageSize), Integer.parseInt(yid), Integer.parseInt(sid));
+        NutMap noticeListRet = NoticeDomain.getNoticeByUidSubCourseId(Integer.parseInt(userId), Integer.parseInt(subCourseId), Integer.parseInt(pageNumber), Integer.parseInt(pageSize), Integer.parseInt(yid), Integer.parseInt(sid));
         return Ret.s("success", noticeListRet);
     }
 

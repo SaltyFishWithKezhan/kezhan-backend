@@ -10,14 +10,15 @@ import javax.sql.DataSource;
 
 public class DaoFactory {
     private static Dao theDao = null;
+    private static DataSource ds;
 
     private static void generate(){
         Ioc ioc = new NutIoc(new JsonLoader("ioc/dao.js"));
-        DataSource ds = ioc.get(DataSource.class);
+        ds = ioc.get(DataSource.class);
         theDao = new NutDao(ds);
     }
 
-    public static Dao get(){
+    public synchronized static Dao get(){
         if(theDao == null){
             generate();
         }
