@@ -7,12 +7,16 @@ import cn.clate.kezhan.pojos.User;
 import cn.clate.kezhan.utils.Ret;
 import cn.clate.kezhan.utils.Tools;
 import cn.clate.kezhan.utils.factories.DaoFactory;
-import org.nutz.dao.*;
+import org.nutz.dao.Chain;
+import org.nutz.dao.Cnd;
+import org.nutz.dao.Dao;
+import org.nutz.dao.TableName;
+import org.nutz.dao.entity.annotation.Table;
 import org.nutz.dao.pager.Pager;
-import org.nutz.dao.sql.Sql;
 import org.nutz.lang.util.NutMap;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -30,6 +34,18 @@ public class NoticeDomain {
         NoticeReadStatus noticeReadStatus = new NoticeReadStatus()
                 .setNoticeId(noticeId).setStatus(1).setUserId(uId);
         dao.update(noticeReadStatus);
+    }
+
+    public static void setRead(int uId, int noticeId, int yid, int sid){
+        try{
+            TableName.set(Tools.getYestAndSemester(yid, sid));
+            Dao dao = DaoFactory.get();
+            NoticeReadStatus noticeReadStatus = new NoticeReadStatus()
+                    .setNoticeId(noticeId).setStatus(1).setUserId(uId);
+            dao.update(noticeReadStatus);
+        } finally {
+            TableName.clear();
+        }
     }
 
     private static void setNoticeUnreadAfterNoticeUpdate(int noticeId) {
@@ -51,11 +67,10 @@ public class NoticeDomain {
     }
 
     public static NutMap getNoticeByUidSubCourseId(int uId, int subCourseId, int pageNumber, int pageSize, int yid, int sid) {
-        int isRead = 1;
-        HashMap<String, Integer> yasMap = Tools.getYestAndSemester(yid, sid);
-        Dao dao = DaoFactory.get();
-        Pager pager = dao.createPager(pageNumber, pageSize);
-            /*
+        try{
+            TableName.set(Tools.getYestAndSemester(yid, sid));
+            HashMap<String, Integer> yasMap = Tools.getYestAndSemester(yid, sid);
+            Dao dao = DaoFactory.get();
             Pager pager = dao.createPager(pageNumber, pageSize);
             List<Notice> noticeList = dao.query(Notice.class, Cnd.where("subCourseId", "=", subCourseId)
                     .and("status", "=", 0)
@@ -68,24 +83,28 @@ public class NoticeDomain {
                 dao.fetchLinks(it, "poster").getPoster().removeCriticalInfo();
                 it.setRead(getReadStatus(uId, it.getId()));
                 it.setUpdateTime(Tools.dateTimeTodate(it.getUpdateTime()));
-            }*/
-        Sql sql = Sqls.fet("SELECT * FROM $notice_table AS nt JOIN $notice_read_table as nrt " +
-                "ON nt.id = nrt.notice_id " +
-                "WHERE nrt.status = @is_read and nt.course_sub_id = @subcourseid and nrt.user_id = @userid " +
-                "ORDER BY nt.update_time");
+            }
+//        Sql sql = Sqls.create("SELECT * FROM $notice_table AS nt JOIN $notice_read_table as nrt " +
+//                "ON nt.id = nrt.notice_id " +
+//                "WHERE nrt.status = @is_read and nt.course_sub_id = @subcourseid and nrt.user_id = @userid " +
+//                "ORDER BY nt.update_time");
+//
+//        sql.setVar("notice_table", "kz_notices_" + yasMap.get("yid") + "_" + yasMap.get("sid"));
+//        sql.setVar("notice_read_table", "kz_notices_read_status_" + yasMap.get("yid") + "_" + yasMap.get("sid"));
+//        sql.setParam("is_read", isRead).setParam("subcourseid", subCourseId).setParam("userid", uId);
+//        sql.setPager(pager);
+//        sql = dao.execute(sql);
+//        System.out.println(sql.getResult());
+            NutMap ret = new NutMap();
+            ret.addv("now_page", pager.getPageNumber());
+            ret.addv("per_page_size", pager.getPageSize());
+            ret.addv("page_count", pager.getPageCount());
+            ret.addv("content", new ArrayList<>(noticeList));
+            return ret;
+        } finally {
+            TableName.clear();
+        }
 
-        sql.setVar("notice_table", "kz_notices_" + yasMap.get("yid") + "_" + yasMap.get("sid"));
-        sql.setVar("notice_read_table", "kz_notices_read_status_" + yasMap.get("yid") + "_" + yasMap.get("sid"));
-        sql.setParam("is_read", isRead).setParam("subcourseid", subCourseId).setParam("userid", uId);
-        sql.setPager(pager);
-        sql = dao.execute(sql);
-        System.out.println(sql.getResult());
-        NutMap ret = new NutMap();
-//            ret.addv("now_page", pager.getPageNumber());
-//            ret.addv("per_page_size", pager.getPageSize());
-//            ret.addv("page_count", pager.getPageCount());
-//            ret.addv("content", new ArrayList<>(noticeList));
-        return ret;
 
     }
 

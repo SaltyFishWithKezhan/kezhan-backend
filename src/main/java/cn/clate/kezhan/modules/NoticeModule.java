@@ -15,6 +15,27 @@ import java.util.List;
 
 @At("/notice")
 public class NoticeModule {
+    @At("/setAllRead")
+    @Ok("json")
+    @Filters(@By(type = UserAuthenication.class))
+    public NutMap setAllNoticeRead(@Param("uid") String userId, @Param("sub_course_id") String subCourseId,
+                                   @Param(df = "-1", value = "year") String yid, @Param(df = "-1", value = "semester") String sid){
+        SimpleValidator validator = new SimpleValidator();
+        validator.now(subCourseId, "班级ID").require();
+        validator.num(subCourseId, "请求格式不合法");
+        if (!validator.check()) {
+            return Ret.e(0, validator.getError());
+        }
+        NutMap noticeListRet = NoticeDomain.getNoticeByUidSubCourseId(Integer.parseInt(userId), Integer.parseInt(subCourseId),
+                1, Integer.MAX_VALUE, Integer.parseInt(yid), Integer.parseInt(sid));
+        List<Notice> noticeList = (List<Notice>) noticeListRet.get("content");
+        for(Notice it : noticeList){
+            NoticeDomain.setRead(Integer.parseInt(userId), it.getId(),
+                    Integer.parseInt(yid), Integer.parseInt(sid));
+        }
+        return Ret.s("ok");
+    }
+
     @At("/getUnreadBySubCourse")
     @Ok("json")
     @Filters(@By(type = UserAuthenication.class))
