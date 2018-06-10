@@ -1,6 +1,7 @@
 package cn.clate.kezhan.domains.course;
 
 import cn.clate.kezhan.pojos.Homework;
+import cn.clate.kezhan.pojos.User;
 import cn.clate.kezhan.utils.Tools;
 import cn.clate.kezhan.utils.factories.DaoFactory;
 import org.nutz.dao.Chain;
@@ -11,6 +12,7 @@ import org.nutz.dao.pager.Pager;
 import org.nutz.lang.util.NutMap;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class HomeworkDomain {
@@ -62,6 +64,31 @@ public class HomeworkDomain {
         } finally {
 
         }
-
     }
+
+    public static NutMap addHomework(int uid, String title, String desc, String ddl, int scid, int yid, int sid) {
+        try {
+            NutMap ret = new NutMap();
+            TableName.set(Tools.getYestAndSemester(yid, sid));
+            Dao dao = DaoFactory.get();
+            User poster = dao.fetch(User.class, uid);
+            if (poster == null) {
+                ret.addv("ok?", false);
+                return ret;
+            }
+            Homework homework = new Homework();
+            homework.setPosterId(uid).setDeadline(ddl).setDescription(desc).setTitle(title).setSubCourseId(scid).setUpdateTime(Tools.dateTimeTodate(Tools.getDateStr(new Date())));
+            dao.insert(homework);
+            if (homework.getId() == 0) {
+                ret.addv("ok?", false);
+                return ret;
+            }
+            ret.addv("ok?", true);
+            ret.addv("hm", homework);
+            return ret;
+        } finally {
+            TableName.clear();
+        }
+    }
+
 }

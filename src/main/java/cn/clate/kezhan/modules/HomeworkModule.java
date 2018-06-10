@@ -1,14 +1,16 @@
 package cn.clate.kezhan.modules;
 
 import cn.clate.kezhan.domains.course.HomeworkDomain;
+import cn.clate.kezhan.domains.course.MomentDomain;
+import cn.clate.kezhan.filters.UserAuthenication;
 import cn.clate.kezhan.pojos.Homework;
 import cn.clate.kezhan.utils.Ret;
 import cn.clate.kezhan.utils.serializer.PojoSerializer;
 import cn.clate.kezhan.utils.validators.SimpleValidator;
+import com.sun.org.apache.bcel.internal.generic.RET;
 import org.nutz.lang.util.NutMap;
-import org.nutz.mvc.annotation.At;
-import org.nutz.mvc.annotation.Ok;
-import org.nutz.mvc.annotation.Param;
+import org.nutz.mvc.annotation.*;
+import org.nutz.trans.Trans;
 
 @At("/homework")
 public class HomeworkModule {
@@ -50,5 +52,34 @@ public class HomeworkModule {
         PojoSerializer pojoSerializer = new PojoSerializer(homework);
         NutMap ret = pojoSerializer.allowField("id, title, description, deadline, updateTime, viewerCount, status, subCourse, poster").get();
         return Ret.s("success", ret);
+    }
+
+    @At("/addHomework")
+    @Ok("json")
+    @Filters(@By(type = UserAuthenication.class))
+    public NutMap addHomework(@Param("uid") String uid, @Param("title") String title, @Param("desc") String desc, @Param("ddl") String ddl, @Param("sub_course_id") String scid, @Param(df = "-1", value = "year") String yid, @Param(df = "-1", value = "semester") String sid) {
+        SimpleValidator validator = new SimpleValidator();
+        validator.now(scid, "课程ID").require();
+        validator.num(scid, "课程ID格式不合法");
+        if (!validator.check()) {
+            return Ret.e(0, validator.getError());
+        }
+        NutMap ret = new NutMap();
+        Trans.exec(() -> {
+            NutMap ret1 = HomeworkDomain.addHomework(Integer.parseInt(uid), title, desc, ddl, Integer.parseInt(scid), Integer.parseInt(yid), Integer.parseInt(sid));
+            if (!(boolean) ret1.get("ok?")) {
+                ret.addv("ok?", false);
+                return;
+            }
+            Homework rethm = (Homework) ret1.get("hm");
+            MomentDomain.addOrUpdateMoment(1, rethm.getId(), rethm.getUpdateTime(), Integer.parseInt(scid), Integer.parseInt(yid), Integer.parseInt(sid));
+            ret.addv("ok?", true);
+        });
+        if(!(boolean) ret.get("ok?")){
+            return Ret.e(0, "吃屎吧你");
+        }
+        else{
+            return Ret.s("ok");
+        }
     }
 }

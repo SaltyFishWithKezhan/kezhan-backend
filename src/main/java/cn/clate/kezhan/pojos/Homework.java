@@ -13,7 +13,7 @@ public class Homework {
     @Column("title")
     private String title;
 
-    @Column("desc")
+    @Column("description")
     private String description;
 
     @Column("deadline")

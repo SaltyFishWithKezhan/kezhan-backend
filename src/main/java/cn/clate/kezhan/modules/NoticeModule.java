@@ -19,7 +19,7 @@ public class NoticeModule {
     @Ok("json")
     @Filters(@By(type = UserAuthenication.class))
     public NutMap setAllNoticeRead(@Param("uid") String userId, @Param("sub_course_id") String subCourseId,
-                                   @Param(df = "-1", value = "year") String yid, @Param(df = "-1", value = "semester") String sid){
+                                   @Param(df = "-1", value = "year") String yid, @Param(df = "-1", value = "semester") String sid) {
         SimpleValidator validator = new SimpleValidator();
         validator.now(subCourseId, "班级ID").require();
         validator.num(subCourseId, "请求格式不合法");
@@ -29,7 +29,7 @@ public class NoticeModule {
         NutMap noticeListRet = NoticeDomain.getNoticeByUidSubCourseId(Integer.parseInt(userId), Integer.parseInt(subCourseId),
                 1, Integer.MAX_VALUE, Integer.parseInt(yid), Integer.parseInt(sid));
         List<Notice> noticeList = (List<Notice>) noticeListRet.get("content");
-        for(Notice it : noticeList){
+        for (Notice it : noticeList) {
             NoticeDomain.setRead(Integer.parseInt(userId), it.getId(),
                     Integer.parseInt(yid), Integer.parseInt(sid));
         }
@@ -147,9 +147,7 @@ public class NoticeModule {
 
     @At("/deleteNotice")
     @Ok("json")
-    @Filters(@By(type = UserAuthenication.class))
-    public NutMap deleteNotice(@Param("notice_id") String nid, @Param(df = "-1", value = "year") String yid,
-                               @Param(df = "-1", value = "semester") String sid) {
+    public NutMap deleteNotice(@Param("notice_id") String nid, @Param(df = "-1", value = "year") String yid, @Param(df = "-1", value = "semester") String sid) {
         SimpleValidator validator = new SimpleValidator();
         validator.now(nid, "公告ID").require();
         if (!validator.check()) {
