@@ -7,7 +7,6 @@ import cn.clate.kezhan.pojos.Homework;
 import cn.clate.kezhan.utils.Ret;
 import cn.clate.kezhan.utils.serializer.PojoSerializer;
 import cn.clate.kezhan.utils.validators.SimpleValidator;
-import com.sun.org.apache.bcel.internal.generic.RET;
 import org.nutz.lang.util.NutMap;
 import org.nutz.mvc.annotation.*;
 import org.nutz.trans.Trans;
@@ -75,10 +74,37 @@ public class HomeworkModule {
             MomentDomain.addOrUpdateMoment(1, rethm.getId(), rethm.getUpdateTime(), Integer.parseInt(scid), Integer.parseInt(yid), Integer.parseInt(sid));
             ret.addv("ok?", true);
         });
-        if(!(boolean) ret.get("ok?")){
+        if (!(boolean) ret.get("ok?")) {
             return Ret.e(0, "吃屎吧你");
+        } else {
+            return Ret.s("ok");
         }
-        else{
+    }
+
+    @At("/updateHomework")
+    @Ok("json")
+    @Filters(@By(type = UserAuthenication.class))
+    public NutMap udpateHomework(@Param("homework_id") String hmId, @Param("title") String title, @Param("desc") String desc, @Param("ddl") String ddl, @Param(df = "-1", value = "year") String yid, @Param(df = "-1", value = "semester") String sid) {
+        SimpleValidator validator = new SimpleValidator();
+        validator.now(hmId, "作业ID").require();
+        validator.num(hmId, "作业ID参数不合法").require();
+        if (!validator.check()) {
+            return Ret.e(validator.getError());
+        }
+        NutMap ret = new NutMap();
+        Trans.exec(() -> {
+            NutMap ret1 = HomeworkDomain.updateHomework(Integer.parseInt(hmId), title, desc, ddl, Integer.parseInt(yid), Integer.parseInt(sid));
+            if (!(boolean) ret1.get("ok?")) {
+                ret.addv("ok?", false);
+                return;
+            }
+            Homework rethm = (Homework) ret1.get("hm");
+            MomentDomain.addOrUpdateMoment(1, rethm.getId(), rethm.getUpdateTime(), rethm.getSubCourseId(), Integer.parseInt(yid), Integer.parseInt(sid));
+            ret.addv("ok?", true);
+        });
+        if (!(boolean) ret.get("ok?")) {
+            return Ret.e(0, "吃屎吧你");
+        } else {
             return Ret.s("ok");
         }
     }

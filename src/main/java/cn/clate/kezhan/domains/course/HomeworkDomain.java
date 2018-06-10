@@ -91,4 +91,23 @@ public class HomeworkDomain {
         }
     }
 
+    public static NutMap updateHomework(int hmid, String title, String desc, String ddl, int yid, int sid) {
+        try {
+            TableName.set(Tools.getYestAndSemester(yid, sid));
+            NutMap ret = new NutMap();
+            Dao dao = DaoFactory.get();
+            Homework hm = dao.fetch(Homework.class, hmid);
+            if (hm == null) {
+                ret.addv("ok?", false);
+                return ret;
+            }
+            hm.setUpdateTime(Tools.dateTimeTodate(Tools.getDateStr(new Date()))).setTitle(title).setDescription(desc).setDeadline(ddl);
+            dao.update(hm);
+            ret.addv("hm", hm);
+            ret.addv("ok?", true);
+            return ret;
+        } finally {
+            TableName.clear();
+        }
+    }
 }

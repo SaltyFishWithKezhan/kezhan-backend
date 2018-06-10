@@ -126,7 +126,7 @@ public class NoticeModule {
     @At("/updateNotice")
     @Ok("json")
     @Filters(@By(type = UserAuthenication.class))
-    public NutMap updateNotice(@Param("uid") String posterId, @Param("notice_id") String noticeId, @Param("title") String title,
+    public NutMap updateNotice(@Param("notice_id") String noticeId, @Param("title") String title,
                                @Param("desc") String description, @Param(df = "-1", value = "year") String yid,
                                @Param(df = "-1", value = "semester") String sid) {
         SimpleValidator validator = new SimpleValidator();
