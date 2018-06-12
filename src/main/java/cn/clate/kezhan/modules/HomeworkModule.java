@@ -108,4 +108,29 @@ public class HomeworkModule {
             return Ret.s("ok");
         }
     }
+
+    @At("/deleteHomework")
+    @Ok("json")
+    public NutMap deleteHomework(@Param("hmid") String hmid, @Param("yid") String yid, @Param("sid") String sid){
+        SimpleValidator validator = new SimpleValidator();
+        validator.now(hmid, "作业ID").require();
+        validator.num(hmid, "作业ID").require();
+        if (!validator.check()){
+            return Ret.e(validator.getError());
+        }
+        NutMap ret = new NutMap();
+        Trans.exec(() ->{
+            NutMap ret1 = HomeworkDomain.deleteHomework(Integer.parseInt(hmid), Integer.parseInt(yid), Integer.parseInt(sid));
+            if(!(boolean) ret1.get("ok?")){
+                ret.addv("ok?", false);
+                return;
+            }
+            MomentDomain.deleteMomentAfterDeleteHomework(Integer.parseInt(hmid), Integer.parseInt(yid), Integer.parseInt(sid));
+            ret.addv("ok?", true);
+        });
+        if(!(boolean) ret.get("ok?")){
+            return Ret.e(0, "吃屎吧你");
+        }
+        return Ret.s("ok");
+    }
 }

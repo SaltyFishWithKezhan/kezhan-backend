@@ -58,7 +58,7 @@ public class HomeworkDomain {
             homework.setUpdateTime(Tools.dateTimeTodate(homework.getUpdateTime()));
             homework.setDeadline(Tools.dateTimeTodate(homework.getDeadline()));
             synchronized (HomeworkDomain.class) {
-                dao.update(Homework.class, Chain.makeSpecial("viewerCount", "+1"), Cnd.where("id", "=", homeworkId));
+                dao.update(Homework.class, Chain.makeSpecial("viewerCount", "+1"), Cnd.where("id", "=", homeworkId).and("status", "=", 0));
             }
             return homework;
         } finally {
@@ -77,7 +77,7 @@ public class HomeworkDomain {
                 return ret;
             }
             Homework homework = new Homework();
-            homework.setPosterId(uid).setDeadline(ddl).setDescription(desc).setTitle(title).setSubCourseId(scid).setUpdateTime(Tools.dateTimeTodate(Tools.getDateStr(new Date())));
+            homework.setPosterId(uid).setDeadline(ddl).setDescription(desc).setTitle(title).setSubCourseId(scid).setUpdateTime(Tools.dateTimeTodate(Tools.getDateStr(new Date()))).setStatus(0);
             dao.insert(homework);
             if (homework.getId() == 0) {
                 ret.addv("ok?", false);
@@ -104,6 +104,25 @@ public class HomeworkDomain {
             hm.setUpdateTime(Tools.dateTimeTodate(Tools.getDateStr(new Date()))).setTitle(title).setDescription(desc).setDeadline(ddl);
             dao.update(hm);
             ret.addv("hm", hm);
+            ret.addv("ok?", true);
+            return ret;
+        } finally {
+            TableName.clear();
+        }
+    }
+
+    public static NutMap deleteHomework(int hmid, int yid, int sid) {
+        try {
+            TableName.set(Tools.getYestAndSemester(yid, sid));
+            NutMap ret = new NutMap();
+            Dao dao = DaoFactory.get();
+            Homework homework = dao.fetch(Homework.class, hmid);
+            if (homework == null) {
+                ret.addv("ok?", false);
+                return ret;
+            }
+            homework.setStatus(1);
+            dao.update(homework);
             ret.addv("ok?", true);
             return ret;
         } finally {

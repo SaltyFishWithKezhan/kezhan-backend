@@ -18,6 +18,17 @@ import java.util.List;
 
 public class MomentDomain {
 
+    public static void deleteMomentAfterDeleteHomework(int hmid, int yid, int sid) {
+        try {
+            TableName.set(Tools.getYestAndSemester(yid, sid));
+            Dao dao = DaoFactory.get();
+            dao.clear(Moment.class, Cnd.where("type", "=", 1)
+                    .and("type_id", "=", hmid));
+        } finally {
+            TableName.clear();
+        }
+    }
+
     public static void deleteMomentAfterDeleteNotice(int noticeId, int yid, int sid) {
         try {
             TableName.set(Tools.getYestAndSemester(yid, sid));
