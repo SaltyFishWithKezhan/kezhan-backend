@@ -195,4 +195,18 @@ public class CourseModule {
         return Ret.s("student_list", ret);
     }
 
+    @At("/attendCourse")
+    @Ok("json")
+    @Filters(@By(type = UserAuthenication.class))
+    public NutMap attendCourse(@Param("uid") String uid, @Param("sub_course_id") String sbid, @Param("yid") String yid, @Param("sid") String sid) {
+        SimpleValidator validator = new SimpleValidator();
+        validator.now(sbid, "课程ID").require();
+        validator.num(sbid, "课程ID").require();
+        if (!validator.check()) {
+            return Ret.e(validator.getError());
+        }
+        NutMap ret = new NutMap();
+        NutMap ret1 =
+    }
+
 }

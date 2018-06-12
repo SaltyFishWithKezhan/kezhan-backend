@@ -5,6 +5,7 @@ import cn.clate.kezhan.pojos.*;
 import cn.clate.kezhan.utils.Tools;
 import cn.clate.kezhan.utils.factories.DaoFactory;
 import cn.clate.kezhan.utils.serializer.PojoSerializer;
+import javafx.scene.control.Tab;
 import org.nutz.dao.Cnd;
 import org.nutz.dao.Dao;
 import org.nutz.dao.TableName;
@@ -16,6 +17,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CourseDomain {
+
+    public static NutMap attendCourseByUidSbid(int uid, int sbid, int yid, int sid){
+        try{
+            TableName.set(Tools.getYestAndSemester(yid,sid));
+            CourseSub
+        } finally {
+            TableName.clear();
+        }
+    }
 
     public static NutMap getCourseCommentByCid(int cid, int pageNumber, int pageSize) {
         Dao dao = DaoFactory.get();
