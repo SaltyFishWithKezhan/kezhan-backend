@@ -1,6 +1,8 @@
 package cn.clate.kezhan.neo4j.pojos;
 
 
+import java.util.Date;
+
 public class FriendRelationship {
 
     User startUser;
@@ -8,6 +10,8 @@ public class FriendRelationship {
     User endUser;
 
     private int type;
+
+    private Date startDate;
 
     public User getStartUser() {
         return startUser;
@@ -33,6 +37,15 @@ public class FriendRelationship {
 
     public FriendRelationship setType(int type) {
         this.type = type;
+        return this;
+    }
+
+    public Date getStartDate() {
+        return startDate;
+    }
+
+    public FriendRelationship setStartDate(Date startDate) {
+        this.startDate = startDate;
         return this;
     }
 }
