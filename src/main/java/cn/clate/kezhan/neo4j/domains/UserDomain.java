@@ -1,5 +1,6 @@
 package cn.clate.kezhan.neo4j.domains;
 
+import cn.clate.kezhan.domains.user.UserInfoDomain;
 import cn.clate.kezhan.neo4j.driver.Neo4jDriver;
 import cn.clate.kezhan.pojos.User;
 import org.neo4j.driver.v1.*;
@@ -115,7 +116,19 @@ public class UserDomain {
     }
 
     public static void main(String... args) throws Exception {
-        getUserById(13);
+//        ChineseName chineseName =new ChineseName();
+//        for(int i=0;i<20;i++){
+//            User user = new User();
+//            user.setId(i).setUsername("user"+chineseName.getChinese()).setRealName(chineseName.getName()).setPhone("12345678910");
+//            addUser(user);
+//        }
+//        for(int i=0;i<20;i++){
+//            int u1 =(int) (Math.random()*20);
+//            int u2 =(int) (Math.random()*20);
+//            addFriendRs(u1,u2);
+//        }
+
+        findThreeDegreeRsByUserId(8);
     }
 
 }
