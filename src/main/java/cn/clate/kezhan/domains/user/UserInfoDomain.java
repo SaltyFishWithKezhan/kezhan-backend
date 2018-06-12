@@ -8,10 +8,20 @@ import cn.clate.kezhan.utils.serializer.PojoSerializer;
 import org.nutz.dao.Cnd;
 import org.nutz.dao.Dao;
 import org.nutz.lang.util.NutMap;
+import sun.nio.cs.US_ASCII;
 
 import java.io.File;
+import java.util.List;
 
 public class UserInfoDomain {
+    public static List<User> getAllUser(){
+        Dao dao = DaoFactory.get();
+        List<User> list = dao.query(User.class, null);
+        for(User it : list){
+            it.removeCriticalInfo();
+        }
+        return list;
+    }
     public static NutMap mdfUserInfo(User user){
         Dao dao = DaoFactory.get();
         User userFound = dao.fetch(User.class, Cnd.where("id","=",user.getId()));
