@@ -18,8 +18,6 @@ public class User {
 
     private Date birthday;
 
-    private String avatar;
-
     private String college;
 
     private String className;
@@ -30,21 +28,7 @@ public class User {
 
     private String signature;
 
-    private long nowLogin;
-
-    private String nowLoginIp;
-
-    private long lastLogin;
-
-    private String lastLoginIp;
-
-    private long loginTimes;
-
     private String phone;
-
-    private int lastActiveTime;
-
-    private String accessToken;
 
     Set<User> friends;
 
@@ -102,15 +86,6 @@ public class User {
         return this;
     }
 
-    public String getAvatar() {
-        return avatar;
-    }
-
-    public User setAvatar(String avatar) {
-        this.avatar = avatar;
-        return this;
-    }
-
     public String getCollege() {
         return college;
     }
@@ -156,75 +131,12 @@ public class User {
         return this;
     }
 
-    public long getNowLogin() {
-        return nowLogin;
-    }
-
-    public User setNowLogin(long nowLogin) {
-        this.nowLogin = nowLogin;
-        return this;
-    }
-
-    public String getNowLoginIp() {
-        return nowLoginIp;
-    }
-
-    public User setNowLoginIp(String nowLoginIp) {
-        this.nowLoginIp = nowLoginIp;
-        return this;
-    }
-
-    public long getLastLogin() {
-        return lastLogin;
-    }
-
-    public User setLastLogin(long lastLogin) {
-        this.lastLogin = lastLogin;
-        return this;
-    }
-
-    public String getLastLoginIp() {
-        return lastLoginIp;
-    }
-
-    public User setLastLoginIp(String lastLoginIp) {
-        this.lastLoginIp = lastLoginIp;
-        return this;
-    }
-
-    public long getLoginTimes() {
-        return loginTimes;
-    }
-
-    public User setLoginTimes(long loginTimes) {
-        this.loginTimes = loginTimes;
-        return this;
-    }
-
     public String getPhone() {
         return phone;
     }
 
     public User setPhone(String phone) {
         this.phone = phone;
-        return this;
-    }
-
-    public int getLastActiveTime() {
-        return lastActiveTime;
-    }
-
-    public User setLastActiveTime(int lastActiveTime) {
-        this.lastActiveTime = lastActiveTime;
-        return this;
-    }
-
-    public String getAccessToken() {
-        return accessToken;
-    }
-
-    public User setAccessToken(String accessToken) {
-        this.accessToken = accessToken;
         return this;
     }
 

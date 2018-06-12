@@ -58,32 +58,36 @@ public class Course {
         return id;
     }
 
-    public void setId(int id) {
+    public Course setId(int id) {
         this.id = id;
+        return this;
     }
 
     public String getName() {
         return name;
     }
 
-    public void setName(String name) {
+    public Course setName(String name) {
         this.name = name;
+        return this;
     }
 
     public String getNameEn() {
         return nameEn;
     }
 
-    public void setNameEn(String nameEn) {
+    public Course setNameEn(String nameEn) {
         this.nameEn = nameEn;
+        return this;
     }
 
     public int getTeacherId() {
         return teacherId;
     }
 
-    public void setTeacherId(int teacherId) {
+    public Course setTeacherId(int teacherId) {
         this.teacherId = teacherId;
+        return this;
     }
 
     public int getType() {
@@ -99,48 +103,54 @@ public class Course {
         return desc;
     }
 
-    public void setDesc(String desc) {
+    public Course setDesc(String desc) {
         this.desc = desc;
+        return this;
     }
 
     public int getMaxSize() {
         return maxSize;
     }
 
-    public void setMaxSize(int maxSize) {
+    public Course setMaxSize(int maxSize) {
         this.maxSize = maxSize;
+        return this;
     }
 
     public String getCoverImg() {
         return coverImg;
     }
 
-    public void setCoverImg(String coverImg) {
+    public Course setCoverImg(String coverImg) {
         this.coverImg = coverImg;
+        return this;
     }
 
     public int getCountEvaluate() {
         return countEvaluate;
     }
 
-    public void setCountEvaluate(int countEvaluate) {
+    public Course setCountEvaluate(int countEvaluate) {
         this.countEvaluate = countEvaluate;
+        return this;
     }
 
     public String getCourseCode() {
         return courseCode;
     }
 
-    public void setCourseCode(String courseCode) {
+    public Course setCourseCode(String courseCode) {
         this.courseCode = courseCode;
+        return this;
     }
 
     public int getStatus() {
         return status;
     }
 
-    public void setStatus(int status) {
+    public Course setStatus(int status) {
         this.status = status;
+        return this;
     }
 
     public int getCredits() {

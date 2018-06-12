@@ -88,136 +88,153 @@ public class User {
         return id;
     }
 
-    public void setId(int id) {
+    public User setId(int id) {
         this.id = id;
+        return this;
     }
 
     public String getUsername() {
         return username;
     }
 
-    public void setUsername(String username) {
+    public User setUsername(String username) {
         this.username = username;
+        return this;
     }
 
     public String getPassword() {
         return password;
     }
 
-    public void setPassword(String password) {
+    public User setPassword(String password) {
         this.password = password;
+        return this;
     }
 
     public int getType() {
         return type;
     }
 
-    public void setType(int type) {
+    public User setType(int type) {
         this.type = type;
+        return this;
     }
 
     public int getGender() {
         return gender;
     }
 
-    public void setGender(int gender) {
+    public User setGender(int gender) {
         this.gender = gender;
+        return this;
     }
 
     public Date getBirthday() {
         return birthday;
     }
 
-    public void setBirthday(Date birthday) {
+    public User setBirthday(Date birthday) {
         this.birthday = birthday;
+        return this;
     }
 
     public String getAvatar() {
         return avatar;
     }
 
-    public void setAvatar(String avatar) {
+    public User setAvatar(String avatar) {
         this.avatar = avatar;
+        return this;
     }
 
     public String getCollege() {
         return college;
     }
 
-    public void setCollege(String college) {
+    public User setCollege(String college) {
         this.college = college;
+        return this;
     }
 
     public String getClassName() {
         return className;
     }
 
-    public void setClassName(String className) {
+    public User setClassName(String className) {
         this.className = className;
+        return this;
     }
 
     public String getStuId() {
         return stuId;
     }
 
-    public void setStuId(String stuId) {
+    public User setStuId(String stuId) {
         this.stuId = stuId;
+        return this;
     }
 
     public String getRealName() {
         return realName;
     }
 
-    public void setRealName(String realName) {
+    public User setRealName(String realName) {
         this.realName = realName;
+        return this;
     }
 
     public String getSignature() {
         return signature;
     }
 
-    public void setSignature(String signature) {
+    public User setSignature(String signature) {
         this.signature = signature;
+        return this;
     }
 
     public long getNowLogin() {
         return nowLogin;
     }
 
-    public void setNowLogin(long nowLogin) {
+    public User setNowLogin(long nowLogin) {
         this.nowLogin = nowLogin;
+        return this;
     }
 
     public String getNowLoginIp() {
         return nowLoginIp;
     }
 
-    public void setNowLoginIp(String nowLoginIp) {
+    public User setNowLoginIp(String nowLoginIp) {
         this.nowLoginIp = nowLoginIp;
+        return this;
     }
 
     public long getLastLogin() {
         return lastLogin;
     }
 
-    public void setLastLogin(long lastLogin) {
+    public User setLastLogin(long lastLogin) {
         this.lastLogin = lastLogin;
+        return this;
     }
 
     public String getLastLoginIp() {
         return lastLoginIp;
     }
 
-    public void setLastLoginIp(String lastLoginIp) {
+    public User setLastLoginIp(String lastLoginIp) {
         this.lastLoginIp = lastLoginIp;
+        return this;
     }
 
     public long getLoginTimes() {
         return loginTimes;
     }
 
-    public void setLoginTimes(long loginTimes) {
+    public User setLoginTimes(long loginTimes) {
         this.loginTimes = loginTimes;
+        return this;
     }
 
     public void updateLoginStatus(){
@@ -239,23 +256,26 @@ public class User {
         return phone;
     }
 
-    public void setPhone(String phone) {
+    public User setPhone(String phone) {
         this.phone = phone;
+        return this;
     }
 
     public int getLastActiveTime() {
         return lastActiveTime;
     }
 
-    public void setLastActiveTime(int lastActiveTime) {
+    public User setLastActiveTime(int lastActiveTime) {
         this.lastActiveTime = lastActiveTime;
+        return this;
     }
 
     public String getAccessToken() {
         return accessToken;
     }
 
-    public void setAccessToken(String accessToken) {
+    public User setAccessToken(String accessToken) {
         this.accessToken = accessToken;
+        return this;
     }
 }
