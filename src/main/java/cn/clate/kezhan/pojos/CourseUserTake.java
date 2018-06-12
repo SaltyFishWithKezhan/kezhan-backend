@@ -18,35 +18,42 @@ public class CourseUserTake {
     @Column("status")
     private int status;
 
+    public CourseUserTake() {
+    }
+
     public int getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public CourseUserTake setId(int id) {
         this.id = id;
+        return this;
     }
 
     public int getUserId() {
         return userId;
     }
 
-    public void setUserId(int userId) {
+    public CourseUserTake setUserId(int userId) {
         this.userId = userId;
+        return this;
     }
 
     public int getSubCourseTermId() {
         return subCourseTermId;
     }
 
-    public void setSubCourseTermId(int subCourseTermId) {
+    public CourseUserTake setSubCourseTermId(int subCourseTermId) {
         this.subCourseTermId = subCourseTermId;
+        return this;
     }
 
     public int getStatus() {
         return status;
     }
 
-    public void setStatus(int status) {
+    public CourseUserTake setStatus(int status) {
         this.status = status;
+        return this;
     }
 }

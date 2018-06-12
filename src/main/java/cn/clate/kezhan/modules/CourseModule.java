@@ -198,7 +198,7 @@ public class CourseModule {
     @At("/attendCourse")
     @Ok("json")
     @Filters(@By(type = UserAuthenication.class))
-    public NutMap attendCourse(@Param("uid") String uid, @Param("sub_course_id") String sbid, @Param("yid") String yid, @Param("sid") String sid) {
+    public NutMap attendCourse(@Param("uid") String uid, @Param("sub_course_id") String sbid,  @Param(df = "-1", value = "year") String yid, @Param(df = "-1", value = "semester") String sid) {
         SimpleValidator validator = new SimpleValidator();
         validator.now(sbid, "课程ID").require();
         validator.num(sbid, "课程ID").require();
@@ -206,7 +206,11 @@ public class CourseModule {
             return Ret.e(validator.getError());
         }
         NutMap ret = new NutMap();
-        NutMap ret1 =
+        NutMap ret1 = CourseDomain.attendCourseByUidSbid(Integer.parseInt(uid), Integer.parseInt(sbid), Integer.parseInt(yid), Integer.parseInt(sid));
+        if(!(boolean)ret1.get("ok?")){
+            return Ret.e((String) ret1.get("error"));
+        }
+        return Ret.s("ok");
     }
 
 }

@@ -5,23 +5,49 @@ import cn.clate.kezhan.pojos.*;
 import cn.clate.kezhan.utils.Tools;
 import cn.clate.kezhan.utils.factories.DaoFactory;
 import cn.clate.kezhan.utils.serializer.PojoSerializer;
-import javafx.scene.control.Tab;
 import org.nutz.dao.Cnd;
 import org.nutz.dao.Dao;
 import org.nutz.dao.TableName;
 import org.nutz.dao.pager.Pager;
 import org.nutz.dao.sql.Criteria;
 import org.nutz.lang.util.NutMap;
+import org.nutz.trans.Trans;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class CourseDomain {
 
-    public static NutMap attendCourseByUidSbid(int uid, int sbid, int yid, int sid){
-        try{
-            TableName.set(Tools.getYestAndSemester(yid,sid));
-            CourseSub
+    public static NutMap attendCourseByUidSbid(int uid, int sbid, int yid, int sid) {
+        try {
+            TableName.set(Tools.getYestAndSemester(yid, sid));
+            NutMap ret = new NutMap();
+            Dao dao = DaoFactory.get();
+            CourseSub courseSub = dao.fetch(CourseSub.class, sbid);
+            if (courseSub == null) {
+                ret.addv("ok?", false);
+                ret.addv("error", "该课程暂未开课");
+                return ret;
+            }
+            CourseUserTake courseUserTake = new CourseUserTake();
+            courseUserTake.setUserId(uid).setSubCourseTermId(sbid);
+            CourseUserTake already = dao.fetch(CourseUserTake.class, Cnd.where("user_id", "=", uid).and("sub_course_term_id", "=", sbid).and("status", "=", 0));
+            if (already != null) {
+                ret.addv("ok?", false);
+                ret.addv("error", "已经加入该课程");
+                return ret;
+            }
+            Trans.exec(() -> {
+                synchronized (CourseDomain.class) {
+                    courseSub.setNowSize(courseSub.getNowSize() + 1);
+                    dao.update(courseSub);
+                }
+
+                dao.insert(courseUserTake);
+                ret.addv("ok?", true);
+            });
+            return ret;
+
         } finally {
             TableName.clear();
         }
@@ -110,8 +136,8 @@ public class CourseDomain {
         }
     }
 
-    public static NutMap getCourseSubByCourseTermId(int ctid, int yid, int sid){
-        try{
+    public static NutMap getCourseSubByCourseTermId(int ctid, int yid, int sid) {
+        try {
             TableName.set(Tools.getYestAndSemester(yid, sid));
             Dao dao = DaoFactory.get();
             List<CourseSub> courseSubs = dao.query(CourseSub.class, Cnd.where("course_term_id", "=", ctid));
