@@ -45,6 +45,8 @@ public class UserDomain {
                 });
                 System.out.println(ret);
             }
+        }else {
+            System.out.println("neo4j user has existed! ");
         }
     }
 
