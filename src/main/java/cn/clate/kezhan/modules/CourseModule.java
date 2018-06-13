@@ -1,6 +1,7 @@
 package cn.clate.kezhan.modules;
 
 import cn.clate.kezhan.domains.course.CourseDomain;
+import cn.clate.kezhan.domains.course.NoticeDomain;
 import cn.clate.kezhan.domains.teacher.TeacherDomain;
 import cn.clate.kezhan.domains.user.UserInfoDomain;
 import cn.clate.kezhan.filters.UserAuthenication;
@@ -73,8 +74,7 @@ public class CourseModule {
     @At("/getAllCourseByUserId")
     @Ok("json")
     @Filters(@By(type = UserAuthenication.class))
-    public NutMap getAllCourseByUserId(@Param("uid") String id, @Param(df = "-1", value = "year") String yid,
-                                       @Param(df = "-1", value = "semester") String sid) {
+    public NutMap getAllCourseByUserId(@Param("uid") String id, @Param(df = "-1", value = "year") String yid, @Param(df = "-1", value = "semester") String sid) {
         SimpleValidator validator = new SimpleValidator();
         validator.now(id, "用户id").require().num();
         if (!validator.check()) {
@@ -210,6 +210,7 @@ public class CourseModule {
         if(!(boolean)ret1.get("ok?")){
             return Ret.e((String) ret1.get("error"));
         }
+        NoticeDomain.registerUserNoticeByUidSubCourseId(Integer.parseInt(uid), Integer.parseInt(sbid), Integer.parseInt(yid), Integer.parseInt(sid));
         return Ret.s("ok");
     }
 

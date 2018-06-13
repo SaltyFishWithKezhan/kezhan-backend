@@ -231,7 +231,7 @@ public class CourseDomain {
             TableName.set(Tools.getYestAndSemester(yid, sid));
             Dao dao = DaoFactory.get();
             List<CourseUserTake> courseUserTakeList = dao.query(CourseUserTake.class, Cnd.where("user_id", "=", id).and("status", "!=", -1));
-            if (courseUserTakeList == null)
+            if (courseUserTakeList.size() == 0)
                 return null;
             // System.out.println(courseUserTakeList.size());
             ArrayList<CourseUserTake> subCourseTermIds = new ArrayList<CourseUserTake>(courseUserTakeList);

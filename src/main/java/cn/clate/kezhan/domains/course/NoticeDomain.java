@@ -11,7 +11,6 @@ import org.nutz.dao.Chain;
 import org.nutz.dao.Cnd;
 import org.nutz.dao.Dao;
 import org.nutz.dao.TableName;
-import org.nutz.dao.entity.annotation.Table;
 import org.nutz.dao.pager.Pager;
 import org.nutz.lang.util.NutMap;
 
@@ -36,8 +35,8 @@ public class NoticeDomain {
         dao.update(noticeReadStatus);
     }
 
-    public static void setRead(int uId, int noticeId, int yid, int sid){
-        try{
+    public static void setRead(int uId, int noticeId, int yid, int sid) {
+        try {
             TableName.set(Tools.getYestAndSemester(yid, sid));
             Dao dao = DaoFactory.get();
             NoticeReadStatus noticeReadStatus = new NoticeReadStatus()
@@ -66,8 +65,24 @@ public class NoticeDomain {
         }
     }
 
+    public static void registerUserNoticeByUidSubCourseId(int uid, int sbid, int yid, int sid) {
+        try {
+            TableName.set(Tools.getYestAndSemester(yid, sid));
+            Dao dao = DaoFactory.get();
+            NutMap ret = new NutMap();
+            List<Notice> noticeList = dao.query(Notice.class, Cnd.where("course_sub_id", "=", sbid));
+            for (Notice it : noticeList) {
+                NoticeReadStatus t = new NoticeReadStatus();
+                t.setNoticeId(it.getId()).setStatus(0).setUserId(uid);
+                dao.insert(t);
+            }
+        } finally {
+            TableName.clear();
+        }
+    }
+
     public static NutMap getNoticeByUidSubCourseId(int uId, int subCourseId, int pageNumber, int pageSize, int yid, int sid) {
-        try{
+        try {
             TableName.set(Tools.getYestAndSemester(yid, sid));
             HashMap<String, Integer> yasMap = Tools.getYestAndSemester(yid, sid);
             Dao dao = DaoFactory.get();
@@ -75,7 +90,7 @@ public class NoticeDomain {
             List<Notice> noticeList = dao.query(Notice.class, Cnd.where("subCourseId", "=", subCourseId)
                     .and("status", "=", 0)
                     .desc("updateTime"), pager);
-            if (noticeList == null) {
+            if (noticeList.size() == 0) {
                 return null;
             }
             pager.setRecordCount(dao.count(Notice.class, Cnd.where("subCourseId", "=", subCourseId)));
