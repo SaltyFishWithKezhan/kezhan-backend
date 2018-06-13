@@ -28,7 +28,7 @@ public class CommentDomain {
         ret.addv("now_page", pager.getPageNumber());
         ret.addv("per_page_size", pager.getPageSize());
         ret.addv("page_count", pager.getPageCount());
-        ret.addv("circleComments", circleCommentArrayList);
+        ret.addv("comments", circleCommentArrayList);
         return ret;
     }
 

@@ -68,9 +68,9 @@ public class CircleModule {
         if (ret == null) {
             return Ret.e("评论数据错误");
         }
-        List<CircleComment> circleComments = (List<CircleComment>) ret.get("circleComments");
+        List<CircleComment> circleComments = (List<CircleComment>) ret.get("comments");
         ArrayList<NutMap> commentsNutMap = new ArrayList<>();
-        ret.remove("circleComments");
+        ret.remove("comments");
         for (CircleComment circleComment : circleComments) {
             PojoSerializer pjsr = new PojoSerializer(circleComment);
             NutMap commentNutmap = pjsr.get();
@@ -83,7 +83,7 @@ public class CircleModule {
             }
             commentsNutMap.add(commentNutmap);
         }
-        ret.addv("circleComments", commentsNutMap);
+        ret.addv("comments", commentsNutMap);
         return Ret.s(ret);
     }
 

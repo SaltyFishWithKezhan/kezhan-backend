@@ -92,6 +92,7 @@ public class HomeworkModule {
             return Ret.e(validator.getError());
         }
         NutMap ret = new NutMap();
+        ret.addv("ok?", false);
         Trans.exec(() -> {
             NutMap ret1 = HomeworkDomain.updateHomework(Integer.parseInt(hmId), title, desc, ddl, Integer.parseInt(yid), Integer.parseInt(sid));
             if (!(boolean) ret1.get("ok?")) {
