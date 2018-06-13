@@ -15,6 +15,8 @@ public class CourseUserTake {
     private int userId;
     @Column("sub_course_term_id")
     private int subCourseTermId;
+    @Column("is_assistant")
+    private int isAssistant;
     @Column("status")
     private int status;
 
@@ -54,6 +56,15 @@ public class CourseUserTake {
 
     public CourseUserTake setStatus(int status) {
         this.status = status;
+        return this;
+    }
+
+    public int getIsAssistant() {
+        return isAssistant;
+    }
+
+    public CourseUserTake setIsAssistant(int isAssistant) {
+        this.isAssistant = isAssistant;
         return this;
     }
 }

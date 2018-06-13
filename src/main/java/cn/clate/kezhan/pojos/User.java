@@ -20,7 +20,7 @@ public class User {
     private String password;
 
     @Column
-    private int type;
+    private int role;
 
     @Column
     private int gender;
@@ -111,12 +111,12 @@ public class User {
         return this;
     }
 
-    public int getType() {
-        return type;
+    public int getRole() {
+        return role;
     }
 
-    public User setType(int type) {
-        this.type = type;
+    public User setRole(int role) {
+        this.role = role;
         return this;
     }
 
