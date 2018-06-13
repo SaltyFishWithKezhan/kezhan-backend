@@ -40,7 +40,7 @@ public class UserInfoDomain {
         Dao dao = DaoFactory.get();
         User user = dao.fetch(User.class, Cnd.where("id","=",id));
         if (null == user) {
-            return Ret.e(2, "用户id不存在");
+            return null;
         }
         if(user.getPhone()!=null){
             String phone = user.getPhone().substring(0,3)+"****"+user.getPhone().substring(7,11);

@@ -2,7 +2,6 @@ package cn.clate.kezhan.neo4j.domains;
 
 import cn.clate.kezhan.neo4j.driver.Neo4jDriver;
 import cn.clate.kezhan.pojos.Course;
-import cn.clate.kezhan.pojos.User;
 import org.neo4j.driver.v1.*;
 
 import static org.neo4j.driver.v1.Values.parameters;
