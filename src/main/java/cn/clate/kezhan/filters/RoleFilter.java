@@ -27,11 +27,27 @@ public class RoleFilter implements ActionFilter {
         this((String) null);
     }
 
-    public RoleFilter(String sceneRule){
-        this(null, sceneRule);
+    public RoleFilter(String par1){
+        this(par1, null);
     }
 
-    public RoleFilter(String action, String sceneRule){
+    public RoleFilter(String par1, String par2){
+        String action = null;
+        String sceneRule = null;
+        if(par1 != null && par1.indexOf("action:") == 0)
+            action = par1.substring(7);
+        if(par1 != null && par1.indexOf("scene:") == 0)
+            sceneRule = par1.substring(6);
+        if(par2 != null && par2.indexOf("action:") == 0)
+            action = par2.substring(7);
+        if(par2 != null && par2.indexOf("scene:") == 0)
+            sceneRule = par2.substring(6);
+        if(par1 != null && par1.indexOf("action:") != 0 && par1.indexOf("scene:") != 0){
+            action = par1;
+        }
+        if(par2 != null && par2.indexOf("action:") != 0 && par2.indexOf("scene:") != 0){
+            sceneRule = par2;
+        }
         mField = action;
         mSceneRule = sceneRule;
         dao = DaoFactory.get();
@@ -48,7 +64,7 @@ public class RoleFilter implements ActionFilter {
                 throw new AuthException(new ViewWrapper(new UTF8JsonView(), Ret.e(54,"role unauthorized")));
             }
             if(mSceneRule != null && !checkRoleScene(user, actionContext)){
-                throw new AuthException(new ViewWrapper(new UTF8JsonView(), Ret.e(56,"role unauthorized")));
+                throw new AuthException(new ViewWrapper(new UTF8JsonView(), Ret.e(56,"role scene unauthorized")));
             }
             return null;
         } catch (AuthException e) {
