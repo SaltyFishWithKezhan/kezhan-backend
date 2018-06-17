@@ -21,6 +21,8 @@ public class RoleFilter implements ActionFilter {
 
     private String mField;
     private String mSceneRule;
+    private boolean mAsc;
+    private String mLogic;
     private Dao dao;
 
     public RoleFilter(){
@@ -32,8 +34,13 @@ public class RoleFilter implements ActionFilter {
     }
 
     public RoleFilter(String par1, String par2){
+        this(par1, par2, "and");
+    }
+
+    public RoleFilter(String par1, String par2, String logic){
         String action = null;
         String sceneRule = null;
+        boolean asc = true;
         if(par1 != null && par1.indexOf("action:") == 0)
             action = par1.substring(7);
         if(par1 != null && par1.indexOf("scene:") == 0)
@@ -42,14 +49,19 @@ public class RoleFilter implements ActionFilter {
             action = par2.substring(7);
         if(par2 != null && par2.indexOf("scene:") == 0)
             sceneRule = par2.substring(6);
-        if(par1 != null && par1.indexOf("action:") != 0 && par1.indexOf("scene:") != 0){
+        if(par1 != null && par1.trim().length() != 0 && par1.indexOf("action:") != 0 && par1.indexOf("scene:") != 0){
             action = par1;
         }
-        if(par2 != null && par2.indexOf("action:") != 0 && par2.indexOf("scene:") != 0){
+        if(par2 != null && par2.trim().length() != 0 && par2.indexOf("action:") != 0 && par2.indexOf("scene:") != 0){
             sceneRule = par2;
+        }
+        if(par1 != null && par2 != null && par1.indexOf("scene:") == 0 && par2.indexOf("action:") == 0){
+            asc = false;
         }
         mField = action;
         mSceneRule = sceneRule;
+        mLogic = logic == null ? "and" : logic;
+        mAsc = asc;
         dao = DaoFactory.get();
     }
 
@@ -60,12 +72,49 @@ public class RoleFilter implements ActionFilter {
         String userToken = actionContext.getRequest().getParameter("utoken");
         try {
             User user = UserAuthenication.auth(userId, userToken);
-            if(isFieldDefined() && !checkRole(user.getRole())){
-                throw new AuthException(new ViewWrapper(new UTF8JsonView(), Ret.e(54,"role unauthorized")));
+            if(mAsc && mLogic.equals("and")){
+                if (isFieldDefined() && !checkRole(user.getRole())){
+                    throw new AuthException(new ViewWrapper(new UTF8JsonView(), Ret.e(54,"role unauthorized")));
+                }
+                if (mSceneRule != null && !checkRoleScene(user, actionContext)){
+                    throw new AuthException(new ViewWrapper(new UTF8JsonView(), Ret.e(56,"role scene unauthorized")));
+                }
+            } else if (!mAsc && mLogic.equals("and")){
+                if(mSceneRule != null && !checkRoleScene(user, actionContext)){
+                    throw new AuthException(new ViewWrapper(new UTF8JsonView(), Ret.e(56,"role scene unauthorized")));
+                }
+                if(isFieldDefined() && !checkRole(user.getRole())){
+                    throw new AuthException(new ViewWrapper(new UTF8JsonView(), Ret.e(54,"role unauthorized")));
+                }
+            } else if (mLogic.equals("or")) {
+                boolean isFieldDefined = isFieldDefined();
+                boolean roleChecked = false;
+                boolean isSceneRuleDefined = mSceneRule != null;
+                boolean sceneChecked = false;
+                if(isFieldDefined){
+                    if(checkRole(user.getRole())){
+                        return null;
+                    } else {
+                        roleChecked = true;
+                    }
+                }
+                if(isSceneRuleDefined){
+                    if(checkRoleScene(user, actionContext)){
+                        return null;
+                    } else {
+                        sceneChecked = true;
+                    }
+                }
+                if(!isFieldDefined && !isSceneRuleDefined){
+                    return null;
+                }
+                if(roleChecked){
+                    throw new AuthException(new ViewWrapper(new UTF8JsonView(), Ret.e(54,"role unauthorized")));
+                } else {
+                    throw new AuthException(new ViewWrapper(new UTF8JsonView(), Ret.e(56,"role scene unauthorized")));
+                }
             }
-            if(mSceneRule != null && !checkRoleScene(user, actionContext)){
-                throw new AuthException(new ViewWrapper(new UTF8JsonView(), Ret.e(56,"role scene unauthorized")));
-            }
+
             return null;
         } catch (AuthException e) {
             return e.getView();
