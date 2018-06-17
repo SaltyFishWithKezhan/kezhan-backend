@@ -41,7 +41,7 @@ import java.util.List;
 public class MomentModule {
     @At("/getBySubCourseId")
     @Ok("json")
-    public NutMap getBySubCourseId(@Param("sub_course_id") String subCourseId, @Param("page_number") String pageNumber,
+    public NutMap getBySubCourseId(@Param("sbid") String subCourseId, @Param("page_number") String pageNumber,
                                    @Param("page_size") String pageSize, @Param(df = "-1", value = "year") String yid,
                                    @Param(df = "-1", value = "semester") String sid) {
         SimpleValidator validator = new SimpleValidator();

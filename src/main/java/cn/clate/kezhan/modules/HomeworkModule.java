@@ -16,8 +16,7 @@ public class HomeworkModule {
 
     @At("/getBySubCourse")
     @Ok("json")
-    public NutMap getHomeworkBySubCourse(@Param("sub_course_id") String subCourseId, @Param("page_number") String pageNumber, @Param("page_size") String pageSize,
-                                         @Param(df = "-1", value = "year") String yid, @Param(df = "-1", value = "semester") String sid) {
+    public NutMap getHomeworkBySubCourse(@Param("sbid") String subCourseId, @Param("page_number") String pageNumber, @Param("page_size") String pageSize, @Param(df = "-1", value = "year") String yid, @Param(df = "-1", value = "semester") String sid) {
         SimpleValidator validator = new SimpleValidator();
         validator.now(subCourseId, "班级ID").require().num();
         validator.now(pageNumber, "当前页数").require().min(0);
@@ -35,7 +34,7 @@ public class HomeworkModule {
 
     @At("/getByHomeworkId")
     @Ok("json")
-    public NutMap getHomeworkById(@Param("homework_id") String homeworkId, @Param(df = "-1", value = "year") String yid,
+    public NutMap getHomeworkById(@Param("hmid") String homeworkId, @Param(df = "-1", value = "year") String yid,
                                   @Param(df = "-1", value = "semester") String sid) {
         SimpleValidator validator = new SimpleValidator();
         validator.now(homeworkId, "作业ID").require();
@@ -56,7 +55,7 @@ public class HomeworkModule {
     @At("/addHomework")
     @Ok("json")
     @Filters(@By(type = UserAuthenication.class))
-    public NutMap addHomework(@Param("uid") String uid, @Param("title") String title, @Param("desc") String desc, @Param("ddl") String ddl, @Param("sub_course_id") String scid, @Param(df = "-1", value = "year") String yid, @Param(df = "-1", value = "semester") String sid) {
+    public NutMap addHomework(@Param("uid") String uid, @Param("title") String title, @Param("desc") String desc, @Param("ddl") String ddl, @Param("sbid") String scid, @Param(df = "-1", value = "year") String yid, @Param(df = "-1", value = "semester") String sid) {
         SimpleValidator validator = new SimpleValidator();
         validator.now(scid, "课程ID").require();
         validator.num(scid, "课程ID格式不合法");
@@ -84,7 +83,7 @@ public class HomeworkModule {
     @At("/updateHomework")
     @Ok("json")
     @Filters(@By(type = UserAuthenication.class))
-    public NutMap udpateHomework(@Param("homework_id") String hmId, @Param("title") String title, @Param("desc") String desc, @Param("ddl") String ddl, @Param(df = "-1", value = "year") String yid, @Param(df = "-1", value = "semester") String sid) {
+    public NutMap udpateHomework(@Param("hmid") String hmId, @Param("title") String title, @Param("desc") String desc, @Param("ddl") String ddl, @Param(df = "-1", value = "year") String yid, @Param(df = "-1", value = "semester") String sid) {
         SimpleValidator validator = new SimpleValidator();
         validator.now(hmId, "作业ID").require();
         validator.num(hmId, "作业ID参数不合法").require();
@@ -112,7 +111,7 @@ public class HomeworkModule {
 
     @At("/deleteHomework")
     @Ok("json")
-    public NutMap deleteHomework(@Param("hmid") String hmid, @Param("yid") String yid, @Param("sid") String sid){
+    public NutMap deleteHomework(@Param("hmid") String hmid, @Param("year") String yid, @Param("semester") String sid){
         SimpleValidator validator = new SimpleValidator();
         validator.now(hmid, "作业ID").require();
         validator.num(hmid, "作业ID").require();

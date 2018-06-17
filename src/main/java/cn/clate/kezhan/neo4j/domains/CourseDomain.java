@@ -43,7 +43,7 @@ public class CourseDomain {
         }
     }
 
-    public static void addAtendCourseRs(int uid, int cid) {
+    public static void addAttendCourseRs(int uid, int cid) {
         try (Session session = Neo4jDriver.getInstance().session()) {
             String greeting = session.writeTransaction(new TransactionWork<String>() {
                 @Override

@@ -47,8 +47,7 @@ public class CourseModule {
         List<CourseSub> courseSubs = (List<CourseSub>) subCourse.get("courseSubs");
 
         for (CourseSub it : courseSubs) {
-            courseTimeSlots.add((List<CourseTimeSlot>) CourseDomain.getTimeSlotsByCourseSubid(it.getId(), Integer.parseInt(yid),
-                    Integer.parseInt(sid)).get("time_slots"));
+            courseTimeSlots.add((List<CourseTimeSlot>) CourseDomain.getTimeSlotsByCourseSubid(it.getId(), Integer.parseInt(yid), Integer.parseInt(sid)).get("time_slots"));
         }
         ret.addv("courseInfo", courseInfo);
         ret.addv("timeSlots", courseTimeSlots);
@@ -113,7 +112,7 @@ public class CourseModule {
 
     @At("/getCourseBySubId")
     @Ok("json")
-    public NutMap getCourseBySubId(@Param("sub_id") String id, @Param(df = "-1", value = "year") String yid,
+    public NutMap getCourseBySubId(@Param("sbid") String id, @Param(df = "-1", value = "year") String yid,
                                    @Param(df = "-1", value = "semester") String sid) {
         SimpleValidator validator = new SimpleValidator();
         validator.now(id, "班级课程id").require().num();
@@ -143,7 +142,7 @@ public class CourseModule {
 
     @At("/getMembersBySubId")
     @Ok("json")
-    public NutMap getMembersBySubId(@Param("sub_id") String id, @Param(df = "-1", value = "year") String yid,
+    public NutMap getMembersBySubId(@Param("sbid") String id, @Param(df = "-1", value = "year") String yid,
                                     @Param(df = "-1", value = "semester") String sid) {
         SimpleValidator validator = new SimpleValidator();
         validator.now(id, "班级课程id").require().num();
@@ -198,7 +197,7 @@ public class CourseModule {
     @At("/attendCourse")
     @Ok("json")
     @Filters(@By(type = UserAuthenication.class))
-    public NutMap attendCourse(@Param("uid") String uid, @Param("sub_course_id") String sbid,  @Param(df = "-1", value = "year") String yid, @Param(df = "-1", value = "semester") String sid) {
+    public NutMap attendCourse(@Param("uid") String uid, @Param("sbid") String sbid,  @Param(df = "-1", value = "year") String yid, @Param(df = "-1", value = "semester") String sid) {
         SimpleValidator validator = new SimpleValidator();
         validator.now(sbid, "课程ID").require();
         validator.num(sbid, "课程ID").require();
