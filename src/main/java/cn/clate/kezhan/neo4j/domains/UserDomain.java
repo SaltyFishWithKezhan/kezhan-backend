@@ -130,6 +130,7 @@ public class UserDomain {
 //            addFriendRs(u1,u2);
 //        }
 
+
         findThreeDegreeRsByUserId(8);
     }
 

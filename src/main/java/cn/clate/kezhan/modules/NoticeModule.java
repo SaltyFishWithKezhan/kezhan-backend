@@ -39,7 +39,7 @@ public class NoticeModule {
     @At("/getUnreadBySubCourse")
     @Ok("json")
     @Filters(@By(type = UserAuthenication.class))
-    public NutMap getUnreadCount(@Param("uid") String userId, @Param("sub_course_id") String subCourseId,
+    public NutMap getUnreadCount(@Param("uid") String userId, @Param("sbid") String subCourseId,
                                  @Param(df = "-1", value = "year") String yid, @Param(df = "-1", value = "semester") String sid) {
         SimpleValidator validator = new SimpleValidator();
         validator.now(subCourseId, "班级ID").require();
@@ -64,7 +64,7 @@ public class NoticeModule {
     @At("/getBySubCourse")
     @Ok("json")
     @Filters(@By(type = UserAuthenication.class))
-    public NutMap getBySubCourse(@Param("uid") String userId, @Param("sub_course_id") String subCourseId,
+    public NutMap getBySubCourse(@Param("uid") String userId, @Param("sbid") String subCourseId,
                                  @Param("page_number") String pageNumber, @Param("page_size") String pageSize,
                                  @Param(df = "-1", value = "year") String yid, @Param(df = "-1", value = "semester") String sid) {
         SimpleValidator validator = new SimpleValidator();
@@ -80,7 +80,7 @@ public class NoticeModule {
     @At("/getByNoticeId")
     @Ok("json")
     @Filters(@By(type = UserAuthenication.class))
-    public NutMap getByNoticeId(@Param("uid") String userId, @Param("notice_id") String noticeId,
+    public NutMap getByNoticeId(@Param("uid") String userId, @Param("nid") String noticeId,
                                 @Param(df = "-1", value = "year") String yid, @Param(df = "-1", value = "semester") String sid) {
         SimpleValidator validator = new SimpleValidator();
         validator.now(noticeId, "公告ID").require();
@@ -103,7 +103,7 @@ public class NoticeModule {
     @Ok("json")
     @Filters(@By(type = UserAuthenication.class))
     public NutMap submitNotice(@Param("uid") String posterId, @Param("title") String title,
-                               @Param("desc") String description, @Param("sub_course_id") String subCourseId,
+                               @Param("desc") String description, @Param("sbid") String subCourseId,
                                @Param(df = "-1", value = "year") String yid, @Param(df = "-1", value = "semester") String sid) {
         SimpleValidator validator = new SimpleValidator();
         validator.now(title, "公告主题").require().lenMin(1);
@@ -126,7 +126,7 @@ public class NoticeModule {
     @At("/updateNotice")
     @Ok("json")
     @Filters(@By(type = UserAuthenication.class))
-    public NutMap updateNotice(@Param("notice_id") String noticeId, @Param("title") String title,
+    public NutMap updateNotice(@Param("nid") String noticeId, @Param("title") String title,
                                @Param("desc") String description, @Param(df = "-1", value = "year") String yid,
                                @Param(df = "-1", value = "semester") String sid) {
         SimpleValidator validator = new SimpleValidator();
@@ -147,7 +147,7 @@ public class NoticeModule {
 
     @At("/deleteNotice")
     @Ok("json")
-    public NutMap deleteNotice(@Param("notice_id") String nid, @Param(df = "-1", value = "year") String yid, @Param(df = "-1", value = "semester") String sid) {
+    public NutMap deleteNotice(@Param("nid") String nid, @Param(df = "-1", value = "year") String yid, @Param(df = "-1", value = "semester") String sid) {
         SimpleValidator validator = new SimpleValidator();
         validator.now(nid, "公告ID").require();
         if (!validator.check()) {
