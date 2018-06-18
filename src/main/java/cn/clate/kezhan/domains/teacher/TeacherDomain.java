@@ -16,6 +16,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TeacherDomain {
+    public static NutMap getTeacherByUserId(int id){
+        Dao dao = DaoFactory.get();
+        NutMap ret = new NutMap();
+        Teacher teacher = dao.fetch(Teacher.class, Cnd.where("user_id", "=", id));
+        if (teacher == null){
+            ret.addv("ok?", false);
+        }
+        ret.addv("ok?", true);
+        ret.addv("teacher", teacher);
+        return ret;
+    }
+
     public static NutMap getTeacherById(int id) {
         Dao dao = DaoFactory.get();
         Teacher teacher = dao.fetch(Teacher.class, Cnd.where("id", "=", id).and("is_active", "!=", -1));
@@ -53,7 +65,7 @@ public class TeacherDomain {
         NutMap courseSub = CourseDomain.getCourseSubBySubId(id, yid, sid);
         NutMap courseTerm = CourseDomain.getCourseTermByCourseTermId((int) courseSub.get("course_term_id"), yid, sid );
         NutMap course = CourseDomain.getCourseByCourseId((int) courseTerm.get("course_id"));
-        Teacher teacher = dao.fetch(Teacher.class, Cnd.where("id", "=", (int)course.get("teacher_id")).and("is_active", "!=", -1));
+        Teacher teacher = dao.fetch(Teacher.class, Cnd.where("id", "=", (int)course.get("teacher_id")).and("is_active", "=", 1));
         if (teacher == null) {
             return null;
         }

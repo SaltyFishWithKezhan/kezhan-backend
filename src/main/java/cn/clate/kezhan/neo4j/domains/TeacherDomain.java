@@ -70,7 +70,7 @@ public class TeacherDomain {
                     if (result.hasNext()) {
                         Record record = result.next();
                         Teacher teacher = new Teacher();
-                        teacher.setId(record.get("t.teacherId").asInt()).setUsername(record.get("t.teacherName").asString()).
+                        teacher.setId(record.get("t.teacherId").asInt()).setName(record.get("t.teacherName").asString()).
                                 setPhone(record.get("u.phone").asString());
                         return teacher;
                     }

@@ -21,7 +21,7 @@ public class MainModule {
     }
 
     @At("/test")
-    @Filters(@By(type = RoleFilter.class, args = {"SuperAction"}))
+    @Filters(@By(type = RoleFilter.class, args = {"action:SuperAction", "scene:sdsd", "and"}))
     @Ok("json")
     public String test(){
         return "test here";

@@ -11,6 +11,7 @@ import cn.clate.kezhan.utils.validators.SimpleValidator;
 import org.nutz.lang.util.NutMap;
 import org.nutz.mvc.annotation.*;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -151,26 +152,25 @@ public class CourseModule {
         }
         NutMap studentList = CourseDomain.getStudentListByCourseSubId(Integer.parseInt(id), Integer.parseInt(yid),
                 Integer.parseInt(sid));
-        NutMap representiceList = CourseDomain.getRepresentiveByCourseSubId(Integer.parseInt(id), Integer.parseInt(yid),
+        NutMap assistantList = CourseDomain.getAssistantByCourseSubId(Integer.parseInt(id), Integer.parseInt(yid),
                 Integer.parseInt(sid));
         NutMap teacher = TeacherDomain.getTeacheInforByCourseSubId(Integer.parseInt(id), Integer.parseInt(yid),
                 Integer.parseInt(sid));
         if (studentList == null)
-            return Ret.e("用户列表获取错误");
-        if (representiceList == null)
-            return Ret.e("课代表列表获取错误");
+            return Ret.e(0, "用户列表获取错误");
         if (teacher == null)
-            return Ret.e("老师信息获取错误");
+            return Ret.e(0, "老师信息获取错误");
         List<CourseUserTake> courseUserTakes = (List<CourseUserTake>) studentList.get("student_list");
-        List<Representative> representatives = (List<Representative>) representiceList.get("representative_list");
-        ArrayList<NutMap> ret = new ArrayList<>();
+        ArrayList<Assistant> assistants = (ArrayList<Assistant>) assistantList.get("assistant_list");
+        NutMap ret = new NutMap();
         NutMap teacherInfo = new NutMap();
         teacherInfo.addv("id", teacher.get("id"));
         teacherInfo.addv("name", teacher.get("username"));
         teacherInfo.addv("real_name", teacher.get("name"));
         teacherInfo.addv("avatar", teacher.get("avatar"));
         teacherInfo.addv("identity", 2);
-        ret.add(teacherInfo);
+        ret.addv("teachers", teacherInfo);
+        ArrayList<NutMap> stuRet = new ArrayList<>();
         for (CourseUserTake courseUserTake : courseUserTakes) {
             NutMap item = new NutMap();
             NutMap user = UserInfoDomain.getUserById(courseUserTake.getUserId());
@@ -178,19 +178,17 @@ public class CourseModule {
             item.addv("name", user.get("username"));
             item.addv("real_name", user.get("real_name"));
             item.addv("avatar", user.get("avatar"));
-            int flag = 1;
-            for (Representative representative : representatives) {
-                if ((int) user.get("id") == representative.getUserId()) {
-                    item.addv("identity", 1);
-                    flag = 0;
-                }
-            }
-            if (flag == 1) {
-                item.addv("identity", 0);
-            }
-            //identity 为0 表示普通学生 1表示该课课代表 2表示该课老师
-            ret.add(item);
+            item.addv("is_repre", courseUserTake.getIsRepre());
+            item.addv("identity", 0);
+            //identity 为0表示普通学生(通过is_repre判断是否为课代表) 1表示助教 2表示该课老师
+            stuRet.add(item);
         }
+        ret.addv("students", stuRet);
+        List<User> assistantUser = new ArrayList<>();
+        for(Assistant it : assistants){
+            assistantUser.add(it.getAssistant());
+        }
+        ret.addv("assistants", assistantUser);
         return Ret.s("student_list", ret);
     }
 

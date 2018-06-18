@@ -272,9 +272,10 @@ public class CourseDomain {
         try {
             TableName.set(Tools.getYestAndSemester(yid, sid));
             Dao dao = DaoFactory.get();
-            List<CourseUserTake> userTakes = dao.query(CourseUserTake.class, Cnd.where("sub_course_term_id", "=", courseSubId).and("status", "!=", -1));
-            if (userTakes == null)
+            List<CourseUserTake> userTakes = dao.query(CourseUserTake.class, Cnd.where("sub_course_term_id", "=", courseSubId).and("status", "=", 0));
+            if (userTakes.size() == 0){
                 return null;
+            }
             ArrayList<CourseUserTake> courseUserTakeArrayList = new ArrayList<>(userTakes);
             NutMap ret = new NutMap();
             ret.addv("student_list", courseUserTakeArrayList);
@@ -285,16 +286,21 @@ public class CourseDomain {
 
     }
 
-    public static NutMap getRepresentiveByCourseSubId(int courseSubId, int yid, int sid) {
+    public static NutMap getAssistantByCourseSubId(int courseSubId, int yid, int sid) {
         try {
             TableName.set(Tools.getYestAndSemester(yid, sid));
             Dao dao = DaoFactory.get();
-            List<Representative> representatives = dao.query(Representative.class, Cnd.where("sub_course_term_id", "=", courseSubId).and("status", "!=", -1));
-            if (representatives == null)
+            List<Assistant> assistants = dao.query(Assistant.class, Cnd.where("sub_course_term_id", "=", courseSubId).and("status", "=", 0));
+            if (assistants.size() == 0){
                 return null;
-            ArrayList<Representative> representativeArrayList = new ArrayList<>(representatives);
+            }
+            for (Assistant it : assistants){
+                dao.fetchLinks(it, "assistant");
+                it.getAssistant().removeCriticalInfo();
+            }
+            ArrayList<Assistant> assistantsArrayList = new ArrayList<>(assistants);
             NutMap ret = new NutMap();
-            ret.addv("representative_list", representativeArrayList);
+            ret.addv("assistant_list", assistantsArrayList);
             return ret;
         } finally {
             TableName.clear();

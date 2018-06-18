@@ -4,9 +4,6 @@ import org.nutz.dao.entity.annotation.Column;
 import org.nutz.dao.entity.annotation.Id;
 import org.nutz.dao.entity.annotation.Table;
 
-/**
- * Created by 蛟川小盆友 on 2018/3/25.
- */
 @Table("kz_courses_term_${yid}_${sid}_users_take")
 public class CourseUserTake {
     @Id
@@ -15,8 +12,8 @@ public class CourseUserTake {
     private int userId;
     @Column("sub_course_term_id")
     private int subCourseTermId;
-    @Column("is_assistant")
-    private int isAssistant;
+    @Column("is_repre")
+    private boolean isRepre;
     @Column("status")
     private int status;
 
@@ -59,12 +56,12 @@ public class CourseUserTake {
         return this;
     }
 
-    public int getIsAssistant() {
-        return isAssistant;
+    public boolean getIsRepre() {
+        return isRepre;
     }
 
-    public CourseUserTake setIsAssistant(int isAssistant) {
-        this.isAssistant = isAssistant;
+    public CourseUserTake setIsRepre(boolean isRepre) {
+        this.isRepre = isRepre;
         return this;
     }
 }

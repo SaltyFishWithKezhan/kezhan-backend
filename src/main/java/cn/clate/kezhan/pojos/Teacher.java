@@ -23,19 +23,13 @@ public class Teacher {
     private String phone;
 
     @Column
-    private String username;
-
-    @Column
-    private String password;
-
-    @Column
     private String desc;
 
     @Column
     private String avatar;
 
     @Column("is_active")
-    private int isActive;
+    private boolean isActive;
 
     @Column("user_id")
     private int userId;
@@ -88,24 +82,6 @@ public class Teacher {
         return this;
     }
 
-    public String getUsername() {
-        return username;
-    }
-
-    public Teacher setUsername(String username) {
-        this.username = username;
-        return this;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public Teacher setPassword(String password) {
-        this.password = password;
-        return this;
-    }
-
     public String getDesc() {
         return desc;
     }
@@ -124,11 +100,11 @@ public class Teacher {
         return this;
     }
 
-    public int getIsActive() {
+    public boolean isActive() {
         return isActive;
     }
 
-    public Teacher setIsActive(int isActive) {
+    public Teacher setIsActive(boolean isActive) {
         this.isActive = isActive;
         return this;
     }

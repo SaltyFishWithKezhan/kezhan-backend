@@ -1,6 +1,7 @@
 package cn.clate.kezhan.filters;
 
 import cn.clate.kezhan.filters.rolescenes.*;
+import cn.clate.kezhan.filters.rolescenes.SubCourseScene.AssistantLevelInSubCourseRoleSceneRule;
 import cn.clate.kezhan.pojos.User;
 import cn.clate.kezhan.utils.Ret;
 import cn.clate.kezhan.utils.factories.DaoFactory;
@@ -150,19 +151,18 @@ public class RoleFilter implements ActionFilter {
     private boolean checkRoleScene(User user, ActionContext actionContext) throws AuthException {
         boolean accepted;
         try {
-            RoleSceneRule rule;
+            RoleSceneRule rule = null;
             switch (mSceneRule){
                 case SCENE_STUDENT_IN_SUB_COURSE:
                     rule = new StudentInSubCourseRoleSceneRule();
                     break;
                 case SCENE_ASSISTANT_IN_SUB_COURSE:
-                    rule = new AssistantInSubCourseRoleSceneRule();
+                    rule = new StuRepInSubCourseRoleSceneRule();
                     break;
                 case SCENE_TEACHER_IN_SUB_COURSE:
-                    rule = new TeacherInSubCourseRoleSceneRule();
                     break;
                 case SCENE_TEACHER_OR_ASSISTANT_IN_SUB_COURSE:
-                    rule = new TeacherOrAssistantInSubCourseRoleSceneRule();
+                    rule = new AssistantLevelInSubCourseRoleSceneRule();
                     break;
                 default:
                     throw new AuthException(new ViewWrapper(new UTF8JsonView(), Ret.e(55,"unknown role scene")));
