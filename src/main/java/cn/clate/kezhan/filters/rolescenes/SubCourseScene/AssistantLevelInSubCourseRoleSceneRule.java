@@ -1,5 +1,6 @@
 package cn.clate.kezhan.filters.rolescenes.SubCourseScene;
 
+import cn.clate.kezhan.filters.RoleFilter;
 import cn.clate.kezhan.filters.rolescenes.RoleSceneRule;
 import cn.clate.kezhan.filters.rolescenes.RoleSceneToolBox;
 import cn.clate.kezhan.pojos.User;
@@ -13,7 +14,12 @@ public class AssistantLevelInSubCourseRoleSceneRule implements RoleSceneRule {
         String subCourseId = actionContext.getRequest().getParameter("sbid");
         String year = actionContext.getRequest().getParameter("year");
         String semester = actionContext.getRequest().getParameter("semester");
+        year = year == null ? "-1" : year;
+        semester = semester == null ? "-1" : semester;
         if (user.getRole() < 1) {
+            return false;
+        }
+        if (!RoleSceneToolBox.checkSubCourseExists(dao, subCourseId, year, semester)){
             return false;
         }
         // 学生级别

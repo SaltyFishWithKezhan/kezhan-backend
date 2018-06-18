@@ -7,6 +7,7 @@ import cn.clate.kezhan.pojos.CourseUserTake;
 import cn.clate.kezhan.pojos.Teacher;
 import cn.clate.kezhan.utils.Tools;
 import cn.clate.kezhan.utils.validators.SimpleValidator;
+import javafx.scene.control.Tab;
 import org.nutz.dao.Cnd;
 import org.nutz.dao.Dao;
 import org.nutz.dao.TableName;
@@ -38,7 +39,7 @@ public class RoleSceneToolBox {
 
     }
 
-    private static boolean checkSubCourseExists(Dao dao, String sbid, String yid, String sid) {
+    public static boolean checkSubCourseExists(Dao dao, String sbid, String yid, String sid) {
         if (!(checkIsNumber(sbid) && checkIsNumber(yid) && checkIsNumber(sid))) {
             return false;
         }
@@ -67,37 +68,46 @@ public class RoleSceneToolBox {
 
 
     public static boolean checkIsAssistantSubCourse(Dao dao, int id, String subCourseId, String year, String semester) {
-        if (!checkSubCourseExists(dao, subCourseId, year, semester)) {
-            return false;
+        try {
+            TableName.set(Tools.getYestAndSemester(Integer.parseInt(year), Integer.parseInt(semester)));
+            Assistant t = dao.fetch(Assistant.class, Cnd.where("user_id", "=", id).and("sub_course_term_id", "=", Integer.parseInt(subCourseId)).and("status", "=", 0));
+            if (t == null) {
+                return false;
+            }
+            return true;
+        } finally {
+            TableName.clear();
         }
-        Assistant t = dao.fetch(Assistant.class, Cnd.where("user_id", "=", id).and("sub_course_term_id", "=", Integer.parseInt(subCourseId)).and("status", "=", 0));
-        if (t == null) {
-            return false;
-        }
-        return true;
+
     }
 
     public static boolean checkIsRepAssistantSubCourse(Dao dao, int id, String subCourseId, String year, String semester) {
-        if (!checkSubCourseExists(dao, subCourseId, year, semester)) {
-            return false;
+        try {
+            TableName.set(Tools.getYestAndSemester(Integer.parseInt(year), Integer.parseInt(semester)));
+            CourseUserTake courseUserTake = dao.fetch(CourseUserTake.class, Cnd.where("user_id", "=", id)
+                    .and("sub_course_term_id", "=", Integer.parseInt(subCourseId)));
+            if (courseUserTake == null || courseUserTake.getStatus() != 0 || !courseUserTake.getIsRepre()) {
+                return false;
+            }
+            return true;
+        } finally {
+            TableName.clear();
         }
-        CourseUserTake courseUserTake = dao.fetch(CourseUserTake.class, Cnd.where("user_id", "=", id)
-                .and("sub_course_term_id", "=", Integer.parseInt(subCourseId)));
-        if (courseUserTake == null || courseUserTake.getStatus() != 0 || !courseUserTake.getIsRepre()) {
-            return false;
-        }
-        return true;
+
     }
 
     public static boolean checkIsAttendSubCourse(Dao dao, int id, String subCourseId, String year, String semester) {
-        if (!checkSubCourseExists(dao, subCourseId, year, semester)) {
-            return false;
+        try {
+            TableName.set(Tools.getYestAndSemester(Integer.parseInt(year), Integer.parseInt(semester)));
+            CourseUserTake courseUserTake = dao.fetch(CourseUserTake.class, Cnd.where("user_id", "=", id)
+                    .and("sub_course_term_id", "=", Integer.parseInt(subCourseId)));
+            if (courseUserTake == null || courseUserTake.getStatus() != 0) {
+                return false;
+            }
+            return true;
+        } finally {
+            TableName.clear();
         }
-        CourseUserTake courseUserTake = dao.fetch(CourseUserTake.class, Cnd.where("user_id", "=", id)
-                .and("sub_course_term_id", "=", Integer.parseInt(subCourseId)));
-        if (courseUserTake == null || courseUserTake.getStatus() != 0) {
-            return false;
-        }
-        return true;
+
     }
 }

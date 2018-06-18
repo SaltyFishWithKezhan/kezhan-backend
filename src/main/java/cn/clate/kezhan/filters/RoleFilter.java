@@ -4,6 +4,7 @@ import cn.clate.kezhan.filters.rolescenes.*;
 import cn.clate.kezhan.filters.rolescenes.SubCourseScene.AssistantLevelInSubCourseRoleSceneRule;
 import cn.clate.kezhan.filters.rolescenes.SubCourseScene.StudentRepLevelInSubCourseRoleSceneRule;
 import cn.clate.kezhan.filters.rolescenes.SubCourseScene.StudentLevelInSubCourseRoleSceneRule;
+import cn.clate.kezhan.filters.rolescenes.SubCourseScene.TeacherLevelInSubCourseRoleSceneRule;
 import cn.clate.kezhan.pojos.User;
 import cn.clate.kezhan.utils.Ret;
 import cn.clate.kezhan.utils.factories.DaoFactory;
@@ -17,10 +18,10 @@ import org.nutz.mvc.view.UTF8JsonView;
 import org.nutz.mvc.view.ViewWrapper;
 
 public class RoleFilter implements ActionFilter {
-    public static final String SCENE_STUDENT_IN_SUB_COURSE = "1";
-    public static final String SCENE_ASSISTANT_IN_SUB_COURSE = "2";
-    public static final String SCENE_TEACHER_IN_SUB_COURSE = "3";
-    public static final String SCENE_TEACHER_OR_ASSISTANT_IN_SUB_COURSE = "4";
+    public static final String SCENE_MORE_THEN_OR_EQUAL_STUDENT_IN_SUB_COURSE = "1";
+    public static final String SCENE_MORE_THEN_OR_EQUAL_STUDENT_REP_IN_SUB_COURSE = "2";
+    public static final String SCENE_MORE_THEN_OR_EQUAL_ASSISTANCE_IN_SUB_COURSE = "3";
+    public static final String SCENE_MORE_THEN_OR_EQUAL_TEACHER_IN_SUB_COURSE = "4";
 
     private String mField;
     private String mSceneRule;
@@ -153,18 +154,19 @@ public class RoleFilter implements ActionFilter {
     private boolean checkRoleScene(User user, ActionContext actionContext) throws AuthException {
         boolean accepted;
         try {
-            RoleSceneRule rule = null;
+            RoleSceneRule rule;
             switch (mSceneRule){
-                case SCENE_STUDENT_IN_SUB_COURSE:
+                case SCENE_MORE_THEN_OR_EQUAL_STUDENT_IN_SUB_COURSE:
                     rule = new StudentLevelInSubCourseRoleSceneRule();
                     break;
-                case SCENE_ASSISTANT_IN_SUB_COURSE:
+                case SCENE_MORE_THEN_OR_EQUAL_STUDENT_REP_IN_SUB_COURSE:
                     rule = new StudentRepLevelInSubCourseRoleSceneRule();
                     break;
-                case SCENE_TEACHER_IN_SUB_COURSE:
-                    break;
-                case SCENE_TEACHER_OR_ASSISTANT_IN_SUB_COURSE:
+                case SCENE_MORE_THEN_OR_EQUAL_ASSISTANCE_IN_SUB_COURSE:
                     rule = new AssistantLevelInSubCourseRoleSceneRule();
+                    break;
+                case SCENE_MORE_THEN_OR_EQUAL_TEACHER_IN_SUB_COURSE:
+                    rule = new TeacherLevelInSubCourseRoleSceneRule();
                     break;
                 default:
                     throw new AuthException(new ViewWrapper(new UTF8JsonView(), Ret.e(55,"unknown role scene")));

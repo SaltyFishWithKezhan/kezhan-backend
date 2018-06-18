@@ -2,7 +2,7 @@ package cn.clate.kezhan.modules;
 
 import cn.clate.kezhan.domains.course.MomentDomain;
 import cn.clate.kezhan.domains.course.NoticeDomain;
-import cn.clate.kezhan.filters.UserAuthenication;
+import cn.clate.kezhan.filters.RoleFilter;
 import cn.clate.kezhan.pojos.Notice;
 import cn.clate.kezhan.utils.Ret;
 import cn.clate.kezhan.utils.serializer.PojoSerializer;
@@ -17,7 +17,7 @@ import java.util.List;
 public class NoticeModule {
     @At("/setAllRead")
     @Ok("json")
-    @Filters(@By(type = UserAuthenication.class))
+    @Filters(@By(type = RoleFilter.class, args = {"scene:" + RoleFilter.SCENE_MORE_THEN_OR_EQUAL_STUDENT_IN_SUB_COURSE}))
     public NutMap setAllNoticeRead(@Param("uid") String userId, @Param("sbid") String subCourseId,
                                    @Param(df = "-1", value = "year") String yid, @Param(df = "-1", value = "semester") String sid) {
         SimpleValidator validator = new SimpleValidator();
@@ -38,7 +38,7 @@ public class NoticeModule {
 
     @At("/getUnreadBySubCourse")
     @Ok("json")
-    @Filters(@By(type = UserAuthenication.class))
+    @Filters(@By(type = RoleFilter.class, args = {"scene:" + RoleFilter.SCENE_MORE_THEN_OR_EQUAL_STUDENT_IN_SUB_COURSE}))
     public NutMap getUnreadCount(@Param("uid") String userId, @Param("sbid") String subCourseId,
                                  @Param(df = "-1", value = "year") String yid, @Param(df = "-1", value = "semester") String sid) {
         SimpleValidator validator = new SimpleValidator();
@@ -63,7 +63,7 @@ public class NoticeModule {
 
     @At("/getBySubCourse")
     @Ok("json")
-    @Filters(@By(type = UserAuthenication.class))
+    @Filters(@By(type = RoleFilter.class, args = {"scene:" + RoleFilter.SCENE_MORE_THEN_OR_EQUAL_STUDENT_IN_SUB_COURSE}))
     public NutMap getBySubCourse(@Param("uid") String userId, @Param("sbid") String subCourseId,
                                  @Param("page_number") String pageNumber, @Param("page_size") String pageSize,
                                  @Param(df = "-1", value = "year") String yid, @Param(df = "-1", value = "semester") String sid) {
@@ -79,7 +79,7 @@ public class NoticeModule {
 
     @At("/getByNoticeId")
     @Ok("json")
-    @Filters(@By(type = UserAuthenication.class))
+    @Filters(@By(type = RoleFilter.class, args = {"scene:" + RoleFilter.SCENE_MORE_THEN_OR_EQUAL_STUDENT_IN_SUB_COURSE}))
     public NutMap getByNoticeId(@Param("uid") String userId, @Param("nid") String noticeId,
                                 @Param(df = "-1", value = "year") String yid, @Param(df = "-1", value = "semester") String sid) {
         SimpleValidator validator = new SimpleValidator();
@@ -101,7 +101,7 @@ public class NoticeModule {
 
     @At("/submitNotice")
     @Ok("json")
-    @Filters(@By(type = UserAuthenication.class))
+    @Filters(@By(type = RoleFilter.class, args = {"scene:" + RoleFilter.SCENE_MORE_THEN_OR_EQUAL_ASSISTANCE_IN_SUB_COURSE}))
     public NutMap submitNotice(@Param("uid") String posterId, @Param("title") String title,
                                @Param("desc") String description, @Param("sbid") String subCourseId,
                                @Param(df = "-1", value = "year") String yid, @Param(df = "-1", value = "semester") String sid) {
@@ -125,7 +125,7 @@ public class NoticeModule {
 
     @At("/updateNotice")
     @Ok("json")
-    @Filters(@By(type = UserAuthenication.class))
+    @Filters(@By(type = RoleFilter.class, args = {"scene:" + RoleFilter.SCENE_MORE_THEN_OR_EQUAL_ASSISTANCE_IN_SUB_COURSE}))
     public NutMap updateNotice(@Param("nid") String noticeId, @Param("title") String title,
                                @Param("desc") String description, @Param(df = "-1", value = "year") String yid,
                                @Param(df = "-1", value = "semester") String sid) {
@@ -147,6 +147,7 @@ public class NoticeModule {
 
     @At("/deleteNotice")
     @Ok("json")
+    @Filters(@By(type = RoleFilter.class, args = {"scene:" + RoleFilter.SCENE_MORE_THEN_OR_EQUAL_ASSISTANCE_IN_SUB_COURSE}))
     public NutMap deleteNotice(@Param("nid") String nid, @Param(df = "-1", value = "year") String yid, @Param(df = "-1", value = "semester") String sid) {
         SimpleValidator validator = new SimpleValidator();
         validator.now(nid, "公告ID").require();

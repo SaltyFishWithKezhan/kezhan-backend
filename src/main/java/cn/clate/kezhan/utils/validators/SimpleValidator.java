@@ -237,7 +237,7 @@ public class SimpleValidator {
      */
     public SimpleValidator num(String subject, String errorText){
         if(mError == null && subject!=null){
-            if( !matchPreg(subject, "[0-9]*")){
+            if( !matchPreg(subject, "-?[0-9]*")){
                 mError = errorText;
             }
         }

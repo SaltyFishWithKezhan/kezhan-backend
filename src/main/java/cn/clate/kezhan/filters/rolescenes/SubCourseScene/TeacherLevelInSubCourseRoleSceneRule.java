@@ -13,7 +13,12 @@ public class TeacherLevelInSubCourseRoleSceneRule implements RoleSceneRule {
         String subCourseId = actionContext.getRequest().getParameter("sbid");
         String year = actionContext.getRequest().getParameter("year");
         String semester = actionContext.getRequest().getParameter("semester");
+        year = year == null ? "-1" : year;
+        semester = semester == null ? "-1" : semester;
         if (user.getRole() < 2) {
+            return false;
+        }
+        if (!RoleSceneToolBox.checkSubCourseExists(dao, subCourseId, year, semester)){
             return false;
         }
         // 教师级别

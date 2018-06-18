@@ -16,7 +16,12 @@ public class StudentRepLevelInSubCourseRoleSceneRule implements RoleSceneRule {
         String subCourseId = actionContext.getRequest().getParameter("sbid");
         String year = actionContext.getRequest().getParameter("year");
         String semester = actionContext.getRequest().getParameter("semester");
+        year = year == null ? "-1" : year;
+        semester = semester == null ? "-1" : semester;
         if (user.getRole() < 1){
+            return false;
+        }
+        if (!RoleSceneToolBox.checkSubCourseExists(dao, subCourseId, year, semester)){
             return false;
         }
         if (user.getRole() == 1){
