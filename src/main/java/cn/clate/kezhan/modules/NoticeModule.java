@@ -18,7 +18,7 @@ public class NoticeModule {
     @At("/setAllRead")
     @Ok("json")
     @Filters(@By(type = UserAuthenication.class))
-    public NutMap setAllNoticeRead(@Param("uid") String userId, @Param("sub_course_id") String subCourseId,
+    public NutMap setAllNoticeRead(@Param("uid") String userId, @Param("sbid") String subCourseId,
                                    @Param(df = "-1", value = "year") String yid, @Param(df = "-1", value = "semester") String sid) {
         SimpleValidator validator = new SimpleValidator();
         validator.now(subCourseId, "班级ID").require();

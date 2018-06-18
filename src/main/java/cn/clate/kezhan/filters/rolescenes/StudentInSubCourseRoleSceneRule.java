@@ -9,7 +9,7 @@ import org.nutz.mvc.ActionContext;
 public class StudentInSubCourseRoleSceneRule implements RoleSceneRule {
     @Override
     public boolean check(Dao dao, User user, ActionContext actionContext) {
-        String subCourseId = actionContext.getRequest().getParameter("sub_course_id");
+        String subCourseId = actionContext.getRequest().getParameter("sbid");
         if(subCourseId == null){
             return false;
         }
