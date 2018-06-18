@@ -101,7 +101,7 @@ public class NoticeModule {
 
     @At("/submitNotice")
     @Ok("json")
-    @Filters(@By(type = RoleFilter.class, args = {"scene:" + RoleFilter.SCENE_MORE_THEN_OR_EQUAL_ASSISTANCE_IN_SUB_COURSE}))
+    @Filters(@By(type = RoleFilter.class, args = {"scene:" + RoleFilter.SCENE_MORE_THEN_OR_EQUAL_STUDENT_REP_IN_SUB_COURSE}))
     public NutMap submitNotice(@Param("uid") String posterId, @Param("title") String title,
                                @Param("desc") String description, @Param("sbid") String subCourseId,
                                @Param(df = "-1", value = "year") String yid, @Param(df = "-1", value = "semester") String sid) {
@@ -125,7 +125,7 @@ public class NoticeModule {
 
     @At("/updateNotice")
     @Ok("json")
-    @Filters(@By(type = RoleFilter.class, args = {"scene:" + RoleFilter.SCENE_MORE_THEN_OR_EQUAL_ASSISTANCE_IN_SUB_COURSE}))
+    @Filters(@By(type = RoleFilter.class, args = {"scene:" + RoleFilter.SCENE_MORE_THEN_OR_EQUAL_STUDENT_REP_IN_SUB_COURSE}))
     public NutMap updateNotice(@Param("nid") String noticeId, @Param("title") String title,
                                @Param("desc") String description, @Param(df = "-1", value = "year") String yid,
                                @Param(df = "-1", value = "semester") String sid) {
@@ -147,7 +147,7 @@ public class NoticeModule {
 
     @At("/deleteNotice")
     @Ok("json")
-    @Filters(@By(type = RoleFilter.class, args = {"scene:" + RoleFilter.SCENE_MORE_THEN_OR_EQUAL_ASSISTANCE_IN_SUB_COURSE}))
+    @Filters(@By(type = RoleFilter.class, args = {"scene:" + RoleFilter.SCENE_MORE_THEN_OR_EQUAL_STUDENT_REP_IN_SUB_COURSE}))
     public NutMap deleteNotice(@Param("nid") String nid, @Param(df = "-1", value = "year") String yid, @Param(df = "-1", value = "semester") String sid) {
         SimpleValidator validator = new SimpleValidator();
         validator.now(nid, "公告ID").require();
