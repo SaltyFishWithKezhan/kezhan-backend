@@ -1,7 +1,6 @@
 package cn.clate.kezhan;
 
 import cn.clate.kezhan.filters.RoleFilter;
-import cn.clate.kezhan.filters.rolescenes.StudentInSubCourseRoleSceneRule;
 import cn.clate.kezhan.utils.factories.DaoFactory;
 import org.nutz.mvc.annotation.*;
 import org.nutz.mvc.ioc.provider.ComboIocProvider;

@@ -3,6 +3,7 @@ package cn.clate.kezhan.filters.rolescenes;
 import cn.clate.kezhan.domains.course.CourseDomain;
 import cn.clate.kezhan.pojos.Assistant;
 import cn.clate.kezhan.pojos.CourseSub;
+import cn.clate.kezhan.pojos.CourseUserTake;
 import cn.clate.kezhan.pojos.Teacher;
 import cn.clate.kezhan.utils.Tools;
 import cn.clate.kezhan.utils.validators.SimpleValidator;
@@ -71,6 +72,30 @@ public class RoleSceneToolBox {
         }
         Assistant t = dao.fetch(Assistant.class, Cnd.where("user_id", "=", id).and("sub_course_term_id", "=", Integer.parseInt(subCourseId)).and("status", "=", 0));
         if (t == null) {
+            return false;
+        }
+        return true;
+    }
+
+    public static boolean checkIsRepAssistantSubCourse(Dao dao, int id, String subCourseId, String year, String semester) {
+        if (!checkSubCourseExists(dao, subCourseId, year, semester)) {
+            return false;
+        }
+        CourseUserTake courseUserTake = dao.fetch(CourseUserTake.class, Cnd.where("user_id", "=", id)
+                .and("sub_course_term_id", "=", Integer.parseInt(subCourseId)));
+        if (courseUserTake == null || courseUserTake.getStatus() != 0 || !courseUserTake.getIsRepre()) {
+            return false;
+        }
+        return true;
+    }
+
+    public static boolean checkIsAttendSubCourse(Dao dao, int id, String subCourseId, String year, String semester) {
+        if (!checkSubCourseExists(dao, subCourseId, year, semester)) {
+            return false;
+        }
+        CourseUserTake courseUserTake = dao.fetch(CourseUserTake.class, Cnd.where("user_id", "=", id)
+                .and("sub_course_term_id", "=", Integer.parseInt(subCourseId)));
+        if (courseUserTake == null || courseUserTake.getStatus() != 0) {
             return false;
         }
         return true;

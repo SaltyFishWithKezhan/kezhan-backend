@@ -2,6 +2,8 @@ package cn.clate.kezhan.filters;
 
 import cn.clate.kezhan.filters.rolescenes.*;
 import cn.clate.kezhan.filters.rolescenes.SubCourseScene.AssistantLevelInSubCourseRoleSceneRule;
+import cn.clate.kezhan.filters.rolescenes.SubCourseScene.StudentRepLevelInSubCourseRoleSceneRule;
+import cn.clate.kezhan.filters.rolescenes.SubCourseScene.StudentLevelInSubCourseRoleSceneRule;
 import cn.clate.kezhan.pojos.User;
 import cn.clate.kezhan.utils.Ret;
 import cn.clate.kezhan.utils.factories.DaoFactory;
@@ -154,10 +156,10 @@ public class RoleFilter implements ActionFilter {
             RoleSceneRule rule = null;
             switch (mSceneRule){
                 case SCENE_STUDENT_IN_SUB_COURSE:
-                    rule = new StudentInSubCourseRoleSceneRule();
+                    rule = new StudentLevelInSubCourseRoleSceneRule();
                     break;
                 case SCENE_ASSISTANT_IN_SUB_COURSE:
-                    rule = new StuRepInSubCourseRoleSceneRule();
+                    rule = new StudentRepLevelInSubCourseRoleSceneRule();
                     break;
                 case SCENE_TEACHER_IN_SUB_COURSE:
                     break;

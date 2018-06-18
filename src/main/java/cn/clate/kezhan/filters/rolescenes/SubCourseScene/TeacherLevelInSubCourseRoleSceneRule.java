@@ -6,7 +6,7 @@ import cn.clate.kezhan.pojos.User;
 import org.nutz.dao.Dao;
 import org.nutz.mvc.ActionContext;
 
-// >=教师级别即可访问
+// >=教师级别
 public class TeacherLevelInSubCourseRoleSceneRule implements RoleSceneRule {
     @Override
     public boolean check(Dao dao, User user, ActionContext actionContext) {
