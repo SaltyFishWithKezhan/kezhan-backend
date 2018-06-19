@@ -189,6 +189,10 @@ public class NoticeDomain {
         }
     }
 
+    private static NutMap deleteNoticeReadStatusAfterNoticeDelete(int nid){
+        
+    }
+
     public static NutMap deleteNotice(int noticeId, int yid, int sid) {
         try {
             TableName.set(Tools.getYestAndSemester(yid, sid));
@@ -207,4 +211,6 @@ public class NoticeDomain {
             TableName.clear();
         }
     }
+
+    public static
 }

@@ -139,8 +139,7 @@ public class NoticeModule {
         //具体判断trans执行成功没有只能在lamda中抛runtimeexception
         Trans.exec(() -> {
             NutMap ret = NoticeDomain.updateNotice(Integer.parseInt(noticeId), title, description, Integer.parseInt(yid), Integer.parseInt(sid));
-            MomentDomain.addOrUpdateMoment(2, Integer.parseInt(noticeId), ((Notice) ret.get("success")).getUpdateTime(),
-                    -1, Integer.parseInt(yid), Integer.parseInt(sid));
+            MomentDomain.addOrUpdateMoment(2, Integer.parseInt(noticeId), ((Notice) ret.get("success")).getUpdateTime(), -1, Integer.parseInt(yid), Integer.parseInt(sid));
         });
         return Ret.s("success");
     }

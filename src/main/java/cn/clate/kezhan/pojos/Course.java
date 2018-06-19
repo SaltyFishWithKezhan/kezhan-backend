@@ -1,9 +1,12 @@
 package cn.clate.kezhan.pojos;
 
-import org.nutz.dao.entity.annotation.*;
+import org.nutz.dao.entity.annotation.Column;
+import org.nutz.dao.entity.annotation.Id;
+import org.nutz.dao.entity.annotation.One;
+import org.nutz.dao.entity.annotation.Table;
 
 @Table("kz_courses")
-public class Course {
+public class Course extends CourseRecommend {
     @Id
     private int id;
     @Column("name")
@@ -43,6 +46,7 @@ public class Course {
     }
 
     public Course() {
+        this.type = 4;
     }
 
     public Teacher getTeacher() {

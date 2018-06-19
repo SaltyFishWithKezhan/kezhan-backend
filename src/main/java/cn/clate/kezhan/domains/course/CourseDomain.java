@@ -305,6 +305,19 @@ public class CourseDomain {
         } finally {
             TableName.clear();
         }
+    }
 
+    public static NutMap getRecommendCourseByCourseId(int cid){
+        Dao dao = DaoFactory.get();
+        NutMap ret = new NutMap();
+        List<CourseRecommendMapping> recommendMappings = dao.query(CourseRecommendMapping.class, Cnd.where("course", "=", cid));
+        if (recommendMappings.size() == 0){
+            ret.addv("ok?", false);
+            return ret;
+        }
+        List<CourseRecommend>
+        for (CourseRecommendMapping it : recommendMappings){
+
+        }
     }
 }
