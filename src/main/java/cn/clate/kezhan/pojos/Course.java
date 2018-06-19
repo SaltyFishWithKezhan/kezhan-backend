@@ -6,7 +6,7 @@ import org.nutz.dao.entity.annotation.One;
 import org.nutz.dao.entity.annotation.Table;
 
 @Table("kz_courses")
-public class Course extends CourseRecommend {
+public class Course extends DummyCourse{
     @Id
     private int id;
     @Column("name")
@@ -23,6 +23,8 @@ public class Course extends CourseRecommend {
     private int maxSize;
     @Column("cover_img")
     private String coverImg;
+    @Column("description")
+    private String description;
     @Column("count_evaluate")
     private int countEvaluate;
     @Column("course_code")
@@ -34,6 +36,24 @@ public class Course extends CourseRecommend {
     @Column("total_rating")
     private double totalRating;
 
+    public String getDescription() {
+        return description;
+    }
+
+    public Course setDescription(String description) {
+        this.description = description;
+        return this;
+    }
+
+    public double getTotalRating() {
+        return totalRating;
+    }
+
+    public Course setTotalRating(double totalRating) {
+        this.totalRating = totalRating;
+        return this;
+    }
+
     public double getTotal_rating() {
         return totalRating;
     }
@@ -44,7 +64,7 @@ public class Course extends CourseRecommend {
     }
 
     public Course() {
-        this.type = 4;
+        this.category = 4;
     }
 
     public Teacher getTeacher() {

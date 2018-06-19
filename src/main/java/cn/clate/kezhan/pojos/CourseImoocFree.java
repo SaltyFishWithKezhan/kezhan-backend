@@ -9,6 +9,6 @@ public class CourseImoocFree extends CourseRecommend{
 
     public CourseImoocFree(){
         super();
-        this.type = 3;
+        this.category = 3;
     }
 }

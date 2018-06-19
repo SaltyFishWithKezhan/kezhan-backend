@@ -70,7 +70,7 @@ public class NoticeDomain {
             TableName.set(Tools.getYestAndSemester(yid, sid));
             Dao dao = DaoFactory.get();
             NutMap ret = new NutMap();
-            List<Notice> noticeList = dao.query(Notice.class, Cnd.where("course_sub_id", "=", sbid));
+            List<Notice> noticeList = dao.query(Notice.class, Cnd.where("course_sub_id", "=", sbid).and("status", "=", 0));
             for (Notice it : noticeList) {
                 NoticeReadStatus t = new NoticeReadStatus();
                 t.setNoticeId(it.getId()).setStatus(0).setUserId(uid);
@@ -189,7 +189,7 @@ public class NoticeDomain {
         }
     }
 
-    private static void deleteNoticeReadStatusAfterNoticeDelete(int nid){
+    private static void deleteNoticeReadStatusAfterNoticeDelete(int nid) {
         Dao dao = DaoFactory.get();
         dao.clear(NoticeReadStatus.class, Cnd.where("notice_id", "=", nid));
     }

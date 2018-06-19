@@ -4,14 +4,15 @@ import cn.clate.kezhan.domains.course.CourseDomain;
 import cn.clate.kezhan.domains.course.NoticeDomain;
 import cn.clate.kezhan.domains.teacher.TeacherDomain;
 import cn.clate.kezhan.domains.user.UserInfoDomain;
+import cn.clate.kezhan.filters.RoleFilter;
 import cn.clate.kezhan.filters.UserAuthenication;
 import cn.clate.kezhan.pojos.*;
 import cn.clate.kezhan.utils.Ret;
 import cn.clate.kezhan.utils.validators.SimpleValidator;
 import org.nutz.lang.util.NutMap;
 import org.nutz.mvc.annotation.*;
+import org.nutz.trans.Trans;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,8 +20,7 @@ import java.util.List;
 public class CourseModule {
     @At("/getCourse")
     @Ok("json")
-    public NutMap getCourse(@Param("cid") String cid, @Param(df = "-1", value = "year") String yid,
-                            @Param(df = "-1", value = "semester") String sid) {
+    public NutMap getCourse(@Param("cid") String cid, @Param(df = "-1", value = "year") String yid, @Param(df = "-1", value = "semester") String sid) {
         SimpleValidator validator = new SimpleValidator();
         validator.now(cid, "课程ID").require().num().lenMax(8);
         if (!validator.check()) {
@@ -57,8 +57,7 @@ public class CourseModule {
 
     @At("/getCourseComments")
     @Ok("json")
-    public NutMap getCourseComments(@Param("cid") String cid, @Param("page_number") String pageNumber,
-                                    @Param("page_size") String pageSize) {
+    public NutMap getCourseComments(@Param("cid") String cid, @Param("page_number") String pageNumber, @Param("page_size") String pageSize) {
         SimpleValidator validator = new SimpleValidator();
         validator.now(cid, "课程ID").require().num();
         validator.now(pageNumber, "当前页数").require().min(0);
@@ -69,6 +68,40 @@ public class CourseModule {
         NutMap ret = CourseDomain.getCourseCommentByCid(Integer.parseInt(cid), Integer.parseInt(pageNumber),
                 Integer.parseInt(pageSize));
         return Ret.s(ret);
+    }
+
+    @At("/submitCourseComment")
+    @Ok("json")
+    @Filters(@By(type = RoleFilter.class, args = {"scene:" + RoleFilter.SCENE_MORE_THEN_OR_EQUAL_STUDENT_IN_SUB_COURSE}))
+    public NutMap submitCourseComment(@Param("sbid") String sbid, @Param("uid") String uid, @Param("is_ano") String isAno, @Param("rating") String rating, @Param("content") String content,  @Param(df = "-1", value = "year") String yid, @Param(df = "-1", value = "semester") String sid) {
+        SimpleValidator validator = new SimpleValidator();
+        validator.now(rating, "评分").require();
+        validator.floatNum(rating, "评分不合法").require();
+        if(Double.parseDouble(rating) < 0 || Double.parseDouble(rating) > 5){
+            return Ret.e(0, "评分不合法");
+        }
+        validator.now(isAno, "匿名属性").require();
+        validator.bool(isAno, "匿名不合法").require();
+        if (!validator.check()) {
+            return Ret.e(0, validator.getError());
+        }
+        NutMap ret = new NutMap();
+        Trans.exec(() -> {
+            NutMap courseSub = CourseDomain.getCourseSubBySubId(Integer.parseInt(sbid), Integer.parseInt(yid),
+                    Integer.parseInt(sid));
+            NutMap courseTerm = CourseDomain.getCourseTermByCourseTermId((int) courseSub.get("course_term_id"),
+                    Integer.parseInt(yid), Integer.parseInt(sid));
+            if(CourseDomain.checkAlreadyComment(((Integer) courseTerm.get("course_id")), Integer.parseInt(uid))){
+                ret.addv("ok?", false);
+                return;
+            }
+            CourseDomain.addCourseComment((Integer) courseTerm.get("course_id"), Integer.parseInt(uid), content, Double.parseDouble(rating), Boolean.parseBoolean(isAno));
+            CourseDomain.updateCourseRating((Integer) courseTerm.get("course_id"), Double.parseDouble(rating));
+        });
+        if (!(boolean)ret.get("ok?")){
+            return Ret.e(0, "已经进行评分");
+        }
+        return Ret.s("ok");
     }
 
     @At("/getAllCourseByUserId")
@@ -183,7 +216,7 @@ public class CourseModule {
         }
         ret.addv("students", stuRet);
         List<User> assistantUser = new ArrayList<>();
-        for(Assistant it : assistants){
+        for (Assistant it : assistants) {
             assistantUser.add(it.getAssistant());
         }
         ret.addv("assistants", assistantUser);
@@ -193,7 +226,7 @@ public class CourseModule {
     @At("/attendCourse")
     @Ok("json")
     @Filters(@By(type = UserAuthenication.class))
-    public NutMap attendCourse(@Param("uid") String uid, @Param("sbid") String sbid,  @Param(df = "-1", value = "year") String yid, @Param(df = "-1", value = "semester") String sid) {
+    public NutMap attendCourse(@Param("uid") String uid, @Param("sbid") String sbid, @Param(df = "-1", value = "year") String yid, @Param(df = "-1", value = "semester") String sid) {
         SimpleValidator validator = new SimpleValidator();
         validator.now(sbid, "课程ID").require();
         validator.num(sbid, "课程ID").require();
@@ -202,7 +235,7 @@ public class CourseModule {
         }
         NutMap ret = new NutMap();
         NutMap ret1 = CourseDomain.attendCourseByUidSbid(Integer.parseInt(uid), Integer.parseInt(sbid), Integer.parseInt(yid), Integer.parseInt(sid));
-        if(!(boolean)ret1.get("ok?")){
+        if (!(boolean) ret1.get("ok?")) {
             return Ret.e((String) ret1.get("error"));
         }
         NoticeDomain.registerUserNoticeByUidSubCourseId(Integer.parseInt(uid), Integer.parseInt(sbid), Integer.parseInt(yid), Integer.parseInt(sid));
@@ -212,21 +245,21 @@ public class CourseModule {
     @At("/getRecommendCourseByCid")
     @Ok("json")
     @Filters(@By(type = UserAuthenication.class))
-    public NutMap getRecommendCourseByCourseId(@Param("cid") String cid){
+    public NutMap getRecommendCourseByCourseId(@Param("cid") String cid) {
         SimpleValidator validator = new SimpleValidator();
         validator.now(cid, "课程ID").require();
         validator.num(cid, "课程ID不合法").require();
         NutMap ret = new NutMap();
-        if (!validator.check()){
+        if (!validator.check()) {
             return Ret.e(0, validator.getError());
         }
         NutMap ret1 = CourseDomain.getRecommendCourseByCourseId(Integer.parseInt(cid));
-        if (!(boolean)ret1.get("ok?")){
+        if (!(boolean) ret1.get("ok?")) {
             return Ret.e(0, "崩了崩了");
         }
         ret.addv("recommends", ret1.get("recourse"));
         return Ret.s("success", ret);
     }
-    
+
 
 }

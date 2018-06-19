@@ -6,6 +6,6 @@ import org.nutz.dao.entity.annotation.Table;
 public class CourseNetease extends CourseRecommend{
     public CourseNetease(){
         super();
-        this.type = 2;
+        this.category = 2;
     }
 }

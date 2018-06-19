@@ -44,6 +44,7 @@ import java.util.UUID;
 public class ResourceModule {
     @At("/getCourseResource")
     @Ok("json")
+    @Filters(@By(type = UserAuthenication.class))
     public NutMap getCourseResourceByCourseId(@Param("course_id") String courseId) {
         SimpleValidator validator = new SimpleValidator();
         validator.now(courseId, "课程ID").require();

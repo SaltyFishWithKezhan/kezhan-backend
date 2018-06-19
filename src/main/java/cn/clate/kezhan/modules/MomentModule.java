@@ -41,9 +41,7 @@ public class MomentModule {
     @At("/getBySubCourseId")
     @Ok("json")
     @Filters(@By(type = RoleFilter.class, args = {"scene:" + RoleFilter.SCENE_MORE_THEN_OR_EQUAL_STUDENT_IN_SUB_COURSE}))
-    public NutMap getBySubCourseId(@Param("sbid") String subCourseId, @Param("page_number") String pageNumber,
-                                   @Param("page_size") String pageSize, @Param(df = "-1", value = "year") String yid,
-                                   @Param(df = "-1", value = "semester") String sid) {
+    public NutMap getBySubCourseId(@Param("sbid") String subCourseId, @Param("page_number") String pageNumber, @Param("page_size") String pageSize, @Param(df = "-1", value = "year") String yid, @Param(df = "-1", value = "semester") String sid) {
         SimpleValidator validator = new SimpleValidator();
         validator.now(subCourseId, "班级ID").require();
         validator.now(pageNumber, "当前页数").require().min(0);

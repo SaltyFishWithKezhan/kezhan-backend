@@ -7,6 +7,6 @@ public class CourseMooc extends CourseRecommend{
 
     public CourseMooc(){
         super();
-        this.type = 1;
+        this.category = 1;
     }
 }

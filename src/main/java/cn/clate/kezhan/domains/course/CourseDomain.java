@@ -288,7 +288,7 @@ public class CourseDomain {
             TableName.set(Tools.getYestAndSemester(yid, sid));
             Dao dao = DaoFactory.get();
             List<Assistant> assistants = dao.query(Assistant.class, Cnd.where("sub_course_term_id", "=", courseSubId).and("status", "=", 0));
-            for (Assistant it : assistants){
+            for (Assistant it : assistants) {
                 dao.fetchLinks(it, "assistant");
                 it.getAssistant().removeCriticalInfo();
             }
@@ -301,19 +301,19 @@ public class CourseDomain {
         }
     }
 
-    public static NutMap getRecommendCourseByCourseId(int cid){
+    public static NutMap getRecommendCourseByCourseId(int cid) {
         Dao dao = DaoFactory.get();
         NutMap ret = new NutMap();
         List<CourseRecommendMapping> recommendMappings = dao.query(CourseRecommendMapping.class, Cnd.where("course", "=", cid));
-        if (recommendMappings.size() == 0){
+        if (recommendMappings.size() == 0) {
             ret.addv("ok?", false);
             return ret;
         }
-        List<CourseRecommend> recommends = new ArrayList<>();
-        for (CourseRecommendMapping it : recommendMappings){
+        List<DummyCourse> recommends = new ArrayList<>();
+        for (CourseRecommendMapping it : recommendMappings) {
             CourseRecommendIndex index = dao.fetch(CourseRecommendIndex.class, it.getRecommendId());
-            CourseRecommend cr;
-            switch (index.getType()){
+            DummyCourse cr;
+            switch (index.getType()) {
                 case 1:
                     cr = dao.fetch(CourseMooc.class, index.getTypeId());
                     break;
@@ -329,12 +329,34 @@ public class CourseDomain {
                 default:
                     cr = null;
             }
-            if(cr != null) {
+            if (cr != null) {
                 recommends.add(cr);
             }
         }
         ret.addv("ok?", true);
         ret.addv("recourse", recommends);
         return ret;
+    }
+
+    public static boolean checkAlreadyComment(int cid, int uid){
+        Dao dao = DaoFactory.get();
+        CourseComment courseComment = dao.fetch(CourseComment.class, Cnd.where("course_id", "=", cid).and("user_id", "=", uid));
+        return courseComment != null;
+    }
+
+    public static void addCourseComment(int courseId, int uid, String content, Double rating, boolean isAno) {
+        Dao dao = DaoFactory.get();
+        CourseComment courseComment = new CourseComment().setCourseId(courseId).setAnno(isAno).setPosterId(uid).setContent(content).setRating(rating);
+        dao.fastInsert(courseComment);
+    }
+
+    public static void updateCourseRating(int course_id, double v) {
+        Dao dao = DaoFactory.get();
+        synchronized (CourseDomain.class) {
+            Course course = dao.fetch(Course.class, course_id);
+            course.setCountEvaluate(course.getCountEvaluate() + 1);
+            course.setTotal_rating(course.getTotal_rating() + v);
+            dao.update(course);
+        }
     }
 }

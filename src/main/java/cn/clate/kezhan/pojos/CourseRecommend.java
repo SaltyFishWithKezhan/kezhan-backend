@@ -3,7 +3,7 @@ package cn.clate.kezhan.pojos;
 import org.nutz.dao.entity.annotation.Column;
 import org.nutz.dao.entity.annotation.Id;
 
-public class CourseRecommend {
+public class CourseRecommend extends DummyCourse{
     @Id
     private int id;
 
@@ -33,8 +33,6 @@ public class CourseRecommend {
 
     @Column("description")
     private String description;
-
-    protected int type;
 
     public CourseRecommend() {
     }
@@ -75,12 +73,12 @@ public class CourseRecommend {
         return this;
     }
 
-    public int getType() {
-        return type;
+    public int getCategory() {
+        return category;
     }
 
-    public CourseRecommend setType(int type) {
-        this.type = type;
+    public CourseRecommend setCategory(int category) {
+        this.category = category;
         return this;
     }
 
