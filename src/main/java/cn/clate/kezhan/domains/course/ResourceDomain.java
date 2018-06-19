@@ -34,9 +34,6 @@ public class ResourceDomain {
             List<ResourceTerm> resourceTermList = dao.query(ResourceTerm.class,
                     Cnd.where("courseTermId", "=", courseSub.getCourseTermId())
                             .desc("uploadTime"));
-            if (resourceTermList == null) {
-                return null;
-            }
             for (ResourceTerm it : resourceTermList) {
                 dao.fetchLinks(it, "poster");
                 it.getPoster().removeCriticalInfo();

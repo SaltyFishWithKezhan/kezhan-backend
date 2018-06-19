@@ -113,11 +113,9 @@ public class NoticeModule {
             return Ret.e(0, validator.getError());
         }
         Trans.exec(() -> {
-                    NutMap ret = NoticeDomain.addNotice(Integer.parseInt(posterId), title, description, Integer.parseInt(subCourseId),
-                            Integer.parseInt(yid), Integer.parseInt(sid));
+                    NutMap ret = NoticeDomain.addNotice(Integer.parseInt(posterId), title, description, Integer.parseInt(subCourseId), Integer.parseInt(yid), Integer.parseInt(sid));
                     Notice notice = (Notice) ret.get("success");
-                    MomentDomain.addOrUpdateMoment(2, notice.getId(), notice.getUpdateTime(), notice.getSubCourseId(),
-                            Integer.parseInt(yid), Integer.parseInt(sid));
+                    MomentDomain.addOrUpdateMoment(2, notice.getId(), notice.getUpdateTime(), notice.getSubCourseId(), Integer.parseInt(yid), Integer.parseInt(sid));
                 }
         );
         return Ret.s("success");

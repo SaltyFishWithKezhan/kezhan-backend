@@ -273,9 +273,6 @@ public class CourseDomain {
             TableName.set(Tools.getYestAndSemester(yid, sid));
             Dao dao = DaoFactory.get();
             List<CourseUserTake> userTakes = dao.query(CourseUserTake.class, Cnd.where("sub_course_term_id", "=", courseSubId).and("status", "=", 0));
-            if (userTakes.size() == 0){
-                return null;
-            }
             ArrayList<CourseUserTake> courseUserTakeArrayList = new ArrayList<>(userTakes);
             NutMap ret = new NutMap();
             ret.addv("student_list", courseUserTakeArrayList);
@@ -291,9 +288,6 @@ public class CourseDomain {
             TableName.set(Tools.getYestAndSemester(yid, sid));
             Dao dao = DaoFactory.get();
             List<Assistant> assistants = dao.query(Assistant.class, Cnd.where("sub_course_term_id", "=", courseSubId).and("status", "=", 0));
-            if (assistants.size() == 0){
-                return null;
-            }
             for (Assistant it : assistants){
                 dao.fetchLinks(it, "assistant");
                 it.getAssistant().removeCriticalInfo();
@@ -315,9 +309,32 @@ public class CourseDomain {
             ret.addv("ok?", false);
             return ret;
         }
-        List<CourseRecommend>
+        List<CourseRecommend> recommends = new ArrayList<>();
         for (CourseRecommendMapping it : recommendMappings){
-
+            CourseRecommendIndex index = dao.fetch(CourseRecommendIndex.class, it.getRecommendId());
+            CourseRecommend cr;
+            switch (index.getType()){
+                case 1:
+                    cr = dao.fetch(CourseMooc.class, index.getTypeId());
+                    break;
+                case 2:
+                    cr = dao.fetch(CourseNetease.class, index.getTypeId());
+                    break;
+                case 3:
+                    cr = dao.fetch(CourseImoocFree.class, index.getTypeId());
+                    break;
+                case 4:
+                    cr = dao.fetch(Course.class, index.getTypeId());
+                    break;
+                default:
+                    cr = null;
+            }
+            if(cr != null) {
+                recommends.add(cr);
+            }
         }
+        ret.addv("ok?", true);
+        ret.addv("recourse", recommends);
+        return ret;
     }
 }

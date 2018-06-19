@@ -1,13 +1,12 @@
 package cn.clate.kezhan.modules;
 
 import cn.clate.kezhan.domains.course.MomentDomain;
+import cn.clate.kezhan.filters.RoleFilter;
 import cn.clate.kezhan.pojos.Moment;
 import cn.clate.kezhan.utils.Ret;
 import cn.clate.kezhan.utils.validators.SimpleValidator;
 import org.nutz.lang.util.NutMap;
-import org.nutz.mvc.annotation.At;
-import org.nutz.mvc.annotation.Ok;
-import org.nutz.mvc.annotation.Param;
+import org.nutz.mvc.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,6 +40,7 @@ import java.util.List;
 public class MomentModule {
     @At("/getBySubCourseId")
     @Ok("json")
+    @Filters(@By(type = RoleFilter.class, args = {"scene:" + RoleFilter.SCENE_MORE_THEN_OR_EQUAL_STUDENT_IN_SUB_COURSE}))
     public NutMap getBySubCourseId(@Param("sbid") String subCourseId, @Param("page_number") String pageNumber,
                                    @Param("page_size") String pageSize, @Param(df = "-1", value = "year") String yid,
                                    @Param(df = "-1", value = "semester") String sid) {

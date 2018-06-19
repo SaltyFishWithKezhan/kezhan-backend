@@ -189,8 +189,9 @@ public class NoticeDomain {
         }
     }
 
-    private static NutMap deleteNoticeReadStatusAfterNoticeDelete(int nid){
-        
+    private static void deleteNoticeReadStatusAfterNoticeDelete(int nid){
+        Dao dao = DaoFactory.get();
+        dao.clear(NoticeReadStatus.class, Cnd.where("notice_id", "=", nid));
     }
 
     public static NutMap deleteNotice(int noticeId, int yid, int sid) {
@@ -205,12 +206,11 @@ public class NoticeDomain {
             }
             notice.setStatus(1);
             dao.update(notice);
+            deleteNoticeReadStatusAfterNoticeDelete(noticeId);
             ret.addv("ok?", true);
             return ret;
         } finally {
             TableName.clear();
         }
     }
-
-    public static
 }

@@ -19,8 +19,6 @@ public class Course extends CourseRecommend {
     private Teacher teacher;
     @Column("type")
     private int type;
-    @Column("desc")
-    private String desc;
     @Column("max_size")
     private int maxSize;
     @Column("cover_img")
@@ -100,15 +98,6 @@ public class Course extends CourseRecommend {
 
     public Course setType(int type) {
         this.type = type;
-        return this;
-    }
-
-    public String getDesc() {
-        return desc;
-    }
-
-    public Course setDesc(String desc) {
-        this.desc = desc;
         return this;
     }
 

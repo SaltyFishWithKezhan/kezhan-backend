@@ -5,8 +5,6 @@ import org.nutz.dao.entity.annotation.Id;
 import org.nutz.dao.entity.annotation.One;
 import org.nutz.dao.entity.annotation.Table;
 
-import java.sql.Date;
-
 @Table("kz_resources")
 public class Resource {
     @Id
@@ -36,7 +34,28 @@ public class Resource {
     @Column("download_count")
     private int downloadCount;
 
+    @Column("title")
+    private String title;
+
     public Resource() {
+    }
+
+    public String getUploadTime() {
+        return uploadTime;
+    }
+
+    public Resource setUploadTime(String uploadTime) {
+        this.uploadTime = uploadTime;
+        return this;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public Resource setTitle(String title) {
+        this.title = title;
+        return this;
     }
 
     public int getId() {

@@ -114,7 +114,7 @@ public class HomeworkModule {
     @At("/deleteHomework")
     @Ok("json")
     @Filters(@By(type = RoleFilter.class, args = {"scene:" + RoleFilter.SCENE_MORE_THEN_OR_EQUAL_STUDENT_REP_IN_SUB_COURSE}))
-    public NutMap deleteHomework(@Param("hmid") String hmid, @Param("year") String yid, @Param("semester") String sid) {
+    public NutMap deleteHomework(@Param("hmid") String hmid, @Param(df = "-1", value = "year") String yid, @Param(df = "-1", value = "semester") String sid) {
         SimpleValidator validator = new SimpleValidator();
         validator.now(hmid, "作业ID").require();
         validator.num(hmid, "作业ID").require();

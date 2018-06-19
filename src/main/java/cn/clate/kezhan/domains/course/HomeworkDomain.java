@@ -22,8 +22,7 @@ public class HomeworkDomain {
             TableName.set(Tools.getYestAndSemester(yid, sid));
             Dao dao = DaoFactory.get();
             Pager pager = dao.createPager(pageNumber, pageSize);
-            List<Homework> homeworkList = dao.query(Homework.class, Cnd.where("course_sub_id", "=", subCourseId)
-                    .desc("update_time"), pager);
+            List<Homework> homeworkList = dao.query(Homework.class, Cnd.where("course_sub_id", "=", subCourseId).and("status", "=", 0).desc("update_time"), pager);
             if (homeworkList == null) {
                 return null;
             }

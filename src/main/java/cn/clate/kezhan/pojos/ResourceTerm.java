@@ -34,7 +34,19 @@ public class ResourceTerm {
     @Column("download_count")
     private int downloadCount;
 
+    @Column("title")
+    private String title;
+
     public ResourceTerm() {
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public ResourceTerm setTitle(String title) {
+        this.title = title;
+        return this;
     }
 
     public int getId() {
