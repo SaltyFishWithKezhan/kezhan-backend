@@ -3,7 +3,6 @@ package cn.clate.kezhan.modules;
 import cn.clate.kezhan.domains.course.HomeworkDomain;
 import cn.clate.kezhan.domains.course.MomentDomain;
 import cn.clate.kezhan.filters.RoleFilter;
-import cn.clate.kezhan.filters.UserAuthenication;
 import cn.clate.kezhan.pojos.Homework;
 import cn.clate.kezhan.utils.Ret;
 import cn.clate.kezhan.utils.serializer.PojoSerializer;
@@ -17,7 +16,7 @@ public class HomeworkModule {
 
     @At("/getBySubCourse")
     @Ok("json")
-    @Filters(@By(type = UserAuthenication.class))
+    @Filters(@By(type = RoleFilter.class, args = {"scene:" + RoleFilter.SCENE_MORE_THEN_OR_EQUAL_STUDENT_IN_SUB_COURSE}))
     public NutMap getHomeworkBySubCourse(@Param("sbid") String subCourseId, @Param("page_number") String pageNumber, @Param("page_size") String pageSize, @Param(df = "-1", value = "year") String yid, @Param(df = "-1", value = "semester") String sid) {
         SimpleValidator validator = new SimpleValidator();
         validator.now(subCourseId, "班级ID").require().num();
@@ -36,7 +35,7 @@ public class HomeworkModule {
 
     @At("/getByHomeworkId")
     @Ok("json")
-    @Filters(@By(type = UserAuthenication.class))
+    @Filters(@By(type = RoleFilter.class, args = {"scene:" + RoleFilter.SCENE_MORE_THEN_OR_EQUAL_STUDENT_IN_SUB_COURSE}))
     public NutMap getHomeworkById(@Param("hmid") String homeworkId, @Param(df = "-1", value = "year") String yid,
                                   @Param(df = "-1", value = "semester") String sid) {
         SimpleValidator validator = new SimpleValidator();
@@ -115,24 +114,24 @@ public class HomeworkModule {
     @At("/deleteHomework")
     @Ok("json")
     @Filters(@By(type = RoleFilter.class, args = {"scene:" + RoleFilter.SCENE_MORE_THEN_OR_EQUAL_STUDENT_REP_IN_SUB_COURSE}))
-    public NutMap deleteHomework(@Param("hmid") String hmid, @Param("year") String yid, @Param("semester") String sid){
+    public NutMap deleteHomework(@Param("hmid") String hmid, @Param("year") String yid, @Param("semester") String sid) {
         SimpleValidator validator = new SimpleValidator();
         validator.now(hmid, "作业ID").require();
         validator.num(hmid, "作业ID").require();
-        if (!validator.check()){
+        if (!validator.check()) {
             return Ret.e(validator.getError());
         }
         NutMap ret = new NutMap();
-        Trans.exec(() ->{
+        Trans.exec(() -> {
             NutMap ret1 = HomeworkDomain.deleteHomework(Integer.parseInt(hmid), Integer.parseInt(yid), Integer.parseInt(sid));
-            if(!(boolean) ret1.get("ok?")){
+            if (!(boolean) ret1.get("ok?")) {
                 ret.addv("ok?", false);
                 return;
             }
             MomentDomain.deleteMomentAfterDeleteHomework(Integer.parseInt(hmid), Integer.parseInt(yid), Integer.parseInt(sid));
             ret.addv("ok?", true);
         });
-        if(!(boolean) ret.get("ok?")){
+        if (!(boolean) ret.get("ok?")) {
             return Ret.e(0, "吃屎吧你");
         }
         return Ret.s("ok");
