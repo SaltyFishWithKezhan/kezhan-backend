@@ -7,6 +7,7 @@ import cn.clate.kezhan.utils.factories.DaoFactory;
 import cn.clate.kezhan.utils.serializer.PojoSerializer;
 import org.nutz.dao.Cnd;
 import org.nutz.dao.Dao;
+import org.nutz.dao.pager.Pager;
 import org.nutz.lang.util.NutMap;
 import sun.nio.cs.US_ASCII;
 
@@ -81,4 +82,13 @@ public class UserInfoDomain {
     }
 
 
+    public static List<User> getUserByRealNameFuzzy(String str) {
+        Dao dao = DaoFactory.get();
+        Pager pager = dao.createPager(1, 3);
+        List<User> users = dao.query(User.class, Cnd.where("real_name", "LIKE",  str + "%").and("role", "=", 1), pager);
+        for (User it : users){
+            it.removeCriticalInfo();
+        }
+        return users;
+    }
 }

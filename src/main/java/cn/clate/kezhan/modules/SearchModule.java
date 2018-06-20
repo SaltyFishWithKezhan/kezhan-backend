@@ -3,13 +3,16 @@ package cn.clate.kezhan.modules;
 import cn.clate.kezhan.domains.course.CourseDomain;
 import cn.clate.kezhan.domains.search.SearchDomain;
 import cn.clate.kezhan.domains.teacher.TeacherDomain;
+import cn.clate.kezhan.domains.user.UserInfoDomain;
+import cn.clate.kezhan.filters.UserAuthenication;
+import cn.clate.kezhan.neo4j.domains.UserDomain;
+import cn.clate.kezhan.pojos.User;
 import cn.clate.kezhan.utils.Ret;
 import cn.clate.kezhan.utils.validators.SimpleValidator;
 import org.nutz.lang.util.NutMap;
-import org.nutz.mvc.annotation.At;
-import org.nutz.mvc.annotation.Ok;
-import org.nutz.mvc.annotation.Param;
+import org.nutz.mvc.annotation.*;
 
+import javax.jws.soap.SOAPBinding;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,7 +21,8 @@ public class SearchModule {
 
     @At("/getByString")
     @Ok("json")
-    public NutMap getByString(@Param("string") String str, @Param("page_number") String pageNumber, @Param("page_size") String pageSize) {
+    @Filters(@By(type = UserAuthenication.class))
+    public NutMap getByString(@Param("uid") String uid, @Param("string") String str, @Param("page_number") String pageNumber, @Param("page_size") String pageSize) {
         SimpleValidator validator = new SimpleValidator();
         validator.now(str, "搜索内容").require();
         validator.now(pageNumber, "当前页数").require().min(0);
@@ -26,7 +30,8 @@ public class SearchModule {
         if (!validator.check()) {
             return Ret.e(70, validator.getError());
         }
-        NutMap retTeachers = TeacherDomain.getTeachersByName(str);
+        NutMap retTeachers = new NutMap();
+        retTeachers = TeacherDomain.getTeachersByNameFuzzy(str);
         if (retTeachers == null) {
             retTeachers.addv("teachers", -1);
         }
@@ -36,6 +41,14 @@ public class SearchModule {
         } else {
             retTeachers.addv("courses", -1);
         }
+        List<User> retUsers = UserInfoDomain.getUserByRealNameFuzzy(str);
+        retTeachers.addv("users", retUsers);
+        List<Integer> degree = new ArrayList<>();
+        for (User it : retUsers) {
+            int itd = UserDomain.getDegreeOnFriendRs(Integer.parseInt(uid), it.getId());
+            degree.add(itd);
+        }
+        retTeachers.addv("degrees", degree);
         if (retTeachers == null && retCourses == null)
             return Ret.e(71, "查询无结果");
         return Ret.s(retTeachers);

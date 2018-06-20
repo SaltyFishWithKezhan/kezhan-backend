@@ -211,8 +211,6 @@ public class CourseDomain {
         ret.addv("now_page", pager.getPageNumber());
         ret.addv("per_page_size", pager.getPageSize());
         ret.addv("page_count", pager.getPageCount());
-        System.out.println();
-        ret.toString();
         return ret;
     }
 
