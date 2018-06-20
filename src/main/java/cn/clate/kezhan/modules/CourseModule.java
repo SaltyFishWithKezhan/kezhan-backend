@@ -242,6 +242,11 @@ public class CourseModule {
             return Ret.e((String) ret1.get("error"));
         }
         NoticeDomain.registerUserNoticeByUidSubCourseId(Integer.parseInt(uid), Integer.parseInt(sbid), Integer.parseInt(yid), Integer.parseInt(sid));
+        NutMap courseSub = CourseDomain.getCourseSubBySubId(Integer.parseInt(sbid), Integer.parseInt(yid),
+                Integer.parseInt(sid));
+        NutMap courseTerm = CourseDomain.getCourseTermByCourseTermId((int) courseSub.get("course_term_id"),
+                Integer.parseInt(yid), Integer.parseInt(sid));
+        cn.clate.kezhan.neo4j.domains.CourseDomain.addAttendCourseRs(Integer.parseInt(uid), (int) courseTerm.get("course_id"));
         return Ret.s("ok");
     }
 

@@ -11,19 +11,12 @@ import org.nutz.dao.Cnd;
 import org.nutz.dao.Dao;
 import org.nutz.dao.TableName;
 import org.nutz.dao.pager.Pager;
-import org.nutz.integration.jedis.RedisService;
-import org.nutz.ioc.aop.Aop;
-import org.nutz.ioc.loader.annotation.Inject;
 import org.nutz.lang.util.NutMap;
-import org.nutz.mvc.annotation.IocBy;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class MomentDomain {
-
-    @Inject
-    private static RedisService redisService;
 
     public static void deleteMomentAfterDeleteHomework(int hmid, int yid, int sid) {
         try {
@@ -130,10 +123,5 @@ public class MomentDomain {
         } finally {
             TableName.clear();
         }
-    }
-
-    public static void main(String[] args){
-        redisService.set("xxx", "yyy");
-        System.out.println(redisService.get("xxx"));
     }
 }
