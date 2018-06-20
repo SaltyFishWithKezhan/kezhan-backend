@@ -5,21 +5,22 @@ import cn.clate.kezhan.domains.user.PhoneDomain;
 import cn.clate.kezhan.domains.user.RegisterDomain;
 import cn.clate.kezhan.domains.user.UserInfoDomain;
 import cn.clate.kezhan.filters.UserAuthenication;
+import cn.clate.kezhan.neo4j.domains.UserDomain;
 import cn.clate.kezhan.pojos.User;
 import cn.clate.kezhan.utils.Ret;
+import cn.clate.kezhan.utils.factories.DaoFactory;
 import cn.clate.kezhan.utils.serializer.PojoSerializer;
 import cn.clate.kezhan.utils.validators.SimpleValidator;
-import org.nutz.ioc.loader.annotation.IocBean;
+import org.nutz.dao.Dao;
 import org.nutz.lang.Files;
 import org.nutz.lang.util.NutMap;
 import org.nutz.mvc.annotation.*;
-import org.nutz.mvc.ioc.provider.ComboIocProvider;
 import org.nutz.mvc.upload.UploadAdaptor;
 
 import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Random;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.UUID;
 
 
@@ -160,6 +161,22 @@ public class UserModule {
         Files.copy(f, target);
         NutMap ret = UserInfoDomain.upLoadAvatar(Integer.parseInt(id), avatar);
         return Ret.s(ret);
+    }
+
+    @At("/getNearbyUser")
+    @Ok("json")
+    @Filters(@By(type = UserAuthenication.class))
+    public NutMap getNalskdfjlasdjfljasldkfj(@Param("uid") String uid) {
+        List<Integer> integers = UserDomain.findThreeDegreeRsByUserId(Integer.parseInt(uid));
+        Collections.shuffle(integers);
+        Dao dao = DaoFactory.get();
+        List<User> list = new ArrayList<>();
+        for (int i = 0; i < 5 && i < integers.size(); i++) {
+            User user = dao.fetch(User.class, integers.get(i));
+            user.removeCriticalInfo();
+            list.add(user);
+        }
+        return Ret.s(new NutMap().addv("users", list));
     }
 
 }

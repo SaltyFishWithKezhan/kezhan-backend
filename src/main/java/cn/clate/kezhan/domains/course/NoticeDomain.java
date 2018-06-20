@@ -90,9 +90,6 @@ public class NoticeDomain {
             List<Notice> noticeList = dao.query(Notice.class, Cnd.where("subCourseId", "=", subCourseId)
                     .and("status", "=", 0)
                     .desc("updateTime"), pager);
-            if (noticeList.size() == 0) {
-                return null;
-            }
             pager.setRecordCount(dao.count(Notice.class, Cnd.where("subCourseId", "=", subCourseId)));
             for (Notice it : noticeList) {
                 dao.fetchLinks(it, "poster").getPoster().removeCriticalInfo();

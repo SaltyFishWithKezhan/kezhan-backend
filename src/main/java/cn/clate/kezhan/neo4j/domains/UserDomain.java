@@ -33,7 +33,7 @@ public class UserDomain {
             "WHERE u.userId = $userId " +
             " RETURN u.userId, u.username, u.phone, u.realName";
 
-    private final static String FIND_THREE_DEGREE_RELATIONSHIP = "MATCH (:User{userId:$userId})-[*..3]-(u:User) " +
+    private final static String FIND_THREE_DEGREE_RELATIONSHIP = "MATCH (:User{userId:$userId})-[*2..3]-(u:User) " +
             " RETURN u.userId, u.username, u.phone, u.realName";
 
     private final static String FIND_DEGREE_ON_FRIEND_RELATIONSHIP = "MATCH (a:User{userId:$userId1}),(b:User{userId:$userId2}), " +

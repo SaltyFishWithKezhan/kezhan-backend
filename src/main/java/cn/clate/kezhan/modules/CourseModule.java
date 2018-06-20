@@ -239,7 +239,7 @@ public class CourseModule {
         NutMap ret = new NutMap();
         NutMap ret1 = CourseDomain.attendCourseByUidSbid(Integer.parseInt(uid), Integer.parseInt(sbid), Integer.parseInt(yid), Integer.parseInt(sid));
         if (!(boolean) ret1.get("ok?")) {
-            return Ret.e((String) ret1.get("error"));
+            return Ret.e(0, (String) ret1.get("error"));
         }
         NoticeDomain.registerUserNoticeByUidSubCourseId(Integer.parseInt(uid), Integer.parseInt(sbid), Integer.parseInt(yid), Integer.parseInt(sid));
         NutMap courseSub = CourseDomain.getCourseSubBySubId(Integer.parseInt(sbid), Integer.parseInt(yid),
