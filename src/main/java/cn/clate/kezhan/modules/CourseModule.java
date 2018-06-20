@@ -46,10 +46,10 @@ public class CourseModule {
             return Ret.e(0, "数据库爆炸了");
         }
         List<CourseSub> courseSubs = (List<CourseSub>) subCourse.get("courseSubs");
-
         for (CourseSub it : courseSubs) {
             courseTimeSlots.add((List<CourseTimeSlot>) CourseDomain.getTimeSlotsByCourseSubid(it.getId(), Integer.parseInt(yid), Integer.parseInt(sid)).get("time_slots"));
         }
+        ret.addv("subCourse", courseSubs);
         ret.addv("courseInfo", courseInfo);
         ret.addv("timeSlots", courseTimeSlots);
         return Ret.s(ret);
@@ -73,11 +73,11 @@ public class CourseModule {
     @At("/submitCourseComment")
     @Ok("json")
     @Filters(@By(type = RoleFilter.class, args = {"scene:" + RoleFilter.SCENE_MORE_THEN_OR_EQUAL_STUDENT_IN_SUB_COURSE}))
-    public NutMap submitCourseComment(@Param("sbid") String sbid, @Param("uid") String uid, @Param("is_ano") String isAno, @Param("rating") String rating, @Param("content") String content,  @Param(df = "-1", value = "year") String yid, @Param(df = "-1", value = "semester") String sid) {
+    public NutMap submitCourseComment(@Param("sbid") String sbid, @Param("uid") String uid, @Param("is_ano") String isAno, @Param("rating") String rating, @Param("content") String content, @Param(df = "-1", value = "year") String yid, @Param(df = "-1", value = "semester") String sid) {
         SimpleValidator validator = new SimpleValidator();
         validator.now(rating, "评分").require();
         validator.floatNum(rating, "评分不合法").require();
-        if(Double.parseDouble(rating) < 0 || Double.parseDouble(rating) > 5){
+        if (Double.parseDouble(rating) < 0 || Double.parseDouble(rating) > 5) {
             return Ret.e(0, "评分不合法");
         }
         validator.now(isAno, "匿名属性").require();
@@ -91,14 +91,14 @@ public class CourseModule {
                     Integer.parseInt(sid));
             NutMap courseTerm = CourseDomain.getCourseTermByCourseTermId((int) courseSub.get("course_term_id"),
                     Integer.parseInt(yid), Integer.parseInt(sid));
-            if(CourseDomain.checkAlreadyComment(((Integer) courseTerm.get("course_id")), Integer.parseInt(uid))){
+            if (CourseDomain.checkAlreadyComment(((Integer) courseTerm.get("course_id")), Integer.parseInt(uid))) {
                 ret.addv("ok?", false);
                 return;
             }
             CourseDomain.addCourseComment((Integer) courseTerm.get("course_id"), Integer.parseInt(uid), content, Double.parseDouble(rating), Boolean.parseBoolean(isAno));
             CourseDomain.updateCourseRating((Integer) courseTerm.get("course_id"), Double.parseDouble(rating));
         });
-        if (!(boolean)ret.get("ok?")){
+        if (!(boolean) ret.get("ok?")) {
             return Ret.e(0, "已经进行评分");
         }
         return Ret.s("ok");
@@ -214,6 +214,9 @@ public class CourseModule {
             //identity 为0表示普通学生(通过is_repre判断是否为课代表) 1表示助教 2表示该课老师
             stuRet.add(item);
         }
+//        Collections.sort(stuRet, (a,b)->{
+//            return ((String) a.get("real_name")).compareTo((String) b.get("real_name"));
+//        });
         ret.addv("students", stuRet);
         List<User> assistantUser = new ArrayList<>();
         for (Assistant it : assistants) {

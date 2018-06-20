@@ -14,6 +14,7 @@ import org.nutz.lang.util.NutMap;
 import org.nutz.trans.Trans;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class CourseDomain {
@@ -274,6 +275,7 @@ public class CourseDomain {
             Dao dao = DaoFactory.get();
             List<CourseUserTake> userTakes = dao.query(CourseUserTake.class, Cnd.where("sub_course_term_id", "=", courseSubId).and("status", "=", 0));
             ArrayList<CourseUserTake> courseUserTakeArrayList = new ArrayList<>(userTakes);
+
             NutMap ret = new NutMap();
             ret.addv("student_list", courseUserTakeArrayList);
             return ret;

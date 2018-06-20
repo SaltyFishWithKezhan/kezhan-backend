@@ -1,8 +1,14 @@
 package cn.clate.kezhan.neo4j.domains;
 
 import cn.clate.kezhan.neo4j.driver.Neo4jDriver;
+import cn.clate.kezhan.pojos.Course;
 import cn.clate.kezhan.pojos.Teacher;
+import cn.clate.kezhan.utils.factories.DaoFactory;
 import org.neo4j.driver.v1.*;
+import org.nutz.dao.Dao;
+
+import java.util.List;
+import java.util.concurrent.atomic.DoubleAccumulator;
 
 import static org.neo4j.driver.v1.Values.parameters;
 
@@ -25,7 +31,7 @@ public class TeacherDomain {
 
 
     public static void addTeacher(Teacher teacher) {
-        if (getTeacherByTeacherId(teacher.getId()) == null) {
+        //if (getTeacherByTeacherId(teacher.getId()) == null) {
             try (Session session = Neo4jDriver.getInstance().session()) {
                 String ret = session.writeTransaction(new TransactionWork<String>() {
                     @Override
@@ -39,9 +45,9 @@ public class TeacherDomain {
                 });
                 System.out.println(ret);
             }
-        } else {
-            System.out.println("neo4j teacher has existed! ");
-        }
+//        } else {
+//            System.out.println("neo4j teacher has existed! ");
+//        }
     }
 
     public static void addTeachCourseRs(int tid, int cid) {
@@ -82,7 +88,14 @@ public class TeacherDomain {
     }
 
     public static void main(String... args) throws Exception {
-
+        Dao dao = DaoFactory.get();
+        List<Course> coursesList = dao.query(Course.class, null);
+        double marker = 1;
+        for (Course it : coursesList){
+            System.out.println("Progress: " + marker / coursesList.size()*100 + " % ");
+            marker += 1;
+            addTeachCourseRs(it.getTeacherId(), it.getId());
+        }
     }
 
 }

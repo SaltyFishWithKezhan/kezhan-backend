@@ -2,7 +2,16 @@ package cn.clate.kezhan.neo4j.domains;
 
 import cn.clate.kezhan.neo4j.driver.Neo4jDriver;
 import cn.clate.kezhan.pojos.Course;
+import cn.clate.kezhan.pojos.CourseSub;
+import cn.clate.kezhan.pojos.CourseTerm;
+import cn.clate.kezhan.pojos.CourseUserTake;
+import cn.clate.kezhan.utils.Tools;
+import cn.clate.kezhan.utils.factories.DaoFactory;
 import org.neo4j.driver.v1.*;
+import org.nutz.dao.Dao;
+import org.nutz.dao.TableName;
+
+import java.util.List;
 
 import static org.neo4j.driver.v1.Values.parameters;
 
@@ -32,7 +41,7 @@ public class CourseDomain {
 
                         StatementResult result = tx.run(ADD_COURSE,
                                 parameters("courseId", course.getId(), "name", course.getName(),
-                                        "description", course.getDesc()));
+                                        "description", course.getDescription()));
                         return result.single().get(0).asString();
                     }
                 });
@@ -70,7 +79,7 @@ public class CourseDomain {
                         Record record = result.next();
                         Course course = new Course();
                         course.setId(record.get("c.courseId").asInt()).setName(record.get("c.name").asString()).
-                                setDesc(record.get("c.description").asString());
+                                setDescription(record.get("c.description").asString());
                         return course;
                     }
                     return null;
@@ -81,6 +90,21 @@ public class CourseDomain {
     }
 
     public static void main(String... args) throws Exception {
+        try {
+            TableName.set(Tools.getYestAndSemester(-1, -1));
 
+            Dao dao = DaoFactory.get();
+            List<CourseUserTake> courseUserTakes = dao.query(CourseUserTake.class, null);
+            int marker = 0;
+
+            for (CourseUserTake it : courseUserTakes) {
+                System.out.println("Progress: " + marker / courseUserTakes.size() * 100 + " % ");
+                CourseSub itt = dao.fetch(CourseSub.class, it.getSubCourseTermId());
+                CourseTerm ittt = dao.fetch(CourseTerm.class, itt.getCourseTermId());
+                addAttendCourseRs(it.getUserId(), ittt.getCourseId());
+            }
+        } finally {
+            TableName.clear();
+        }
     }
 }

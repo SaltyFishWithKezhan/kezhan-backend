@@ -3,11 +3,16 @@ package cn.clate.kezhan.neo4j.domains;
 import cn.clate.kezhan.domains.user.UserInfoDomain;
 import cn.clate.kezhan.neo4j.driver.Neo4jDriver;
 import cn.clate.kezhan.pojos.User;
+import cn.clate.kezhan.utils.factories.DaoFactory;
 import org.neo4j.driver.v1.*;
 import org.neo4j.driver.v1.exceptions.NoSuchRecordException;
+import org.nutz.dao.Cnd;
+import org.nutz.dao.Dao;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Random;
 
 import static org.neo4j.driver.v1.Values.parameters;
 
@@ -118,20 +123,22 @@ public class UserDomain {
     }
 
     public static void main(String... args) throws Exception {
-//        ChineseName chineseName =new ChineseName();
-//        for(int i=0;i<20;i++){
-//            User user = new User();
-//            user.setId(i).setUsername("user"+chineseName.getChinese()).setRealName(chineseName.getName()).setPhone("12345678910");
-//            addUser(user);
-//        }
-//        for(int i=0;i<20;i++){
-//            int u1 =(int) (Math.random()*20);
-//            int u2 =(int) (Math.random()*20);
-//            addFriendRs(u1,u2);
-//        }
+        Dao dao = DaoFactory.get();
+        List<User> user = dao.query(User.class, null);
+        Random random = new Random();
+        int totalCount = user.size();
+        for (int i = 0; i < 100; i++){
+            int count = 7;
+            while(count > 0){
+                int j = (int) (Math.random()*7000) % 3661;
+                if (j != i && j >= 0 && j < 400){
+                    System.out.println("From: " + user.get(i).getId() + " To: " + user.get(j).getId());
+                    addFriendRs(user.get(i).getId(), user.get(j).getId());
+                    count--;
+                }
+            }
 
-
-        findThreeDegreeRsByUserId(8);
+        }
     }
 
 }
