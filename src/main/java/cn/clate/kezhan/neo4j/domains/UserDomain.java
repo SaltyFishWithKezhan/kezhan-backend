@@ -36,8 +36,13 @@ public class UserDomain {
     private final static String FIND_THREE_DEGREE_RELATIONSHIP = "MATCH (:User{userId:$userId})-[*..3]-(u:User) " +
             " RETURN u.userId, u.username, u.phone, u.realName";
 
+    private final static String FIND_DEGREE_ON_FRIEND_RELATIONSHIP = "MATCH (a:User{userId:$userId1}),(b:User{userId:$userId2}), " +
+            "p = shortestPath((a)-[:FRIEND*1..3]-(b)) " +
+            "WHERE length(p)>1 " +
+            "RETURN length(p)";
+
     public static void addUser(User user) {
-        if(getUserById(user.getId())==null){
+        if (getUserById(user.getId()) == null) {
             try (Session session = Neo4jDriver.getInstance().session()) {
                 String ret = session.writeTransaction(new TransactionWork<String>() {
                     @Override
@@ -50,7 +55,7 @@ public class UserDomain {
                 });
                 System.out.println(ret);
             }
-        }else {
+        } else {
             System.out.println("neo4j user has existed! ");
         }
     }
@@ -100,9 +105,9 @@ public class UserDomain {
                     List<Integer> uidList = new ArrayList<>();
                     StatementResult result = tx.run(FIND_THREE_DEGREE_RELATIONSHIP,
                             parameters("userId", uid));
-                    int t = result.next().get("u.userId").asInt();
-                    uidList.add(t);
                     try {
+                        int t = result.next().get("u.userId").asInt();
+                        uidList.add(t);
                         while (result.hasNext()) {
                             int t1 = result.next().get("u.userId").asInt();
                             uidList.add(t1);
@@ -122,23 +127,46 @@ public class UserDomain {
         }
     }
 
-    public static void main(String... args) throws Exception {
-        Dao dao = DaoFactory.get();
-        List<User> user = dao.query(User.class, null);
-        Random random = new Random();
-        int totalCount = user.size();
-        for (int i = 0; i < 100; i++){
-            int count = 7;
-            while(count > 0){
-                int j = (int) (Math.random()*7000) % 3661;
-                if (j != i && j >= 0 && j < 400){
-                    System.out.println("From: " + user.get(i).getId() + " To: " + user.get(j).getId());
-                    addFriendRs(user.get(i).getId(), user.get(j).getId());
-                    count--;
+    public static int getDegreeOnFriendRs(int uid1, int uid2) {
+        try (Session session = Neo4jDriver.getInstance().session()) {
+            int ret = session.writeTransaction(new TransactionWork<Integer>() {
+                @Override
+                public Integer execute(Transaction tx) {
+                    StatementResult result = tx.run(FIND_DEGREE_ON_FRIEND_RELATIONSHIP,
+                            parameters("userId1", uid1, "userId2", uid2));
+                    if (result.hasNext()) {
+                        Record record = result.next();
+//                        System.out.println(record);
+                        return record.get(0).asInt();
+                    } else {
+//                        System.out.println("Record<{length(p): 0}>");
+                        return 0;
+                    }
                 }
-            }
-
+            });
+            return ret;
         }
+    }
+
+
+    public static void main(String... args) throws Exception {
+//        Dao dao = DaoFactory.get();
+//        List<User> user = dao.query(User.class, null);
+//        Random random = new Random();
+//        int totalCount = user.size();
+//        for (int i = 0; i < 100; i++){
+//            int count = 7;
+//            while(count > 0){
+//                int j = (int) (Math.random()*7000) % 3661;
+//                if (j != i && j >= 0 && j < 400){
+//                    System.out.println("From: " + user.get(i).getId() + " To: " + user.get(j).getId());
+//                    addFriendRs(user.get(i).getId(), user.get(j).getId());
+//                    count--;
+//                }
+//            }
+//
+//        }
+        getDegreeOnFriendRs(8, 12);
     }
 
 }
