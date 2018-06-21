@@ -61,7 +61,7 @@ public class TeacherDomain {
         NutMap courseSub = CourseDomain.getCourseSubBySubId(id, yid, sid);
         NutMap courseTerm = CourseDomain.getCourseTermByCourseTermId((int) courseSub.get("course_term_id"), yid, sid);
         NutMap course = CourseDomain.getCourseByCourseId((int) courseTerm.get("course_id"));
-        Teacher teacher = dao.fetch(Teacher.class, Cnd.where("id", "=", (int) course.get("teacher_id")).and("is_active", "=", 1));
+        Teacher teacher = dao.fetch(Teacher.class, Cnd.where("id", "=", (int) course.get("teacher_id")));
         if (teacher == null) {
             return null;
         }
