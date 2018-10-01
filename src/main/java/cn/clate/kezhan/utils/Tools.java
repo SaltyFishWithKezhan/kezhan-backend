@@ -158,4 +158,8 @@ public class Tools {
         }
         return sb.toString();
     }
+
+    public static void main(String[] args) {
+        System.out.println(passwordEncrypt("12345678"));
+    }
 }

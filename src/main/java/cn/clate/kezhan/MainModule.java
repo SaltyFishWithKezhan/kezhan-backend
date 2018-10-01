@@ -20,7 +20,7 @@ public class MainModule {
     }
 
     @At("/test")
-    @Filters(@By(type = RoleFilter.class, args = {"action:SuperAction", "scene:sdsd", "and"}))
+    @Filters(@By(type = RoleFilter.class, args = {"action:SuperAction", "scene:examplescene", "and"}))
     @Ok("json")
     public String test(){
         return "test here";
