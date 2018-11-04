@@ -29,5 +29,5 @@
      * user设置
      */
     "tokenValidTime":  864000,//十天
-    "user.avatarUrl": "http://clate.cn:8080"
+    "user.avatarUrl": "http://119.29.87.183:8080"
 }

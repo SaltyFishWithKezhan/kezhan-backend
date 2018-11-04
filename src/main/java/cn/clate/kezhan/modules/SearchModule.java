@@ -44,10 +44,10 @@ public class SearchModule {
         List<User> retUsers = UserInfoDomain.getUserByRealNameFuzzy(str);
         retTeachers.addv("users", retUsers);
         List<Integer> degree = new ArrayList<>();
-        for (User it : retUsers) {
-            int itd = UserDomain.getDegreeOnFriendRs(Integer.parseInt(uid), it.getId());
-            degree.add(itd);
-        }
+//        for (User it : retUsers) {
+//            int itd = UserDomain.getDegreeOnFriendRs(Integer.parseInt(uid), it.getId());
+//            degree.add(itd);
+//        }
         retTeachers.addv("degrees", degree);
         if (retTeachers == null && retCourses == null)
             return Ret.e(71, "查询无结果");
