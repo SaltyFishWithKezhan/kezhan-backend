@@ -49,9 +49,6 @@ public class MomentDomain {
             pager.setRecordCount(dao.count(Moment.class, Cnd.where("subCourseId", "=", subCourseId)));
             List<Moment> moments = dao.query(Moment.class, Cnd.where("subCourseId", "=", subCourseId).
                     desc("updateTime"), pager);
-            if (moments.size() == 0) {
-                return null;
-            }
             ArrayList<Moment> momentArrayList = new ArrayList<>(moments);
             NutMap ret = new NutMap();
             ret.addv("now_page", pager.getPageNumber());

@@ -166,7 +166,7 @@ public class UserModule {
     @At("/getNearbyUser")
     @Ok("json")
     @Filters(@By(type = UserAuthenication.class))
-    public NutMap getNalskdfjlasdjfljasldkfj(@Param("uid") String uid) {
+    public NutMap getNearByUser(@Param("uid") String uid) {
         List<Integer> integers = UserDomain.findThreeDegreeRsByUserId(Integer.parseInt(uid));
         Collections.shuffle(integers);
         Dao dao = DaoFactory.get();

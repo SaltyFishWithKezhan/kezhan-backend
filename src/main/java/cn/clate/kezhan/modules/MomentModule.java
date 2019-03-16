@@ -54,9 +54,9 @@ public class MomentModule {
         NutMap ret = MomentDomain.getMomentByCourseId(Integer.parseInt(subCourseId),
                 Integer.parseInt(pageNumber), Integer.parseInt(pageSize),
                 Integer.parseInt(yid), Integer.parseInt(sid));
-        if (ret == null) {
-            return Ret.e(4, "分页错误");
-        }
+//        if (ret == null) {
+//            return Ret.e(4, "分页错误");
+//        }
         List<NutMap> momentsNutMap = new ArrayList<>();
         List<Moment> content = (List<Moment>) ret.get("content");
         for (Moment moment : content) {
