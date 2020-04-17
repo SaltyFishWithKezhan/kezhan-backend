@@ -15,8 +15,8 @@
     "aliyun_domain": "dysmsapi.aliyuncs.com",
 
     // 此处需要替换成开发者自己的AK(在阿里云访问控制台寻找)
-    "aliyun_accessKeyId": "LTAIGCRVPHG0R0wT",
-    "aliyun_accessKeySecret": "eQecMYk2GU8dJIFYOjLyEDbOrm77HI",
+    "aliyun_accessKeyId": "****",
+    "aliyun_accessKeySecret": "*****",
 
     "aliyun_msg_signName": "赵宁",
     //必填:短信模板-可在短信控制台中找到
